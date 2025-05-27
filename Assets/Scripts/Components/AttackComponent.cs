@@ -2,6 +2,7 @@ using Pools;
 using Systems;
 using UnityEngine;
 using Weapon;
+using Zenject;
 
 namespace Components
 {
@@ -13,11 +14,15 @@ namespace Components
 
         private MainWeapon mainWeapon;
         private LaserWeapon laserWeapon;
+        private DiContainer container;
+
+        [Inject]
+        private void Construct(DiContainer container)
+        {
+            this.container = container;
+        }
 
         public void Initialize(
-            float shotFrequency,
-            float timeToRecoveryLaser,
-            float timeToDurationLaser,
             int countOfLaserShots,
             float bulletSpeed,
             Bullet bulletPrefab,
@@ -25,13 +30,13 @@ namespace Components
         {
             var bulletPool = new BulletPoolFacade(bulletPrefab, bulletPoolParent);
 
-            mainWeapon = new MainWeapon(shotPoint, bulletSpeed, bulletPool, shotFrequency);
-            laserWeapon = new LaserWeapon(
+            mainWeapon = container.Instantiate<MainWeapon>();
+            mainWeapon.Initialize(shotPoint, bulletSpeed, bulletPool);
+            laserWeapon = container.Instantiate<LaserWeapon>();
+            laserWeapon.Initialize(
                 shotPoint,
                 laser,
                 laserLayerMask,
-                timeToRecoveryLaser,
-                timeToDurationLaser,
                 countOfLaserShots);
         }
 
@@ -64,3 +69,4 @@ namespace Components
         }
     }
 }
+

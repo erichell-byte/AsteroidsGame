@@ -4,45 +4,41 @@ using Config;
 using GameSystem;
 using Systems;
 using UnityEngine;
+using Utils;
+using Zenject;
 
 namespace Enemies
 {
     public class EnemiesManager : MonoBehaviour, IGameStartListener, IGameFinishListener
     {
-        [SerializeField] private GameConfiguration config;
+        private GameConfiguration config;
+        private TimersController timersController;
+        
         [SerializeField] private Transform poolParent;
         [SerializeField] private SpaceshipController spaceship;
-        [SerializeField] private PointStorage pointStorage;
 
         private List<Vector3> spawnPoints = new();
-
         private EnemiesFactory enemiesFactory;
-        private Timer asteroidSpawnTimer;
-        private Timer ufoSpawnTimer;
         private List<Enemy> activeEnemies = new();
+        
+
+        [Inject]
+        private void Construct(
+            TimersController timersController,
+            GameConfiguration config)
+        {
+            this.config = config;
+            this.timersController = timersController;
+        }
 
         public void OnStartGame()
         {
             CreateSpawnPoints();
-            PrepareTimers();
+            timersController.SubscribeToSpawnEnemies(SpawnAsteroid, SpawnUFO);
 
             enemiesFactory = new EnemiesFactory(
-                config.asteroidBigPrefab,
-                config.asteroidSmallPrefab,
-                config.ufoPrefab,
-                poolParent);
-        }
-
-        private void PrepareTimers()
-        {
-            asteroidSpawnTimer = new Timer(config.asteroidSpawnFrequency);
-            ufoSpawnTimer = new Timer(config.ufoSpawnFrequency);
-
-            asteroidSpawnTimer.Play();
-            asteroidSpawnTimer.TimerIsExpired += SpawnAsteroid;
-
-            ufoSpawnTimer.Play();
-            ufoSpawnTimer.TimerIsExpired += SpawnUFO;
+                poolParent,
+                config);
         }
 
         private void CreateSpawnPoints()
@@ -61,19 +57,19 @@ namespace Enemies
 
         private void SpawnAsteroid()
         {
-            var asteroid = (AsteroidBigEnemy)enemiesFactory.CreateEnemy(EnemyType.AsteroidBig);
+            var asteroid = enemiesFactory.CreateEnemy(EnemyType.Asteroid) as AsteroidEnemy;
             PrepareEnemy(asteroid);
 
-            asteroidSpawnTimer.Play();
+            timersController.PlaySpawnAsteroid();
         }
 
         private void SpawnUFO()
         {
-            var ufo = (UFOEnemy)enemiesFactory.CreateEnemy(EnemyType.UFO);
+            var ufo = enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
             ufo.SetTarget(spaceship.transform);
             PrepareEnemy(ufo);
 
-            ufoSpawnTimer.Play();
+            timersController.PlaySpawnUFO();
         }
 
         private void PrepareEnemy(Enemy enemy)
@@ -81,74 +77,48 @@ namespace Enemies
             enemy.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
             activeEnemies.Add(enemy);
-            enemy.Initialize(GetEnemyConfig(enemy));
             enemy.OnDeath += OnDeathEnemy;
         }
 
         private void SpawnSmallAsteroids(Vector3 position)
         {
-            var firstAsteroid = (AsteroidSmallEnemy)enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall);
-            var secondAsteroid = (AsteroidSmallEnemy)enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall);
+            var firstAsteroid = enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            var secondAsteroid = enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            
+            firstAsteroid.OnDeath += OnDeathEnemy;
+            secondAsteroid.OnDeath += OnDeathEnemy;
 
-            firstAsteroid.transform.position = position;
-            secondAsteroid.transform.position = position;
+            firstAsteroid.transform.position = secondAsteroid.transform.position = position;
 
             activeEnemies.Add(firstAsteroid);
             activeEnemies.Add(secondAsteroid);
-
-            firstAsteroid.Initialize(GetEnemyConfig(firstAsteroid));
-            secondAsteroid.Initialize(GetEnemyConfig(secondAsteroid));
-
-            firstAsteroid.OnDeath += OnDeathEnemy;
-            secondAsteroid.OnDeath += OnDeathEnemy;
         }
-
-        private EnemyConfig GetEnemyConfig(Enemy enemy)
-        {
-            return enemy switch
-            {
-                AsteroidSmallEnemy => config.asteroidSmallConfig,
-                AsteroidBigEnemy => config.asteroidBigConfig,
-                UFOEnemy => config.ufoConfig,
-                _ => throw new System.ArgumentException("Unknown enemy type")
-            };
-        }
-
+        
         private void OnDeathEnemy(Enemy enemy)
         {
-            pointStorage.AddPoints(enemy.GetPoints());
             activeEnemies.Remove(enemy);
-
             enemy.OnDeath -= OnDeathEnemy;
 
-            if (enemy is AsteroidSmallEnemy)
-            {
-                enemiesFactory.ReturnEnemy(EnemyType.AsteroidSmall, enemy);
-            }
-            else if (enemy is AsteroidBigEnemy)
+            if (enemy is AsteroidEnemy asteroidEnemy && asteroidEnemy.IsShouldDestroyOnSmall())
             {
                 SpawnSmallAsteroids(enemy.transform.position);
-                enemiesFactory.ReturnEnemy(EnemyType.AsteroidBig, enemy);
             }
-            else if (enemy is UFOEnemy)
-            {
-                enemiesFactory.ReturnEnemy(EnemyType.UFO, enemy);
-            }
+
+            enemiesFactory.ReturnEnemy(enemy);
         }
 
         public void OnFinishGame()
         {
-            for (int i = 0; i < activeEnemies.Count; i++)
+            foreach (var enemy in activeEnemies)
             {
-                activeEnemies[i].OnDeath -= OnDeathEnemy;
-                Destroy(activeEnemies[i].gameObject);
+                enemy.OnDeath -= OnDeathEnemy;
+                Destroy(enemy.gameObject);
             }
 
-            asteroidSpawnTimer.TimerIsExpired -= SpawnAsteroid;
-            ufoSpawnTimer.TimerIsExpired -= SpawnUFO;
+            timersController.UnsubscribeFromSpawnEnemies(SpawnAsteroid, SpawnUFO);
 
             activeEnemies.Clear();
-            enemiesFactory.Clear();
+            enemiesFactory?.Clear();
         }
     }
 }

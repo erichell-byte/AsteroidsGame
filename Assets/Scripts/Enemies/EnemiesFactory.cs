@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Config;
 using Pools;
 using UnityEngine;
 
@@ -6,64 +8,92 @@ namespace Enemies
 {
     public enum EnemyType
     {
-        AsteroidBig,
+        Asteroid,
         AsteroidSmall,
         UFO
     }
 
     public class EnemiesFactory
     {
-        private EnemyPoolFacade asteroidBigPoolFacade;
-        private EnemyPoolFacade asteroidSmallPoolFacade;
+        private EnemyPoolFacade asteroidPoolFacade;
         private EnemyPoolFacade ufoPoolFacade;
+        private Dictionary<EnemyType, EnemyConfig> enemyConfigMap;
+        private GameConfiguration config;
 
         public EnemiesFactory(
-            AsteroidBigEnemy asteroidBigPrefab,
-            AsteroidSmallEnemy asteroidSmallPrefab,
-            UFOEnemy ufoPrefab,
-            Transform poolParent)
+            Transform poolParent,
+            GameConfiguration config)
         {
-            asteroidBigPoolFacade = new EnemyPoolFacade(asteroidBigPrefab, poolParent);
-            asteroidSmallPoolFacade = new EnemyPoolFacade(asteroidSmallPrefab, poolParent);
-            ufoPoolFacade = new EnemyPoolFacade(ufoPrefab, poolParent);
+            this.config = config;
+            asteroidPoolFacade = new EnemyPoolFacade(config.asteroidPrefab, poolParent);
+            ufoPoolFacade = new EnemyPoolFacade(config.ufoPrefab, poolParent);
+
+            BuildEnemyConfigMap();
+        }
+        
+        private void BuildEnemyConfigMap()
+        {
+            enemyConfigMap = new Dictionary<EnemyType, EnemyConfig>();
+            foreach (var cfg in config.enemiesConfigs)
+            {
+                if (!enemyConfigMap.ContainsKey(cfg.type))
+                    enemyConfigMap.Add(cfg.type, cfg);
+            }
+        }
+        
+        private EnemyConfig GetEnemyConfig(EnemyType enemyType)
+        {
+            if (enemyConfigMap != null && enemyConfigMap.TryGetValue(enemyType, out var foundConfig))
+                return foundConfig;
+            throw new ArgumentException($"Unknown enemy type: {enemyType}");
         }
 
         public Enemy CreateEnemy(EnemyType enemyType)
         {
             switch (enemyType)
             {
-                case EnemyType.AsteroidBig:
-                    return (AsteroidBigEnemy)asteroidBigPoolFacade.Pool.Get();
+                case EnemyType.Asteroid:
+                {
+                    var asteroid = asteroidPoolFacade.Get();
+                    asteroid.Initialize(GetEnemyConfig(EnemyType.Asteroid));
+                    return asteroid;
+                }
                 case EnemyType.AsteroidSmall:
-                    return (AsteroidSmallEnemy)asteroidSmallPoolFacade.Pool.Get();
+                {
+                    var asteroidSmall = (AsteroidEnemy)asteroidPoolFacade.Get();
+                    asteroidSmall.Initialize(GetEnemyConfig(EnemyType.AsteroidSmall));
+                    asteroidSmall.DoAsteroidSmall();
+                    return asteroidSmall;
+                }
                 case EnemyType.UFO:
-                    return (UFOEnemy)ufoPoolFacade.Pool.Get();
+                {
+                    var ufo = (UFOEnemy)ufoPoolFacade.Get();
+                    ufo.Initialize(GetEnemyConfig(EnemyType.UFO));
+                    return ufo;
+                }
             }
 
             throw new Exception("Enemy type not recognized");
         }
 
-        public void ReturnEnemy(EnemyType enemyType, Enemy enemy)
+        public void ReturnEnemy(Enemy enemy)
         {
-            switch (enemyType)
+            switch (enemy.GetEnemyType())
             {
+                case EnemyType.Asteroid:
                 case EnemyType.AsteroidSmall:
-                    asteroidSmallPoolFacade.Pool.Release(enemy);
-                    break;
-                case EnemyType.AsteroidBig:
-                    asteroidBigPoolFacade.Pool.Release(enemy);
+                    asteroidPoolFacade.Release(enemy);
                     break;
                 case EnemyType.UFO:
-                    ufoPoolFacade.Pool.Release(enemy);
+                    ufoPoolFacade.Release(enemy);
                     break;
             }
         }
 
         public void Clear()
         {
-            asteroidBigPoolFacade.Pool.Clear();
-            asteroidSmallPoolFacade.Pool.Clear();
-            ufoPoolFacade.Pool.Clear();
+            asteroidPoolFacade.Clear();
+            ufoPoolFacade.Clear();
         }
     }
 }

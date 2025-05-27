@@ -1,21 +1,32 @@
 using System;
 using Systems;
+using UnityEngine;
+using Zenject;
 
 namespace GameSystem
 {
     public class Timer : IGameUpdateListener
     {
+        private GameCycle gameCycle;
+        private Rigidbody2D rigibbody;
+        
         private float duration;
 
-        public float remainingTime;
+        private float remainingTime;
 
         public Action TimerIsExpired;
         public Action<float> RemainingTimeChanged;
 
-        public Timer(float duration)
+        [Inject]
+        private void Construct(GameCycle gameCycle)
+        {
+            this.gameCycle = gameCycle;
+        }
+        
+        public void Init(float duration)
         {
             this.duration = duration;
-            GameCycle.Instance.AddListener(this);
+            gameCycle.AddListener(this);
         }
 
         public void Play()
@@ -44,6 +55,10 @@ namespace GameSystem
         public void OnUpdate(float deltaTime)
         {
             Tick(deltaTime);
+        }
+        
+        public class Factory : PlaceholderFactory<Timer>
+        {
         }
     }
 }

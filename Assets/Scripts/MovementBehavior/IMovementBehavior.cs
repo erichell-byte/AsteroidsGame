@@ -1,5 +1,4 @@
 using Config;
-using Enemies;
 using UnityEngine;
 
 namespace MovementBehavior

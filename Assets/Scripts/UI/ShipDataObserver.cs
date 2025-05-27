@@ -3,16 +3,24 @@ using Components;
 using Config;
 using Systems;
 using UnityEngine;
+using Zenject;
 
 namespace UI
 {
     public class ShipDataObserver : MonoBehaviour, IGameStartListener, IGameFinishListener
     {
+        private GameConfiguration config;
+        
         [SerializeField] private AttackComponent attackComponent;
         [SerializeField] private MoveComponent moveComponent;
         [SerializeField] private ShipDataView shipDataView;
-        [SerializeField] private GameConfiguration config;
-
+        
+        [Inject]
+        private void Construct(GameConfiguration config)
+        {
+            this.config = config;
+        }
+        
         public void OnStartGame()
         {
             Initialize();

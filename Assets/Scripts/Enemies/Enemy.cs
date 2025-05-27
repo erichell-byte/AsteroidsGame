@@ -8,12 +8,14 @@ namespace Enemies
     {
         protected EnemyConfig config;
         protected Rigidbody2D rb;
+        protected EnemyType enemyType;
 
         public Action<Enemy> OnDeath;
 
         public virtual void Initialize(EnemyConfig config)
         {
             this.config = config;
+            enemyType = config.type;
             rb = GetComponent<Rigidbody2D>();
         }
 
@@ -22,9 +24,9 @@ namespace Enemies
             OnDeath?.Invoke(this);
         }
 
-        public int GetPoints()
+        public EnemyType GetEnemyType()
         {
-            return config.PointsReward;
+            return enemyType;
         }
     }
 }

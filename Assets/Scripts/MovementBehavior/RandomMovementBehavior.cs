@@ -1,5 +1,4 @@
 using Config;
-using Enemies;
 using UnityEngine;
 
 namespace MovementBehavior
@@ -10,7 +9,7 @@ namespace MovementBehavior
         {
             if (rigidbody == null) return;
 
-            float speed = config.Speed * config.SpeedModifier;
+            float speed = config.speed * config.speedModifier;
             float randomAngle = Random.Range(0f, 360f);
             Vector2 direction = new Vector2(
                 Mathf.Cos(randomAngle * Mathf.Deg2Rad),
