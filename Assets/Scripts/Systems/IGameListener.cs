@@ -15,16 +15,6 @@ namespace Systems
         void OnFinishGame();
     }
 
-    public interface IGamePauseListener : IGameListener
-    {
-        void OnPauseGame();
-    }
-
-    public interface IGameResumeListener : IGameListener
-    {
-        void OnResumeGame();
-    }
-
     public interface IGameUpdateListener : IGameListener
     {
         void OnUpdate(float deltaTime);
@@ -33,10 +23,5 @@ namespace Systems
     public interface IGameFixedUpdateListener : IGameListener
     {
         void OnFixedUpdate(float deltaTime);
-    }
-    
-    public interface IGameLateUpdateListener : IGameListener
-    {
-        void OnLateUpdate(float deltaTime);
     }
 }

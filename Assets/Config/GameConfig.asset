@@ -22,23 +22,16 @@ MonoBehaviour:
   countOfLaserShots: 3
   bulletPrefab: {fileID: 8340786460595573972, guid: c4340b47122e44efe9b51ea351165b0a, type: 3}
   asteroidSpawnFrequency: 5
-  ufoSpawnFrequency: 8
-  minAsteroidSpeed: 0.2
-  maxAsteroidSpeed: 1.3
-  smallAsteroidSpeedModifier: 1.2
-  ufoSpeed: 1
-  asteroidBigPrefab: {fileID: 5072669224712007222, guid: 7cc34207e03574af6b70b86bb118af96, type: 3}
-  asteroidSmallPrefab: {fileID: 6674528036187904282, guid: fb0363d1efeab4eca8e640ebba7e5d8f, type: 3}
+  ufoSpawnFrequency: 14
+  asteroidPrefab: {fileID: 5072669224712007222, guid: 7cc34207e03574af6b70b86bb118af96, type: 3}
   ufoPrefab: {fileID: 4294507979162160551, guid: 5baedea8325f34a69bba707c2abd5be0, type: 3}
-  asteroidBigConfig:
-    Speed: 0.5
-    SpeedModifier: 1
-    PointsReward: 1
-  asteroidSmallConfig:
-    Speed: 0.7
-    SpeedModifier: 1
-    PointsReward: 2
-  ufoConfig:
-    Speed: 1
-    SpeedModifier: 1
-    PointsReward: 3
+  enemiesConfigs:
+  - type: 0
+    speed: 1
+    speedModifier: 1
+  - type: 1
+    speed: 1
+    speedModifier: 1
+  - type: 2
+    speed: 0.5
+    speedModifier: 1

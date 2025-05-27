@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Enemies;
 using UnityEngine;
 using Weapon;
@@ -9,14 +10,12 @@ namespace Config
     {
         [Header("Character Configuration")]
         public float moveCoefficient;
-
         public float rotateCoefficient;
         public float maxVelocityMagnitude;
 
         [Space(20)]
         [Header("Attack Configuration")]
         public float bulletSpeed;
-
         public float shotFrequency;
         public float timeToRecoveryLaser;
         public float timeToDurationLaser;
@@ -26,14 +25,9 @@ namespace Config
         [Space(20)]
         [Header("Enemies Configuration")]
         public float asteroidSpawnFrequency;
-
         public float ufoSpawnFrequency;
-        public AsteroidBigEnemy asteroidBigPrefab;
-        public AsteroidSmallEnemy asteroidSmallPrefab;
+        public AsteroidEnemy asteroidPrefab;
         public UFOEnemy ufoPrefab;
-
-        public EnemyConfig asteroidBigConfig;
-        public EnemyConfig asteroidSmallConfig;
-        public EnemyConfig ufoConfig;
+        public List<EnemyConfig> enemiesConfigs;
     }
 }

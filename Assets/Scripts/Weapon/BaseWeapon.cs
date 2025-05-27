@@ -4,12 +4,7 @@ namespace Weapon
 {
     public abstract class BaseWeapon
     {
-        protected readonly Transform ShotPoint;
-
-        protected BaseWeapon(Transform shotPoint)
-        {
-            ShotPoint = shotPoint;
-        }
+        protected Transform shotPoint;
 
         public abstract void Attack();
     }

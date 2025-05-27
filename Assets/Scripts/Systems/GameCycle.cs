@@ -22,20 +22,9 @@ namespace Systems
 
         private List<IGameUpdateListener> gameUpdateListeners = new();
         private List<IGameFixedUpdateListener> gameFixedUpdateListeners = new();
-        private List<IGameLateUpdateListener> gameLateUpdateListeners = new();
-
-        private static GameCycle instance;
-        public static GameCycle Instance => instance;
-
+        
         private void Awake()
         {
-            if (instance == null)
-                instance = this;
-            else if (instance == this)
-                Destroy(gameObject);
-
-            DontDestroyOnLoad(gameObject);
-
             Initialize();
         }
 
@@ -62,11 +51,6 @@ namespace Systems
             FixedUpdateGame();
         }
 
-        private void LateUpdate()
-        {
-            LateUpdateGame();
-        }
-
         public void AddListener(IGameListener listener)
         {
             gameListeners.Add(listener);
@@ -83,11 +67,6 @@ namespace Systems
             if (gameListener is IGameFixedUpdateListener gameFixedUpdateListener)
             {
                 gameFixedUpdateListeners.Add(gameFixedUpdateListener);
-            }
-
-            if (gameListener is IGameLateUpdateListener gameLateUpdateListener)
-            {
-                gameLateUpdateListeners.Add(gameLateUpdateListener);
             }
         }
 
@@ -131,46 +110,6 @@ namespace Systems
             }
         }
 
-
-        private void PauseGame()
-        {
-            if (State == GameState.Off || State == GameState.Finished || State == GameState.Pause)
-            {
-                Debug.Log("Game is already finished!");
-                return;
-            }
-
-            State = GameState.Pause;
-
-            for (int i = 0; i < gameListeners.Count; i++)
-            {
-                if (gameListeners[i] is IGamePauseListener gamePauseListener)
-                {
-                    gamePauseListener.OnPauseGame();
-                }
-            }
-        }
-
-
-        private void ResumeGame()
-        {
-            if (State == GameState.Playing || State == GameState.Off)
-            {
-                Debug.Log("Game is not on pause!");
-                return;
-            }
-
-            State = GameState.Playing;
-
-            for (int i = 0; i < gameListeners.Count; i++)
-            {
-                if (gameListeners[i] is IGameResumeListener gameResumeListener)
-                {
-                    gameResumeListener.OnResumeGame();
-                }
-            }
-        }
-
         public void UpdateGame()
         {
             float deltaTime = Time.deltaTime * Multiplier;
@@ -188,16 +127,6 @@ namespace Systems
             for (int i = 0; i < gameFixedUpdateListeners.Count; i++)
             {
                 gameFixedUpdateListeners[i].OnFixedUpdate(deltaTime);
-            }
-        }
-
-        public void LateUpdateGame()
-        {
-            float deltaTime = Time.deltaTime;
-
-            for (int i = 0; i < gameLateUpdateListeners.Count; i++)
-            {
-                gameLateUpdateListeners[i].OnLateUpdate(deltaTime);
             }
         }
     }

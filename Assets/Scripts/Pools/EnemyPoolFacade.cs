@@ -20,6 +20,10 @@ namespace Pools
 
         protected override void ActionOnRelease(Enemy obj)
         {
+            if (obj is AsteroidEnemy asteroid)
+            {
+                asteroid.ResetAsteroid();
+            }
             obj.GetComponent<Collider2D>().enabled = false;
             obj.gameObject.SetActive(false);
             base.ActionOnRelease(obj);

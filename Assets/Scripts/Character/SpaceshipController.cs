@@ -4,6 +4,7 @@ using Config;
 using Enemies;
 using Systems;
 using UnityEngine;
+using Zenject;
 
 namespace Character
 {
@@ -12,13 +13,20 @@ namespace Character
         IGameStartListener,
         IGameFinishListener
     {
+        private GameConfiguration config;
+        
         [SerializeField] private KeyboardInputReceiver inputReceiver;
-        [SerializeField] private GameConfiguration config;
         [SerializeField] private Transform poolParent;
 
         private MoveComponent moveComponent;
         private AttackComponent attackComponent;
 
+        [Inject]
+        private void Construct(GameConfiguration config)
+        {
+            this.config = config;
+        }
+        
         public event Action OnShipDie;
 
         public void OnStartGame()
@@ -32,9 +40,6 @@ namespace Character
                 config.maxVelocityMagnitude);
 
             attackComponent.Initialize(
-                config.shotFrequency,
-                config.timeToRecoveryLaser,
-                config.timeToDurationLaser,
                 config.countOfLaserShots,
                 config.bulletSpeed,
                 config.bulletPrefab,

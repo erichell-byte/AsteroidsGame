@@ -2,34 +2,47 @@ using System;
 using Enemies;
 using GameSystem;
 using UnityEngine;
+using Utils;
+using Zenject;
 
 namespace Weapon
 {
-    public class LaserWeapon : BaseWeapon
-    {
-        private readonly GameObject laser;
-        private readonly LayerMask layerMask;
-        private readonly Timer recoveryTimer;
-        private readonly Timer durationTimer;
-        private readonly int maxShots;
+    public class LaserWeapon : BaseWeapon, IDisposable
+    { 
+        private TimersController timersController;
+
+        private GameObject laser;
+        private LayerMask layerMask;
+        private int maxShots;
+        
 
         private int remainingShots;
         private bool isActive;
         private bool isRecovering;
+        private bool disposed;
+
+        [Inject]
+        private void Construct(
+            TimersController timersController)
+        {
+            this.timersController = timersController;
+        }
 
         public event Action<int> OnLaserCountChanged;
         public event Action<float> OnTimeToRecoveryChanged;
 
-        public LaserWeapon(Transform shotPoint, GameObject laser, LayerMask layerMask, float recoveryTime,
-            float durationTime, int maxShots) : base(shotPoint)
+        public void Initialize(
+            Transform shotPoint,
+            GameObject laser,
+            LayerMask layerMask,
+            int maxShots)
         {
+            this.shotPoint = shotPoint;
             this.laser = laser;
             this.layerMask = layerMask;
-            recoveryTimer = new Timer(recoveryTime);
-            durationTimer = new Timer(durationTime);
             this.maxShots = maxShots;
             remainingShots = maxShots;
-            recoveryTimer.RemainingTimeChanged += ChangedTimeToRecovery;
+            timersController.InitLaserTimers(ChangedTimeToRecovery);
         }
 
         public override void Attack()
@@ -40,8 +53,7 @@ namespace Weapon
             OnLaserCountChanged?.Invoke(remainingShots);
             isActive = true;
             laser.SetActive(true);
-            durationTimer.Play();
-            durationTimer.TimerIsExpired += TurnOffLaser;
+            timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
         }
 
         public void Update()
@@ -52,11 +64,10 @@ namespace Weapon
 
         private void HandleRecovery()
         {
-            if (!recoveryTimer.IsPlaying() && remainingShots < maxShots && !isRecovering)
+            if (timersController.RecoveryTimerIsPlaying() == false && remainingShots < maxShots && !isRecovering)
             {
                 isRecovering = true;
-                recoveryTimer.Play();
-                recoveryTimer.TimerIsExpired += RecoveryLaser;
+                timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
             }
         }
 
@@ -64,7 +75,7 @@ namespace Weapon
         {
             if (isActive == false) return;
 
-            var hit = Physics2D.Raycast(ShotPoint.position, ShotPoint.up, float.PositiveInfinity, layerMask);
+            var hit = Physics2D.Raycast(shotPoint.position, shotPoint.up, float.PositiveInfinity, layerMask);
 
             if (hit.collider == null) return;
             if (hit.collider.TryGetComponent(out Enemy enemy)) enemy.Die();
@@ -72,14 +83,14 @@ namespace Weapon
 
         public void TurnOffLaser()
         {
-            durationTimer.TimerIsExpired -= TurnOffLaser;
+            timersController.UnsubscribeFromDurationTimer(TurnOffLaser);
             isActive = false;
             laser.SetActive(false);
         }
 
         private void RecoveryLaser()
         {
-            recoveryTimer.TimerIsExpired -= RecoveryLaser;
+            timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
             remainingShots++;
             OnLaserCountChanged?.Invoke(remainingShots);
             isRecovering = false;
@@ -90,9 +101,11 @@ namespace Weapon
             OnTimeToRecoveryChanged?.Invoke(recoveryTime);
         }
 
-        ~LaserWeapon()
+        public void Dispose()
         {
-            recoveryTimer.RemainingTimeChanged -= ChangedTimeToRecovery;
+            if (disposed) return;
+            disposed = true;
+            timersController.UnsubscribeAllLaserTimers(ChangedTimeToRecovery, TurnOffLaser, RecoveryLaser);
         }
     }
 }

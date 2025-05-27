@@ -1,49 +1,57 @@
-using GameSystem;
 using Pools;
 using UnityEngine;
+using Utils;
+using Zenject;
 
 namespace Weapon
 {
     public class MainWeapon : BaseWeapon
     {
-        private readonly Timer shotTimer;
-        private readonly float bulletSpeed;
+        private TimersController timersController;
+        private float bulletSpeed;
         private BulletPoolFacade bulletPool;
 
-        public MainWeapon(Transform shotPoint, float bulletSpeed, BulletPoolFacade bulletPool, float shotFrequency) :
-            base(shotPoint)
+        [Inject]
+        private void Construct(TimersController timersController)
         {
+            this.timersController = timersController;
+        }
+
+        public void Initialize(Transform shotPoint,
+            float bulletSpeed,
+            BulletPoolFacade bulletPool)
+        {
+            this.shotPoint = shotPoint;
             this.bulletSpeed = bulletSpeed;
             this.bulletPool = bulletPool;
-            shotTimer = new Timer(shotFrequency);
+            timersController.InitMainWeaponTimer();
         }
 
         public override void Attack()
         {
-            if (shotTimer.IsPlaying()) return;
-
+            if (timersController.MainWeaponTimerIsPlaying()) return;
             Shot();
-            shotTimer.Play();
+            timersController.PlayMainWeaponTimer();
         }
 
         private void Shot()
         {
-            var bullet = bulletPool.Pool.Get();
+            var bullet = bulletPool.Get();
             bullet.OnHit += OnHitBullet;
-            bullet.transform.position = ShotPoint.position;
-            bullet.transform.rotation = ShotPoint.rotation;
-            bullet.GetComponent<Rigidbody2D>().velocity = ShotPoint.up * bulletSpeed;
+            bullet.transform.position = shotPoint.position;
+            bullet.transform.rotation = shotPoint.rotation;
+            bullet.GetComponent<Rigidbody2D>().velocity = shotPoint.up * bulletSpeed;
         }
 
         private void OnHitBullet(Bullet bullet)
         {
             bullet.OnHit -= OnHitBullet;
-            bulletPool.Pool.Release(bullet);
+            bulletPool.Release(bullet);
         }
 
         public void Reset()
         {
-            bulletPool.Pool.Clear();
+            bulletPool.Clear();
         }
     }
 }
