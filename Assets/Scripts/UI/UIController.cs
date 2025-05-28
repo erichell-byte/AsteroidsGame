@@ -1,21 +1,28 @@
+using Character;
 using Systems;
 using UnityEngine;
-using UnityEngine.UI;
+using Zenject;
 
 namespace UI
 {
-    public class UIController : MonoBehaviour, IGameStartListener, IGameFinishListener
+    public class UIController : MonoBehaviour, IGameStartListener
     {
-        [SerializeField] private Button startGameButton;
+        [SerializeField] private GameUIView gameUIView;
+
+        private CharacterModel characterModel;
+        private GameUIViewModel viewModel;
+        
+        [Inject]
+        private void Construct(SpaceshipController shipController)
+        {
+            characterModel = shipController.CharacterModel;
+        }
 
         public void OnStartGame()
         {
-            startGameButton.gameObject.SetActive(false);
-        }
-
-        public void OnFinishGame()
-        {
-            startGameButton.gameObject.SetActive(true);
+            gameUIView.Dispose();
+            viewModel = new GameUIViewModel(characterModel);
+            gameUIView.Initialize(viewModel);
         }
     }
 }

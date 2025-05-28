@@ -1,5 +1,8 @@
+using Character;
+using Config;
 using Pools;
 using Systems;
+using UniRx;
 using UnityEngine;
 using Weapon;
 using Zenject;
@@ -15,6 +18,7 @@ namespace Components
         private MainWeapon mainWeapon;
         private LaserWeapon laserWeapon;
         private DiContainer container;
+        private CompositeDisposable disposables = new ();
 
         [Inject]
         private void Construct(DiContainer container)
@@ -23,21 +27,26 @@ namespace Components
         }
 
         public void Initialize(
-            int countOfLaserShots,
-            float bulletSpeed,
-            Bullet bulletPrefab,
-            Transform bulletPoolParent)
+            GameConfiguration config,
+            Transform bulletPoolParent,
+            CharacterModel characterModel)
         {
-            var bulletPool = new BulletPoolFacade(bulletPrefab, bulletPoolParent);
-
+            var bulletPool = new BulletPoolFacade(config.bulletPrefab, bulletPoolParent);
             mainWeapon = container.Instantiate<MainWeapon>();
-            mainWeapon.Initialize(shotPoint, bulletSpeed, bulletPool);
+            mainWeapon.Initialize(
+                shotPoint,
+                config.bulletSpeed,
+                bulletPool);
+            
             laserWeapon = container.Instantiate<LaserWeapon>();
             laserWeapon.Initialize(
                 shotPoint,
                 laser,
                 laserLayerMask,
-                countOfLaserShots);
+                config.countOfLaserShots);
+
+            laserWeapon.RemainingShots.Subscribe(characterModel.SetLaserCount).AddTo(disposables);
+            laserWeapon.TimeToRecovery.Subscribe(characterModel.SetTimeToRecoveryLaser).AddTo(disposables);
         }
 
         public void AttackByMainShot()
@@ -61,11 +70,7 @@ namespace Components
             mainWeapon.Reset();
             mainWeapon = null;
             laserWeapon = null;
-        }
-
-        public LaserWeapon GetLaserWeapon()
-        {
-            return laserWeapon;
+            disposables.Clear();
         }
     }
 }
