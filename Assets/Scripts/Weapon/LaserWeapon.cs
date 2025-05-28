@@ -1,6 +1,6 @@
 using System;
 using Enemies;
-using GameSystem;
+using UniRx;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -14,22 +14,18 @@ namespace Weapon
         private GameObject laser;
         private LayerMask layerMask;
         private int maxShots;
-        
-
-        private int remainingShots;
         private bool isActive;
         private bool isRecovering;
         private bool disposed;
 
+        public ReactiveProperty<int> RemainingShots { get; } = new();
+        public ReactiveProperty<float> TimeToRecovery { get; } = new();
         [Inject]
         private void Construct(
             TimersController timersController)
         {
             this.timersController = timersController;
         }
-
-        public event Action<int> OnLaserCountChanged;
-        public event Action<float> OnTimeToRecoveryChanged;
 
         public void Initialize(
             Transform shotPoint,
@@ -41,16 +37,16 @@ namespace Weapon
             this.laser = laser;
             this.layerMask = layerMask;
             this.maxShots = maxShots;
-            remainingShots = maxShots;
+            RemainingShots.Value = maxShots;
+            TimeToRecovery.Value = 0f;
             timersController.InitLaserTimers(ChangedTimeToRecovery);
         }
 
         public override void Attack()
         {
-            if (remainingShots <= 0 || isActive) return;
+            if (RemainingShots.Value <= 0 || isActive) return;
 
-            remainingShots--;
-            OnLaserCountChanged?.Invoke(remainingShots);
+            RemainingShots.Value--;
             isActive = true;
             laser.SetActive(true);
             timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
@@ -64,7 +60,7 @@ namespace Weapon
 
         private void HandleRecovery()
         {
-            if (timersController.RecoveryTimerIsPlaying() == false && remainingShots < maxShots && !isRecovering)
+            if (timersController.RecoveryTimerIsPlaying() == false && RemainingShots.Value < maxShots && !isRecovering)
             {
                 isRecovering = true;
                 timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
@@ -91,14 +87,13 @@ namespace Weapon
         private void RecoveryLaser()
         {
             timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
-            remainingShots++;
-            OnLaserCountChanged?.Invoke(remainingShots);
+            RemainingShots.Value++;
             isRecovering = false;
         }
 
         private void ChangedTimeToRecovery(float recoveryTime)
         {
-            OnTimeToRecoveryChanged?.Invoke(recoveryTime);
+            TimeToRecovery.Value = recoveryTime;
         }
 
         public void Dispose()

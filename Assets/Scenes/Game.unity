@@ -611,6 +611,7 @@ MonoBehaviour:
   gameCycle: {fileID: 711431303}
   gameEventsController: {fileID: 1034686939}
   gameConfiguration: {fileID: 11400000, guid: 22f0e7657c6224771b8c946f6b3370f6, type: 2}
+  spaceshipController: {fileID: 1074242081}
 --- !u!114 &785692755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,8 +973,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a7ea2235de4c288543578a66f1d3a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceship: {fileID: 1074242081}
-  startGameButton: {fileID: 1716670804}
 --- !u!1 &1074242075
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,9 +1668,8 @@ GameObject:
   - component: {fileID: 1528456289}
   - component: {fileID: 1528456292}
   - component: {fileID: 1528456291}
-  - component: {fileID: 1528456293}
   m_Layer: 5
-  m_Name: ShipDataView
+  m_Name: GameUIView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1756,6 +1754,7 @@ MonoBehaviour:
   currentSpeedText: {fileID: 815347300}
   countOfAvailableLaserText: {fileID: 756528402}
   timeToResetLaserText: {fileID: 259071064}
+  startGameButton: {fileID: 1716670804}
 --- !u!114 &1528456292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1782,21 +1781,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1528456293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1528456287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3323d26e3702448699025a9ca537d467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackComponent: {fileID: 1074242085}
-  moveComponent: {fileID: 1074242079}
-  shipDataView: {fileID: 1528456291}
 --- !u!1 &1571049855
 GameObject:
   m_ObjectHideFlags: 0
@@ -2159,7 +2143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolParent: {fileID: 1645708912}
-  spaceship: {fileID: 1074242081}
 --- !u!1 &2111758492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,7 +2259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f8a4a750da48d089d9513b08decc25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startGameButton: {fileID: 1716670801}
+  gameUIView: {fileID: 1528456291}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

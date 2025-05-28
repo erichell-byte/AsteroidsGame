@@ -1,3 +1,4 @@
+using Character;
 using Config;
 using GameSystem;
 using Systems;
@@ -10,6 +11,7 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private GameCycle gameCycle;
     [SerializeField] private GameEventsController gameEventsController;
     [SerializeField] private GameConfiguration gameConfiguration;
+    [SerializeField] private SpaceshipController spaceshipController;
     
     public override void InstallBindings()
     {
@@ -18,6 +20,8 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Timer, Timer.Factory>().AsTransient();
         Container.Bind<GameConfiguration>().FromInstance(gameConfiguration);
         Container.BindInterfacesAndSelfTo<TimersController>().AsSingle().NonLazy();
+        Container.Bind<SpaceshipController>().FromInstance(spaceshipController).AsSingle().NonLazy();
+        
 
     }
 }

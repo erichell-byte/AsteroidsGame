@@ -15,8 +15,8 @@ namespace Enemies
         private TimersController timersController;
         
         [SerializeField] private Transform poolParent;
-        [SerializeField] private SpaceshipController spaceship;
-
+        
+        private SpaceshipController spaceship;
         private List<Vector3> spawnPoints = new();
         private EnemiesFactory enemiesFactory;
         private List<Enemy> activeEnemies = new();
@@ -25,10 +25,12 @@ namespace Enemies
         [Inject]
         private void Construct(
             TimersController timersController,
-            GameConfiguration config)
+            GameConfiguration config,
+            SpaceshipController spaceship)
         {
             this.config = config;
             this.timersController = timersController;
+            this.spaceship = spaceship;
         }
 
         public void OnStartGame()
