@@ -2,6 +2,8 @@ using Character;
 using Components;
 using Config;
 using GameSystem;
+using Analytics;
+using SaveLoad;
 using Systems;
 using UI;
 using UnityEngine;
@@ -26,10 +28,14 @@ public class GameInstaller : MonoInstaller
         Container.Bind<GameConfiguration>().FromInstance(gameConfiguration);
         Container.BindInterfacesAndSelfTo<TimersController>().AsSingle();
         Container.BindInterfacesAndSelfTo<SpaceshipController>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<CharacterMediator>().AsSingle();
         Container.BindInterfacesAndSelfTo<AttackComponent>().FromInstance(attackComponent).AsSingle();
         Container.BindInterfacesAndSelfTo<MoveComponent>().FromInstance(moveComponent).AsSingle();
         Container.Bind<Transform>().FromInstance(poolParent).AsSingle();
         Container.Bind<GameUIView>().FromInstance(gameUIView).AsSingle().NonLazy();
         Container.Bind<UIController>().AsSingle().NonLazy();
+        Container.Bind<IStorageService>().To<PlayerPrefsStorageService>().AsSingle();
+        Container.Bind<IRepository<CharacterStats>>().To<CharacterRepository>().AsSingle();
+        Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
     }
 }

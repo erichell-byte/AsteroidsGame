@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613896758975",
+    "project_id": "asteroids-ec643",
+    "storage_bucket": "asteroids-ec643.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613896758975:android:48ef50eddf6ae54535080a",
+        "android_client_info": {
+          "package_name": "com.stickyBones.Asteroids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuBsXevv-E75Mv1bjDGgMGVqROkeaHSEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

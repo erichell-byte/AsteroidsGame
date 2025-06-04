@@ -1,6 +1,7 @@
 using Components;
 using Config;
 using Input;
+using SaveLoad;
 using Systems;
 using UnityEngine;
 using Zenject;
@@ -15,7 +16,6 @@ namespace Character
         private GameConfiguration config;
         private MoveComponent moveComponent;
         private AttackComponent attackComponent;
-        private Transform poolParent;
         
         private KeyboardInputReceiver inputReceiver;
         private CharacterModel characterModel;
@@ -27,23 +27,34 @@ namespace Character
             GameConfiguration config,
             MoveComponent moveComponent,
             AttackComponent attackComponent,
-            Transform poolParent,
             GameCycle gameCycle)
         {
             this.config = config;
             this.moveComponent = moveComponent;
             this.attackComponent = attackComponent;
-            this.poolParent = poolParent;
             inputReceiver = new KeyboardInputReceiver();
             
             gameCycle.AddListener(this);
-            
+        }
+
+        public void SetupStats(CharacterStats characterStats)
+        {
             characterModel = new CharacterModel(
-                moveComponent.transform.position,
-                0f,
+                characterStats.position,
+                characterStats.rotationZ,
                 0f,
                 config.countOfLaserShots,
                 0f);
+        }
+        
+        public void ResetCharacterModel()
+        {
+            characterModel.SetPosition(Vector3.zero);
+            characterModel.SetRotation(0f);
+            characterModel.SetSpeed(0f);
+            characterModel.SetLaserCount(config.countOfLaserShots);
+            characterModel.SetTimeToRecoveryLaser(0f);
+            characterModel.SetIsDead(true);
         }
 
         public void OnStartGame()
@@ -58,16 +69,6 @@ namespace Character
             inputReceiver.InputAdditionalShotValue += attackComponent.AttackByLaserShot;
         }
         
-        public void ResetCharacterModel()
-        {
-            characterModel.SetPosition(Vector3.zero);
-            characterModel.SetRotation(0f);
-            characterModel.SetSpeed(0f);
-            characterModel.SetLaserCount(config.countOfLaserShots);
-            characterModel.SetTimeToRecoveryLaser(0f);
-            characterModel.SetIsDead(true);
-        }
-
         public void OnFinishGame()
         {
             inputReceiver.InputMoveValue -= moveComponent.MoveForward;

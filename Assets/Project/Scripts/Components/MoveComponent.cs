@@ -39,6 +39,12 @@ namespace Components
             rb2d = GetComponent<Rigidbody2D>();
         }
 
+        public void SetInitialPositionAndRotation(Vector3 position, float rotationZ)
+        {
+            transform.position = position;
+            transform.rotation = Quaternion.Euler(0f, 0f, rotationZ);
+        }
+
         public void MoveForward()
         {
             rb2d.linearVelocity += (Vector2)transform.up * (Time.fixedDeltaTime * moveСoefficient);

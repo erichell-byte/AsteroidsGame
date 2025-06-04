@@ -1,4 +1,3 @@
-
 using System;
 using Character;
 using UniRx;
@@ -10,6 +9,7 @@ namespace Systems
     {
         private GameCycle gameCycle;
         private SpaceshipController spaceship;
+        
         private CompositeDisposable disposables = new ();
         
         [Inject]
@@ -25,18 +25,13 @@ namespace Systems
         {
             spaceship.CharacterModel.IsDead
                 .Where(isDead => isDead == false)
-                .Subscribe(_ => StartGame())
+                .Subscribe(_ => gameCycle.StartGame())
                 .AddTo(disposables);
             
             spaceship.CharacterModel.IsDead
                 .Where(isDead => isDead == true)
                 .Subscribe(_ => gameCycle.FinishGame())
                 .AddTo(disposables);
-        }
-
-        private void StartGame()
-        {
-            gameCycle.StartGame();
         }
         
         public void Dispose()
