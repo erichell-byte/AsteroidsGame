@@ -14,7 +14,7 @@ namespace Components
         private float moveСoefficient;
         private float rotateCoefficient;
         private float maxVelocityMagnitude;
-        private CharacterModel characterModel;
+        private SpaceshipModel spaceshipModel;
 
         [Inject]
         private void Construct(
@@ -26,12 +26,12 @@ namespace Components
         }
         
         public void Initialize(
-            CharacterModel characterModel)
+            SpaceshipModel spaceshipModel)
         {
             moveСoefficient = config.moveCoefficient;
             rotateCoefficient = config.rotateCoefficient;
             maxVelocityMagnitude = config.maxVelocityMagnitude;
-            this.characterModel = characterModel;
+            this.spaceshipModel = spaceshipModel;
         }
 
         private void Awake()
@@ -49,13 +49,13 @@ namespace Components
         {
             rb2d.linearVelocity += (Vector2)transform.up * (Time.fixedDeltaTime * moveСoefficient);
             rb2d.linearVelocity = Vector2.ClampMagnitude(rb2d.linearVelocity, maxVelocityMagnitude);
-            characterModel?.SetSpeed(rb2d.linearVelocity.magnitude);
+            spaceshipModel?.SetSpeed(rb2d.linearVelocity.magnitude);
         }
 
         public void Rotate(int clockwiseDirection)
         {
             transform.Rotate(Vector3.back, clockwiseDirection * rotateCoefficient * Time.deltaTime);
-            characterModel?.SetRotation(transform.eulerAngles.z);
+            spaceshipModel?.SetRotation(transform.eulerAngles.z);
         }
 
         public void OnFinishGame()
@@ -69,7 +69,7 @@ namespace Components
         {
             if (rb2d.linearVelocity.magnitude > 0)
             {
-                characterModel?.SetPosition(transform.position);
+                spaceshipModel?.SetPosition(transform.position);
             }
         }
     }

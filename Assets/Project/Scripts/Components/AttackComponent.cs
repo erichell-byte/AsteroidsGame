@@ -20,6 +20,9 @@ namespace Components
         private CompositeDisposable disposables = new ();
         private BulletPoolFacade bulletPool;
         private GameConfiguration config;
+        
+        public MainWeapon MainWeapon => mainWeapon;
+        public LaserWeapon LaserWeapon => laserWeapon;
 
         [Inject]
         private void Construct(
@@ -36,7 +39,7 @@ namespace Components
         }
 
         public void Initialize(
-            CharacterModel characterModel)
+            SpaceshipModel spaceshipModel)
         {
             mainWeapon.Initialize(
                 shotPoint,
@@ -49,8 +52,8 @@ namespace Components
                 laserLayerMask,
                 config.countOfLaserShots);
 
-            laserWeapon.RemainingShots.Subscribe(characterModel.SetLaserCount).AddTo(disposables);
-            laserWeapon.TimeToRecovery.Subscribe(characterModel.SetTimeToRecoveryLaser).AddTo(disposables);
+            laserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(disposables);
+            laserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(disposables);
         }
 
         public void AttackByMainShot()

@@ -1,7 +1,6 @@
 using Components;
 using Config;
 using Input;
-using SaveLoad;
 using Systems;
 using UnityEngine;
 using Zenject;
@@ -16,51 +15,44 @@ namespace Character
         private GameConfiguration config;
         private MoveComponent moveComponent;
         private AttackComponent attackComponent;
+        private SpaceshipModel spaceshipModel;
         
         private KeyboardInputReceiver inputReceiver;
-        private CharacterModel characterModel;
         
-        public CharacterModel CharacterModel => characterModel;
+        public SpaceshipModel SpaceshipModel => spaceshipModel;
 
         [Inject]
         private void Construct(
             GameConfiguration config,
             MoveComponent moveComponent,
             AttackComponent attackComponent,
-            GameCycle gameCycle)
+            GameCycle gameCycle,
+            SpaceshipModel spaceshipModel)
         {
             this.config = config;
             this.moveComponent = moveComponent;
             this.attackComponent = attackComponent;
+            this.spaceshipModel = spaceshipModel;
             inputReceiver = new KeyboardInputReceiver();
             
             gameCycle.AddListener(this);
-        }
-
-        public void SetupStats(CharacterStats characterStats)
-        {
-            characterModel = new CharacterModel(
-                characterStats.position,
-                characterStats.rotationZ,
-                0f,
-                config.countOfLaserShots,
-                0f);
+            moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
         }
         
         public void ResetCharacterModel()
         {
-            characterModel.SetPosition(Vector3.zero);
-            characterModel.SetRotation(0f);
-            characterModel.SetSpeed(0f);
-            characterModel.SetLaserCount(config.countOfLaserShots);
-            characterModel.SetTimeToRecoveryLaser(0f);
-            characterModel.SetIsDead(true);
+            spaceshipModel.SetPosition(Vector3.zero);
+            spaceshipModel.SetRotation(0f);
+            spaceshipModel.SetSpeed(0f);
+            spaceshipModel.SetLaserCount(config.countOfLaserShots);
+            spaceshipModel.SetTimeToRecoveryLaser(0f);
+            spaceshipModel.SetIsDead(true);
         }
 
         public void OnStartGame()
         {
-            moveComponent.Initialize(characterModel);
-            attackComponent.Initialize(characterModel);
+            moveComponent.Initialize(spaceshipModel);
+            attackComponent.Initialize(spaceshipModel);
 
             inputReceiver.InputMoveValue += moveComponent.MoveForward;
             inputReceiver.InputRotationValue += moveComponent.Rotate;

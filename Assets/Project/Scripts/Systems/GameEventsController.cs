@@ -23,12 +23,12 @@ namespace Systems
         
         public void Initialize()
         {
-            spaceship.CharacterModel.IsDead
+            spaceship.SpaceshipModel.IsDead
                 .Where(isDead => isDead == false)
                 .Subscribe(_ => gameCycle.StartGame())
                 .AddTo(disposables);
             
-            spaceship.CharacterModel.IsDead
+            spaceship.SpaceshipModel.IsDead
                 .Where(isDead => isDead == true)
                 .Subscribe(_ => gameCycle.FinishGame())
                 .AddTo(disposables);

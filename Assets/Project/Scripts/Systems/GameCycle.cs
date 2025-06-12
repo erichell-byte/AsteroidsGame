@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using SaveLoad;
 using UnityEngine;
+using Zenject;
 
 namespace Systems
 {
@@ -13,10 +15,21 @@ namespace Systems
 
     public class GameCycle
     {
+        private SaveLoadManager saveLoadManager;
+        
         public GameState State;
 
         private List<IGameListener> gameListeners = new();
 
+        
+        [Inject]
+        private void Construct(
+            SaveLoadManager saveLoadManager)
+        {
+            this.saveLoadManager = saveLoadManager;
+            State = GameState.Off;
+        }
+        
         public void AddListener(IGameListener listener)
         {
             gameListeners.Add(listener);
@@ -43,6 +56,8 @@ namespace Systems
         
         public void FinishGame()
         {
+            saveLoadManager.SaveGame();
+            
             if (State == GameState.Off || State == GameState.Finished)
             {
                 Debug.Log("Game is already finished!");

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Character
 {
-    public class CharacterModel
+    public class SpaceshipModel
     {
         public ReactiveProperty<Vector2> Position { get; } = new();
         public ReactiveProperty<float> Rotation { get; } = new();
@@ -11,20 +11,6 @@ namespace Character
         public ReactiveProperty<int> LaserCount { get; } = new();
         public ReactiveProperty<float> TimeToRecoveryLaser { get; } = new();
         public ReactiveProperty<bool> IsDead { get; } = new();
-
-        public CharacterModel(Vector2 position,
-            float rotation,
-            float speed,
-            int laserCount,
-            float timeToRecoveryLaser)
-        {
-            Position.Value = position;
-            Rotation.Value = rotation;
-            Speed.Value = speed;
-            LaserCount.Value = laserCount;
-            TimeToRecoveryLaser.Value = timeToRecoveryLaser;
-            IsDead.Value = false;
-        }
         
         public void SetPosition(Vector2 pos) => Position.Value = pos;
         public void SetRotation(float rot) => Rotation.Value = rot;

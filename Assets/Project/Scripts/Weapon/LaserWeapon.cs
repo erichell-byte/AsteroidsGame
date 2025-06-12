@@ -20,6 +20,8 @@ namespace Weapon
 
         public ReactiveProperty<int> RemainingShots { get; } = new();
         public ReactiveProperty<float> TimeToRecovery { get; } = new();
+        public Action OnLaserShot;
+            
         [Inject]
         private void Construct(
             TimersController timersController)
@@ -50,6 +52,7 @@ namespace Weapon
             isActive = true;
             laser.SetActive(true);
             timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
+            OnLaserShot?.Invoke();
         }
 
         public void Tick()

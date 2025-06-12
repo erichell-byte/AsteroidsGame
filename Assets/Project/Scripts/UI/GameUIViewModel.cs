@@ -5,23 +5,23 @@ namespace Character
 {
     public class GameUIViewModel
     {
-        private CharacterModel characterModel;
-        public IReadOnlyReactiveProperty<Vector2> Coordinate => characterModel.Position;
-        public IReadOnlyReactiveProperty<float> RotationAngle => characterModel.Rotation;
-        public IReadOnlyReactiveProperty<float> CurrentSpeed => characterModel.Speed;
-        public IReadOnlyReactiveProperty<int> LaserCount => characterModel.LaserCount;
-        public IReadOnlyReactiveProperty<float> TimeToResetLaser => characterModel.TimeToRecoveryLaser;
-        public IReadOnlyReactiveProperty<bool> GameStartedButtonEnabled => characterModel.IsDead;
+        private SpaceshipModel spaceshipModel;
+        public IReadOnlyReactiveProperty<Vector2> Coordinate => spaceshipModel.Position;
+        public IReadOnlyReactiveProperty<float> RotationAngle => spaceshipModel.Rotation;
+        public IReadOnlyReactiveProperty<float> CurrentSpeed => spaceshipModel.Speed;
+        public IReadOnlyReactiveProperty<int> LaserCount => spaceshipModel.LaserCount;
+        public IReadOnlyReactiveProperty<float> TimeToResetLaser => spaceshipModel.TimeToRecoveryLaser;
+        public IReadOnlyReactiveProperty<bool> GameStartedButtonEnabled => spaceshipModel.IsDead;
         public ReactiveCommand<Unit> StartGameButtonClickedCommand { get; } = new ();
 
-        public GameUIViewModel(CharacterModel characterModel)
+        public GameUIViewModel(SpaceshipModel spaceshipModel)
         {
-            this.characterModel = characterModel;
+            this.spaceshipModel = spaceshipModel;
         }
 
         public void StartGameButtonClicked()
         {
-            characterModel.SetIsDead(false);
+            spaceshipModel.SetIsDead(false);
             StartGameButtonClickedCommand.Execute(Unit.Default);
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using Pools;
 using UnityEngine;
 using Utils;
@@ -10,6 +11,8 @@ namespace Weapon
         private TimersController timersController;
         private float bulletSpeed;
         private BulletPoolFacade bulletPool;
+
+        public Action OnShot;
 
         [Inject]
         private void Construct(TimersController timersController)
@@ -37,6 +40,7 @@ namespace Weapon
 
         private void Shot()
         {
+            OnShot?.Invoke();
             var bullet = bulletPool.Get();
             bullet.OnHit += OnHitBullet;
             bullet.transform.position = shotPoint.position;

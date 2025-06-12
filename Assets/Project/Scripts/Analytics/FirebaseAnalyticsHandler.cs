@@ -8,7 +8,7 @@ namespace Analytics
                 .LogEvent("StartGame");
         }
 
-        public void EndGame(int shotCount, int laserCount, int asteroidsDestroyedCount, int ufoDestroedCount)
+        public void FinishGame(int shotCount, int laserCount, int asteroidsDestroyedCount, int ufoDestroedCount)
         {
             Firebase.Analytics.FirebaseAnalytics.LogEvent(
                 "EndGame",

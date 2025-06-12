@@ -8,7 +8,7 @@ namespace UI
     {
         private GameUIView gameUIView;
 
-        private CharacterModel characterModel;
+        private SpaceshipModel spaceshipModel;
         private GameUIViewModel viewModel;
         
         [Inject]
@@ -17,7 +17,7 @@ namespace UI
             GameUIView gameUIView,
             GameCycle gameCycle)
         {
-            characterModel = shipController.CharacterModel;
+            spaceshipModel = shipController.SpaceshipModel;
             this.gameUIView = gameUIView;
             
             gameCycle.AddListener(this);
@@ -26,7 +26,7 @@ namespace UI
         public void OnStartGame()
         {
             gameUIView.Dispose();
-            viewModel = new GameUIViewModel(characterModel);
+            viewModel = new GameUIViewModel(spaceshipModel);
             gameUIView.Initialize(viewModel);
         }
     }

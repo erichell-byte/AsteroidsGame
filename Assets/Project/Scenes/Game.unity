@@ -513,12 +513,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476c6a119057544b28bc714860512be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameConfiguration: {fileID: 11400000, guid: 22f0e7657c6224771b8c946f6b3370f6, type: 2}
   attackComponent: {fileID: 1074242085}
   moveComponent: {fileID: 1074242079}
   collisionComponent: {fileID: 1074242086}
   poolParent: {fileID: 1645708912}
   gameUIView: {fileID: 1528456291}
+  enemiesManager: {fileID: 2026412837}
 --- !u!114 &785692755
 MonoBehaviour:
   m_ObjectHideFlags: 0

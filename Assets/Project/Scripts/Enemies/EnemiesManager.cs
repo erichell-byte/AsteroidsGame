@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Character;
 using Components;
@@ -6,6 +7,7 @@ using Systems;
 using UnityEngine;
 using Utils;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Enemies
 {
@@ -19,8 +21,9 @@ namespace Enemies
         private List<Vector3> spawnPoints = new();
         private EnemiesFactory enemiesFactory;
         private List<Enemy> activeEnemies = new();
-        
 
+        public Action<EnemyType> OnEnemyDeath;
+            
         [Inject]
         private void Construct(
             TimersController timersController,
@@ -103,7 +106,9 @@ namespace Enemies
         {
             activeEnemies.Remove(enemy);
             enemy.OnDeath -= OnDeathEnemy;
-
+            
+            OnEnemyDeath?.Invoke(enemy.GetEnemyType());
+            
             if (enemy.GetEnemyType() == EnemyType.Asteroid)
             {
                 SpawnSmallAsteroids(enemy.transform.position);
