@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AssetsLoader;
 using Character;
 using Components;
 using Config;
@@ -21,6 +22,7 @@ namespace Enemies
         private List<Vector3> spawnPoints = new();
         private EnemiesFactory enemiesFactory;
         private List<Enemy> activeEnemies = new();
+        private IAssetLoader<Enemy> loader;
 
         public Action<EnemyType> OnEnemyDeath;
             
@@ -30,12 +32,14 @@ namespace Enemies
             GameConfiguration config,
             Transform poolParent,
             MoveComponent moveComponent,
-            GameCycle gameCycle)
+            GameCycle gameCycle,
+            IAssetLoader<Enemy> loader)
         {
             this.config = config;
             this.timersController = timersController;
             this.poolParent = poolParent;
             this.moveComponent = moveComponent;
+            this.loader = loader;
             gameCycle.AddListener(this);
         }
 
@@ -46,7 +50,8 @@ namespace Enemies
 
             enemiesFactory = new EnemiesFactory(
                 poolParent,
-                config);
+                config,
+                loader);
         }
 
         private void CreateSpawnPoints()

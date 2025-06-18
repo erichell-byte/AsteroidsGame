@@ -20,12 +20,12 @@ MonoBehaviour:
   timeToRecoveryLaser: 3
   timeToDurationLaser: 0.5
   countOfLaserShots: 3
-  bulletPrefab: {fileID: 8340786460595573972, guid: c4340b47122e44efe9b51ea351165b0a, type: 3}
+  bulletId: Bullet
   asteroidSpawnFrequency: 5
   ufoSpawnFrequency: 14
-  asteroidPrefab: {fileID: 5072669224712007222, guid: 7cc34207e03574af6b70b86bb118af96, type: 3}
-  asteroidSmallPrefab: {fileID: 5072669224712007222, guid: 4e631c415ab5c44489f886540d6236e6, type: 3}
-  ufoPrefab: {fileID: 4294507979162160551, guid: 5baedea8325f34a69bba707c2abd5be0, type: 3}
+  asteroidId: Asteroid
+  asteroidSmallId: AsteroidSmall
+  ufoId: UFO
   enemiesConfigs:
   - type: 0
     speed: 1

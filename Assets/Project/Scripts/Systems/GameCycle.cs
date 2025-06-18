@@ -13,20 +13,21 @@ namespace Systems
         Finished = 3,
     }
 
-    public class GameCycle
+    public class GameCycle : IInitializable
     {
         private SaveLoadManager saveLoadManager;
-        
         public GameState State;
 
         private List<IGameListener> gameListeners = new();
 
-        
         [Inject]
-        private void Construct(
-            SaveLoadManager saveLoadManager)
+        private void Construct(SaveLoadManager saveLoadManager)
         {
             this.saveLoadManager = saveLoadManager;
+            State = GameState.Off;
+        }
+        public void Initialize()
+        {
             State = GameState.Off;
         }
         
@@ -74,5 +75,7 @@ namespace Systems
                 }
             }
         }
+
+        
     }
 }

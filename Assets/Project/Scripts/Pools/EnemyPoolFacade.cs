@@ -1,3 +1,4 @@
+using AssetsLoader;
 using Enemies;
 using UnityEngine;
 
@@ -5,30 +6,21 @@ namespace Pools
 {
     public class EnemyPoolFacade : AbstractPool<Enemy>
     {
-        public EnemyPoolFacade(Enemy prefab, Transform parent)
+        public EnemyPoolFacade(IAssetLoader<Enemy> loader, string assetId, Transform parent = null)
+            : base(loader, assetId, parent)
         {
-            this.prefab = prefab;
-            this.parent = parent;
         }
 
-        protected override void ActionOnGet(Enemy obj)
+        protected override void OnGet(Enemy obj)
         {
             obj.gameObject.SetActive(true);
             obj.GetComponent<Collider2D>().enabled = true;
-            base.ActionOnGet(obj);
         }
 
-        protected override void ActionOnRelease(Enemy obj)
+        protected override void OnRelease(Enemy obj)
         {
             obj.GetComponent<Collider2D>().enabled = false;
             obj.gameObject.SetActive(false);
-            base.ActionOnRelease(obj);
-        }
-
-        protected override void ActionOnDestroy(Enemy obj)
-        {
-            Object.Destroy(obj.gameObject);
-            base.ActionOnDestroy(obj);
         }
     }
 }

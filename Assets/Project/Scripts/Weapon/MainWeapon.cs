@@ -41,7 +41,7 @@ namespace Weapon
         private void Shot()
         {
             OnShot?.Invoke();
-            var bullet = bulletPool.Get();
+            var bullet = bulletPool.GetAsync().Result;
             bullet.OnHit += OnHitBullet;
             bullet.transform.position = shotPoint.position;
             bullet.transform.rotation = shotPoint.rotation;

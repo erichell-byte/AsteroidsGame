@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AssetsLoader;
 using Config;
 using Pools;
 using UnityEngine;
@@ -23,12 +24,13 @@ namespace Enemies
 
         public EnemiesFactory(
             Transform poolParent,
-            GameConfiguration config)
+            GameConfiguration config,
+            IAssetLoader<Enemy> loader)
         {
             this.config = config;
-            asteroidPoolFacade = new EnemyPoolFacade(config.asteroidPrefab, poolParent);
-            asteroidSmallPoolFacade = new EnemyPoolFacade(config.asteroidSmallPrefab, poolParent);
-            ufoPoolFacade = new EnemyPoolFacade(config.ufoPrefab, poolParent);
+            asteroidPoolFacade = new EnemyPoolFacade(loader,config.asteroidId, poolParent);
+            asteroidSmallPoolFacade = new EnemyPoolFacade(loader, config.asteroidSmallId, poolParent);
+            ufoPoolFacade = new EnemyPoolFacade(loader, config.ufoId, poolParent);
 
             BuildEnemyConfigMap();
         }
@@ -56,19 +58,19 @@ namespace Enemies
             {
                 case EnemyType.AsteroidSmall:
                 {
-                    var asteroidSmall = (AsteroidEnemy)asteroidSmallPoolFacade.Get();
+                    var asteroidSmall = (AsteroidEnemy)asteroidSmallPoolFacade.GetAsync().Result;
                     asteroidSmall.Initialize(GetEnemyConfig(EnemyType.AsteroidSmall));
                     return asteroidSmall;
                 }
                 case EnemyType.Asteroid:
                 {
-                    var asteroid = (AsteroidEnemy)asteroidPoolFacade.Get();
+                    var asteroid = (AsteroidEnemy)asteroidPoolFacade.GetAsync().Result;
                     asteroid.Initialize(GetEnemyConfig(EnemyType.Asteroid));
                     return asteroid;
                 }
                 case EnemyType.UFO:
                 {
-                    var ufo = (UFOEnemy)ufoPoolFacade.Get();
+                    var ufo = (UFOEnemy)ufoPoolFacade.GetAsync().Result;
                     ufo.Initialize(GetEnemyConfig(EnemyType.UFO));
                     return ufo;
                 }

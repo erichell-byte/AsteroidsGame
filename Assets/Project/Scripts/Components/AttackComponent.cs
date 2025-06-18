@@ -1,3 +1,4 @@
+using AssetsLoader;
 using Character;
 using Config;
 using Pools;
@@ -28,14 +29,15 @@ namespace Components
         private void Construct(
             DiContainer container,
             GameConfiguration config,
-            Transform poolParent)
+            Transform poolParent,
+            IAssetLoader<Bullet> loader)
         {
             this.container = container;
             this.config = config;
             mainWeapon = container.Instantiate<MainWeapon>();
             laserWeapon = container.Instantiate<LaserWeapon>();
             
-            bulletPool = new BulletPoolFacade(config.bulletPrefab, poolParent);
+            bulletPool = new BulletPoolFacade(loader, config.bulletId, poolParent);
         }
 
         public void Initialize(

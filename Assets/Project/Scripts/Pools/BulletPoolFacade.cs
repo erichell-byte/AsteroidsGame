@@ -1,3 +1,4 @@
+using AssetsLoader;
 using UnityEngine;
 using Weapon;
 
@@ -5,30 +6,19 @@ namespace Pools
 {
     public class BulletPoolFacade : AbstractPool<Bullet>
     {
-        public BulletPoolFacade(Bullet prefab, Transform parent)
-        {
-            this.prefab = prefab;
-            this.parent = parent;
-        }
+        public BulletPoolFacade(IAssetLoader<Bullet> loader, string assetId, Transform parent = null)
+            : base(loader, assetId, parent) { }
 
-        protected override void ActionOnGet(Bullet obj)
+        protected override void OnGet(Bullet obj)
         {
-            base.ActionOnGet(obj);
-            obj.GetComponent<Collider2D>().enabled = true;
             obj.gameObject.SetActive(true);
+            obj.GetComponent<Collider2D>().enabled = true;
         }
 
-        protected override void ActionOnRelease(Bullet obj)
+        protected override void OnRelease(Bullet obj)
         {
-            base.ActionOnRelease(obj);
             obj.gameObject.SetActive(false);
             obj.GetComponent<Collider2D>().enabled = false;
-        }
-
-        protected override void ActionOnDestroy(Bullet obj)
-        {
-            Object.Destroy(obj.gameObject);
-            base.ActionOnDestroy(obj);
         }
     }
 }

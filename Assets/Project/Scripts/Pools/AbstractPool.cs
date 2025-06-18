@@ -1,31 +1,76 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AssetsLoader;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace Pools
 {
     public class AbstractPool<T> where T : Object
     {
-        private readonly ObjectPool<T> pool;
+        private readonly Stack<T> inactive;
+        private readonly string assetId;
+        private readonly int maxSize;
+        private readonly IAssetLoader<T> loader;
 
-        protected T prefab;
         protected Transform parent;
+        
 
-        public AbstractPool()
+        protected AbstractPool(IAssetLoader<T> loader, string assetId, Transform parent, int maxSize = 100)
         {
-            pool = new ObjectPool<T>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, true, 10, 30);
+            this.assetId = assetId;
+            this.parent = parent;
+            this.maxSize = maxSize;
+            this.loader = loader;
+            inactive = new Stack<T>(10);
         }
 
-        protected T CreateFunc()
+        private async Task<T> CreateFuncAsync()
         {
-            return Object.Instantiate(prefab, parent);
+            T asset = await loader.LoadAsset(assetId);
+            if (asset is Component component && parent != null)
+                component.transform.SetParent(parent);
+            else if (asset is GameObject go && parent != null)
+                go.transform.SetParent(parent);
+            return asset;
         }
 
-        protected virtual void ActionOnGet(T obj) { }
-        protected virtual void ActionOnRelease(T obj) { }
-        protected virtual void ActionOnDestroy(T obj) { }
+        protected virtual void OnGet(T obj)
+        {
+        }
 
-        public T Get() => pool.Get();
-        public void Release(T obj) => pool.Release(obj);
-        public void Clear() => pool.Clear();
+        protected virtual void OnRelease(T obj)
+        {
+        }
+
+        protected virtual void OnDestroy(T obj) => loader.Unload(obj);
+
+        public async Task<T> GetAsync()
+        {
+            T obj;
+            if (inactive.Count > 0)
+                obj = inactive.Pop();
+            else
+                obj = await CreateFuncAsync();
+            OnGet(obj);
+            return obj;
+        }
+
+        public void Release(T obj)
+        {
+            if (obj == null) return;
+            if (inactive.Count >= maxSize)
+                OnDestroy(obj);
+            else
+            {
+                OnRelease(obj);
+                inactive.Push(obj);
+            }
+        }
+
+        public void Clear()
+        {
+            while (inactive.Count > 0)
+                OnDestroy(inactive.Pop());
+        }
     }
 }

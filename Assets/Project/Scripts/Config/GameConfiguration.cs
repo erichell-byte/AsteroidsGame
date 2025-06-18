@@ -20,15 +20,15 @@ namespace Config
         public float timeToRecoveryLaser;
         public float timeToDurationLaser;
         public int countOfLaserShots;
-        public Bullet bulletPrefab;
+        public string bulletId;
 
         [Space(20)]
         [Header("Enemies Configuration")]
         public float asteroidSpawnFrequency;
         public float ufoSpawnFrequency;
-        public AsteroidEnemy asteroidPrefab;
-        public AsteroidEnemy asteroidSmallPrefab;
-        public UFOEnemy ufoPrefab;
+        public string asteroidId;
+        public string asteroidSmallId;
+        public string ufoId;
         public List<EnemyConfig> enemiesConfigs;
     }
 }

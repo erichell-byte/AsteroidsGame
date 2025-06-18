@@ -1,12 +1,14 @@
 using Components;
 using GameSystem;
 using Analytics;
+using AssetsLoader;
 using Character;
 using Enemies;
 using Systems;
 using UI;
 using UnityEngine;
 using Utils;
+using Weapon;
 using Zenject;
 
 public class GameInstaller : MonoInstaller
@@ -20,7 +22,6 @@ public class GameInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
         Container.BindInterfacesAndSelfTo<GameEventsController>().AsSingle();
         Container.Bind<CollisionComponent>().FromInstance(collisionComponent);
         Container.BindFactory<Timer, Timer.Factory>().FromNew();
@@ -34,6 +35,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
         Container.Bind<EnemiesManager>().FromInstance(enemiesManager).AsSingle();
         Container.BindInterfacesAndSelfTo<AnalyticsMediator>().AsSingle();
+        Container.Bind<IAssetLoader<Enemy>>().To<LocalAssetLoader<Enemy>>().AsSingle().NonLazy();
+        Container.Bind<IAssetLoader<Bullet>>().To<LocalAssetLoader<Bullet>>().AsSingle().NonLazy();
         
     }
 }

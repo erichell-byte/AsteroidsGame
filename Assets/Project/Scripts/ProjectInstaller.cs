@@ -3,6 +3,7 @@ using Character;
 using Config;
 using SaveLoad;
 using SaveLoad.GameRepository;
+using Systems;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +15,7 @@ namespace Project.Scripts
         
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
             Container.Bind<SpaceshipModel>().AsSingle();
             Container.Bind<IGameRepository>().To<PlayerPrefsGameRepository>().AsSingle();
             Container.Bind<ISaveLoader>().To<SpaceshipSaveLoader>().AsSingle();
