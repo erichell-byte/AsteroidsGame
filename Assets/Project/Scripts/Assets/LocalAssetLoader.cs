@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -7,10 +7,13 @@ namespace AssetsLoader
 {
     public class LocalAssetLoader<T> : IAssetLoader<T>
     {
-        public async Task<T> LoadAsset(string assetId)
+        private T cachedAsset;
+        
+        public async UniTask<T> InstantiateAsset(AssetReferenceGameObject assetId)
         {
             var handle = Addressables.InstantiateAsync(assetId);
-            GameObject go = await handle.Task;
+            GameObject go = await handle.Task.AsUniTask();
+            go.SetActive(false);
             if (go.TryGetComponent<T>(out var component))
                 return component;
             if (go is T obj)
@@ -18,7 +21,8 @@ namespace AssetsLoader
             Addressables.ReleaseInstance(go);
             throw new NullReferenceException($"Asset '{assetId}' missing component {typeof(T)}");
         }
-
+        
+        
         public void Unload(T obj)
         {
             if (obj is Component comp)

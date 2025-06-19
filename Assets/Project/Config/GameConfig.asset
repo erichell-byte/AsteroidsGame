@@ -20,12 +20,32 @@ MonoBehaviour:
   timeToRecoveryLaser: 3
   timeToDurationLaser: 0.5
   countOfLaserShots: 3
-  bulletId: Bullet
+  bulletId:
+    m_AssetGUID: c4340b47122e44efe9b51ea351165b0a
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   asteroidSpawnFrequency: 5
   ufoSpawnFrequency: 14
-  asteroidId: Asteroid
-  asteroidSmallId: AsteroidSmall
-  ufoId: UFO
+  asteroidId:
+    m_AssetGUID: 7cc34207e03574af6b70b86bb118af96
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  asteroidSmallId:
+    m_AssetGUID: 4e631c415ab5c44489f886540d6236e6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  ufoId:
+    m_AssetGUID: 5baedea8325f34a69bba707c2abd5be0
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   enemiesConfigs:
   - type: 0
     speed: 1

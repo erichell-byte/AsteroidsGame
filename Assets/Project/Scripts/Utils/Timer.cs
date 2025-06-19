@@ -43,10 +43,12 @@ namespace GameSystem
             {
                 remainingTime -= Time.deltaTime;
                 RemainingTimeChanged?.Invoke(remainingTime);
-            }
-            else
-            {
-                TimerIsExpired?.Invoke();
+
+                if (remainingTime <= 0f)
+                {
+                    remainingTime = 0f;
+                    TimerIsExpired?.Invoke();
+                }
             }
         }
     }

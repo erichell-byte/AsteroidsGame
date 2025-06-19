@@ -38,10 +38,11 @@ namespace Weapon
             timersController.PlayMainWeaponTimer();
         }
 
-        private void Shot()
+        private async void Shot()
         {
             OnShot?.Invoke();
-            var bullet = bulletPool.GetAsync().Result;
+            
+            var bullet = await bulletPool.GetAsync();
             bullet.OnHit += OnHitBullet;
             bullet.transform.position = shotPoint.position;
             bullet.transform.rotation = shotPoint.rotation;

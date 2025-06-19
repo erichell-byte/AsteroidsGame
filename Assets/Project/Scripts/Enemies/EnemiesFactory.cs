@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AssetsLoader;
 using Config;
+using Cysharp.Threading.Tasks;
 using Pools;
 using UnityEngine;
 
@@ -52,25 +53,28 @@ namespace Enemies
             throw new ArgumentException($"Unknown enemy type: {enemyType}");
         }
 
-        public Enemy CreateEnemy(EnemyType enemyType)
+        public async UniTask<Enemy> CreateEnemy(EnemyType enemyType)
         {
             switch (enemyType)
             {
                 case EnemyType.AsteroidSmall:
                 {
-                    var asteroidSmall = (AsteroidEnemy)asteroidSmallPoolFacade.GetAsync().Result;
+                    var enemy = await asteroidSmallPoolFacade.GetAsync();
+                    var asteroidSmall = (AsteroidEnemy)enemy;
                     asteroidSmall.Initialize(GetEnemyConfig(EnemyType.AsteroidSmall));
                     return asteroidSmall;
                 }
                 case EnemyType.Asteroid:
                 {
-                    var asteroid = (AsteroidEnemy)asteroidPoolFacade.GetAsync().Result;
+                    var enemy = await asteroidPoolFacade.GetAsync();
+                    var asteroid = (AsteroidEnemy)enemy;
                     asteroid.Initialize(GetEnemyConfig(EnemyType.Asteroid));
                     return asteroid;
                 }
                 case EnemyType.UFO:
                 {
-                    var ufo = (UFOEnemy)ufoPoolFacade.GetAsync().Result;
+                    var enemy = await ufoPoolFacade.GetAsync();
+                    var ufo = (UFOEnemy)enemy;
                     ufo.Initialize(GetEnemyConfig(EnemyType.UFO));
                     return ufo;
                 }

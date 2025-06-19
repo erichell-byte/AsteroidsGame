@@ -1,12 +1,13 @@
 using AssetsLoader;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Weapon;
 
 namespace Pools
 {
     public class BulletPoolFacade : AbstractPool<Bullet>
     {
-        public BulletPoolFacade(IAssetLoader<Bullet> loader, string assetId, Transform parent = null)
+        public BulletPoolFacade(IAssetLoader<Bullet> loader, AssetReferenceGameObject assetId, Transform parent = null)
             : base(loader, assetId, parent) { }
 
         protected override void OnGet(Bullet obj)

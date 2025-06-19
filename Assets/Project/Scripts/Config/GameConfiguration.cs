@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Enemies;
 using UnityEngine;
-using Weapon;
+using UnityEngine.AddressableAssets;
 
 namespace Config
 {
@@ -20,15 +19,15 @@ namespace Config
         public float timeToRecoveryLaser;
         public float timeToDurationLaser;
         public int countOfLaserShots;
-        public string bulletId;
+        public AssetReferenceGameObject bulletId;
 
         [Space(20)]
         [Header("Enemies Configuration")]
         public float asteroidSpawnFrequency;
         public float ufoSpawnFrequency;
-        public string asteroidId;
-        public string asteroidSmallId;
-        public string ufoId;
+        public AssetReferenceGameObject asteroidId;
+        public AssetReferenceGameObject asteroidSmallId;
+        public AssetReferenceGameObject ufoId;
         public List<EnemyConfig> enemiesConfigs;
     }
 }

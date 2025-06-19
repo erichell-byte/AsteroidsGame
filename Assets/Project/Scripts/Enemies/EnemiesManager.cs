@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AssetsLoader;
-using Character;
 using Components;
 using Config;
 using Systems;
@@ -68,17 +67,17 @@ namespace Enemies
             spawnPoints.Add(new Vector3(0, -height - 2, 0));
         }
 
-        private void SpawnAsteroid()
+        private async void SpawnAsteroid()
         {
-            var asteroid = enemiesFactory.CreateEnemy(EnemyType.Asteroid) as AsteroidEnemy;
+            var asteroid = await enemiesFactory.CreateEnemy(EnemyType.Asteroid) as AsteroidEnemy;
             PrepareEnemy(asteroid);
 
             timersController.PlaySpawnAsteroid();
         }
 
-        private void SpawnUFO()
+        private async void SpawnUFO()
         {
-            var ufo = enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
+            var ufo = await enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
             ufo.SetTarget(moveComponent.transform);
             PrepareEnemy(ufo);
 
@@ -93,10 +92,10 @@ namespace Enemies
             enemy.OnDeath += OnDeathEnemy;
         }
 
-        private void SpawnSmallAsteroids(Vector3 position)
+        private async void SpawnSmallAsteroids(Vector3 position)
         {
-            var firstAsteroid = enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
-            var secondAsteroid = enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            var firstAsteroid = await enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            var secondAsteroid = await enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
             
             firstAsteroid.OnDeath += OnDeathEnemy;
             secondAsteroid.OnDeath += OnDeathEnemy;

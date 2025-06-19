@@ -1,10 +1,11 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 
 namespace AssetsLoader
 {
     public interface IAssetLoader<T>
     {
-        Task<T> LoadAsset(string assetId);
+        UniTask<T> InstantiateAsset(AssetReferenceGameObject assetId);
         void Unload(T obj);
     }
 }
