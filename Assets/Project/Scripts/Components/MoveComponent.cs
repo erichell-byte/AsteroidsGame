@@ -6,7 +6,10 @@ using Zenject;
 
 namespace Components
 {
-    public class MoveComponent : MonoBehaviour, IGameFinishListener, ITickable
+    public class MoveComponent : MonoBehaviour,
+        IGameFinishListener,
+        IGamePauseListener,
+        ITickable
     {
         private GameConfiguration config;
         
@@ -63,6 +66,11 @@ namespace Components
             rb2d.linearVelocity = Vector2.zero;
             transform.rotation = Quaternion.identity;
             transform.position = Vector3.zero;
+        }
+        
+        public void OnPauseGame()
+        {
+            rb2d.linearVelocity = Vector2.zero;
         }
 
         public void Tick()

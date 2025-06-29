@@ -19,7 +19,7 @@ namespace Components
         {
             if (other.GetComponent<Enemy>())
             {
-                spaceshipController.SpaceshipModel.SetIsDead(true);
+                spaceshipController.IsCollisionWithEnemy.Execute();
             }
         }
     }

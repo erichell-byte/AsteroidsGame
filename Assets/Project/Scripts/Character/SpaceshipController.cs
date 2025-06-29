@@ -2,6 +2,7 @@ using Components;
 using Config;
 using Input;
 using Systems;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -9,6 +10,8 @@ namespace Character
 {
     public class SpaceshipController :
         IGameStartListener,
+        IGamePauseListener,
+        IGameResumeListener,
         IGameFinishListener,
         ITickable
     {
@@ -16,9 +19,9 @@ namespace Character
         private MoveComponent moveComponent;
         private AttackComponent attackComponent;
         private SpaceshipModel spaceshipModel;
-        
         private KeyboardInputReceiver inputReceiver;
         
+        public ReactiveCommand IsCollisionWithEnemy { get; } = new();
         public SpaceshipModel SpaceshipModel => spaceshipModel;
 
         [Inject]
@@ -39,7 +42,7 @@ namespace Character
             moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
         }
         
-        public void ResetCharacterModel()
+        private void ResetCharacterModel()
         {
             spaceshipModel.SetPosition(Vector3.zero);
             spaceshipModel.SetRotation(0f);
@@ -76,6 +79,27 @@ namespace Character
         public void Tick()
         {
             inputReceiver.Tick();
+        }
+
+        public void OnPauseGame()
+        {
+            inputReceiver.InputMoveValue -= moveComponent.MoveForward;
+            inputReceiver.InputRotationValue -= moveComponent.Rotate;
+
+            inputReceiver.InputMainShotValue -= attackComponent.AttackByMainShot;
+            inputReceiver.InputAdditionalShotValue -= attackComponent.AttackByLaserShot;
+        }
+
+        public void OnResumeGame()
+        {
+            moveComponent.Initialize(spaceshipModel);
+            attackComponent.Initialize(spaceshipModel);
+
+            inputReceiver.InputMoveValue += moveComponent.MoveForward;
+            inputReceiver.InputRotationValue += moveComponent.Rotate;
+
+            inputReceiver.InputMainShotValue += attackComponent.AttackByMainShot;
+            inputReceiver.InputAdditionalShotValue += attackComponent.AttackByLaserShot;
         }
     }
 }

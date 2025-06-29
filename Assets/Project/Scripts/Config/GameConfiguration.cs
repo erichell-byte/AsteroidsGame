@@ -29,5 +29,11 @@ namespace Config
         public AssetReferenceGameObject asteroidSmallId;
         public AssetReferenceGameObject ufoId;
         public List<EnemyConfig> enemiesConfigs;
+        
+        [Space(20)]
+        [Header("Advertisement Configuration")]
+        public string androidGameId;
+        public string iOSGameId;
+        public bool adTestMode;
     }
 }

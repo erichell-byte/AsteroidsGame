@@ -1,24 +1,33 @@
 using Character;
+using GameAdvertisement;
+using Project.Scripts.UI;
 using Systems;
 using Zenject;
 
 namespace UI
 {
-    public class UIController : IGameStartListener
+    public class UIController : IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener
     {
-        private GameUIView gameUIView;
-
         private SpaceshipModel spaceshipModel;
-        private GameUIViewModel viewModel;
+        private IAdController adController;
+        private GameUIView gameUIView;
+        private AdView adView;
+        
+        private GameUIViewModel gameViewModel;
+        private AdViewModel adViewModel;
         
         [Inject]
         private void Construct(
             SpaceshipController shipController,
             GameUIView gameUIView,
-            GameCycle gameCycle)
+            AdView adView,
+            GameCycle gameCycle,
+            IAdController adController)
         {
             spaceshipModel = shipController.SpaceshipModel;
             this.gameUIView = gameUIView;
+            this.adView = adView;
+            this.adController = adController;
             
             gameCycle.AddListener(this);
         }
@@ -26,8 +35,29 @@ namespace UI
         public void OnStartGame()
         {
             gameUIView.Dispose();
-            viewModel = new GameUIViewModel(spaceshipModel);
-            gameUIView.Initialize(viewModel);
+            gameViewModel = new GameUIViewModel(spaceshipModel);
+            gameUIView.Initialize(gameViewModel);
+        }
+
+        public void OnPauseGame()
+        {
+            gameUIView.Hide();
+            adViewModel = new AdViewModel(adController);
+            adView.Initialize(adViewModel);
+            adView.Show();
+        }
+
+        public void OnResumeGame()
+        {
+            gameUIView.Show();
+            adView.Hide();
+            adView.Dispose();
+        }
+
+        public void OnFinishGame()
+        {
+            adView.Hide();
+            gameUIView.Show();
         }
     }
 }

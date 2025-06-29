@@ -29,6 +29,16 @@ public class GameUIView : MonoBehaviour
         startGameButton.OnClick += gameUIViewModel.StartGameButtonClicked;
     }
     
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+    
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+    
     public void SetCoordinate(Vector2 coordinate)
     {
         coordinateText.text = $"x: {coordinate.x:F2} , y:{coordinate.y:F2}";
@@ -58,7 +68,7 @@ public class GameUIView : MonoBehaviour
     {
         startGameButton.gameObject.SetActive(isActive);
     }
-
+    
     public void Dispose()
     {
         if (gameUIViewModel == null) return;

@@ -49,6 +49,22 @@ namespace Utils
             if (ufoSpawnTimer != null)
                 ufoSpawnTimer.TimerIsExpired -= spawnUFOAction;
         }
+        
+        public void PauseEnemyTimers()
+        {
+            if (asteroidSpawnTimer != null)
+                asteroidSpawnTimer.Pause();
+            if (ufoSpawnTimer != null)
+                ufoSpawnTimer.Pause();
+        }
+        
+        public void ResumeEnemyTimers()
+        {
+            if (asteroidSpawnTimer != null)
+                asteroidSpawnTimer.Resume();
+            if (ufoSpawnTimer != null)
+                ufoSpawnTimer.Resume();
+        }
 
         public void PlaySpawnAsteroid()
         {

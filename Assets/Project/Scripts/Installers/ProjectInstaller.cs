@@ -1,6 +1,7 @@
 using Analytics;
 using Character;
 using Config;
+using GameAdvertisement;
 using SaveLoad;
 using SaveLoad.GameRepository;
 using Systems;
@@ -22,6 +23,7 @@ namespace Project.Scripts
             Container.Bind<GameConfiguration>().FromInstance(gameConfiguration);
             Container.BindInterfacesAndSelfTo<SaveLoadManager>().AsSingle();
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UnityAdController>().AsSingle();
         }
     }
 }

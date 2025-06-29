@@ -8,10 +8,12 @@ namespace GameSystem
     {
         private float duration;
         private float remainingTime;
+        private bool isPaused;
 
         public Action TimerIsExpired;
         public Action<float> RemainingTimeChanged;
 
+        
         [Inject]
         private void Construct(TickableManager tickableManager)
         {
@@ -26,11 +28,22 @@ namespace GameSystem
         public void Play()
         {
             remainingTime = duration;
+            isPaused = false;
         }
 
         public bool IsPlaying()
         {
             return remainingTime > 0;
+        }
+
+        public void Pause()
+        {
+            isPaused = true;
+        }
+        
+        public void Resume()
+        {
+            isPaused = false;
         }
         
         public class Factory : PlaceholderFactory<Timer>
@@ -39,7 +52,7 @@ namespace GameSystem
 
         public void Tick()
         {
-            if (remainingTime > 0)
+            if (remainingTime > 0 && isPaused == false)
             {
                 remainingTime -= Time.deltaTime;
                 RemainingTimeChanged?.Invoke(remainingTime);

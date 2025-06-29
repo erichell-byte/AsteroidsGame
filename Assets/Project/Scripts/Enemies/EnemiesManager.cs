@@ -11,7 +11,11 @@ using Random = UnityEngine.Random;
 
 namespace Enemies
 {
-    public class EnemiesManager : MonoBehaviour, IGameStartListener, IGameFinishListener
+    public class EnemiesManager : MonoBehaviour,
+        IGameStartListener,
+        IGameFinishListener,
+        IGamePauseListener,
+        IGameResumeListener
     {
         private GameConfiguration config;
         private TimersController timersController;
@@ -78,7 +82,7 @@ namespace Enemies
         private async void SpawnUFO()
         {
             var ufo = await enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
-            ufo.SetTarget(moveComponent.transform);
+            ufo.InitMovement(moveComponent.transform);
             PrepareEnemy(ufo);
 
             timersController.PlaySpawnUFO();
@@ -133,6 +137,24 @@ namespace Enemies
 
             activeEnemies.Clear();
             enemiesFactory?.Clear();
+        }
+
+        public void OnPauseGame()
+        {
+            timersController.PauseEnemyTimers();
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].SetActive(false);
+            }
+        }
+
+        public void OnResumeGame()
+        {
+            timersController.ResumeEnemyTimers();
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].SetActive(true);
+            }
         }
     }
 }

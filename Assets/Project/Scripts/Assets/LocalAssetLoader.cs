@@ -22,7 +22,6 @@ namespace AssetsLoader
             throw new NullReferenceException($"Asset '{assetId}' missing component {typeof(T)}");
         }
         
-        
         public void Unload(T obj)
         {
             if (obj is Component comp)

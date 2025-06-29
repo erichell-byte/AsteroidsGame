@@ -8,25 +8,35 @@ namespace Enemies
     {
         private IMovementBehavior movementBehavior;
 
-        public void SetTarget(Transform target)
-        {
-            movementBehavior = new ChaseMovementBehavior(target);
-        }
-
         public override void Initialize(EnemyConfig config)
-        {
+        { 
             base.Initialize(config);
             if (movementBehavior != null)
             {
-                movementBehavior.Move(rb, config);
+                movementBehavior.Move(config);
             }
+        }
+        
+        public void InitMovement(Transform target)
+        {
+            movementBehavior = new ChaseMovementBehavior(target, rb);
+        }
+
+        public override void SetActive(bool isActive)
+        {
+            if (isActive)
+                movementBehavior.ResumeMove();
+            else
+                movementBehavior.StopMove();
+            
+            base.SetActive(isActive);
         }
 
         private void Update()
         {
             if (movementBehavior != null)
             {
-                movementBehavior.Move(rb, config);
+                movementBehavior.Move(config);
             }
         }
     }

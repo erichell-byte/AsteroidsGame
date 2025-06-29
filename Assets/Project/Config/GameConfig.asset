@@ -26,8 +26,8 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  asteroidSpawnFrequency: 5
-  ufoSpawnFrequency: 14
+  asteroidSpawnFrequency: 1
+  ufoSpawnFrequency: 5
   asteroidId:
     m_AssetGUID: 7cc34207e03574af6b70b86bb118af96
     m_SubObjectName: 
@@ -56,3 +56,6 @@ MonoBehaviour:
   - type: 2
     speed: 0.5
     speedModifier: 1
+  androidGameId: 5880362
+  iOSGameId: 5880363
+  adTestMode: 1

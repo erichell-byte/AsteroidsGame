@@ -9,6 +9,7 @@ namespace Enemies
         protected EnemyConfig config;
         protected Rigidbody2D rb;
         protected EnemyType enemyType;
+        protected bool isActive;
 
         public Action<Enemy> OnDeath;
 
@@ -27,6 +28,11 @@ namespace Enemies
         public EnemyType GetEnemyType()
         {
             return enemyType;
+        }
+        
+        public virtual void SetActive(bool isActive)
+        {
+            this.isActive = isActive;
         }
     }
 }

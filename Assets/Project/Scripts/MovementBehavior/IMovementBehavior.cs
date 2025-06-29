@@ -1,10 +1,15 @@
 using Config;
-using UnityEngine;
 
 namespace MovementBehavior
 {
     public interface IMovementBehavior
     {
-        void Move(Rigidbody2D rigidbody, EnemyConfig config);
+        public bool IsMove { get; set; }
+
+        void Move(EnemyConfig config);
+
+        void StopMove();
+
+        void ResumeMove();
     }
 }

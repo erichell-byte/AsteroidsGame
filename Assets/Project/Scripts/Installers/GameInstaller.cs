@@ -17,8 +17,11 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private CollisionComponent collisionComponent;
     [SerializeField] private Transform poolParent;
-    [SerializeField] private GameUIView gameUIView;
     [SerializeField] private EnemiesManager enemiesManager;
+    
+    [Header("UI")]
+    [SerializeField] private GameUIView gameUIView;
+    [SerializeField] private AdView adView;
     
     public override void InstallBindings()
     {
@@ -31,6 +34,7 @@ public class GameInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<SpaceshipController>().AsSingle();
         Container.Bind<Transform>().FromInstance(poolParent).AsSingle();
         Container.Bind<GameUIView>().FromInstance(gameUIView).AsSingle();
+        Container.Bind<AdView>().FromInstance(adView).AsSingle();
         Container.Bind<UIController>().AsSingle().NonLazy();
         Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
         Container.Bind<EnemiesManager>().FromInstance(enemiesManager).AsSingle();

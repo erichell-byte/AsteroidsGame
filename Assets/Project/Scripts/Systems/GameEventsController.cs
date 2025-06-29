@@ -1,5 +1,6 @@
 using System;
 using Character;
+using GameAdvertisement;
 using UniRx;
 using Zenject;
 
@@ -9,16 +10,19 @@ namespace Systems
     {
         private GameCycle gameCycle;
         private SpaceshipController spaceship;
+        private IAdController adController;
         
         private CompositeDisposable disposables = new ();
         
         [Inject]
         private void Construct(
             GameCycle gameCycle,
-            SpaceshipController spaceship)
+            SpaceshipController spaceship,
+            IAdController adController)
         {
             this.gameCycle = gameCycle;
             this.spaceship = spaceship;
+            this.adController = adController;
         }
         
         public void Initialize()
@@ -29,7 +33,22 @@ namespace Systems
                 .AddTo(disposables);
             
             spaceship.SpaceshipModel.IsDead
-                .Where(isDead => isDead == true)
+                .Where(isDead => isDead)
+                .Subscribe(_ => gameCycle.FinishGame())
+                .AddTo(disposables);
+
+            spaceship.IsCollisionWithEnemy
+                .Subscribe(_ => gameCycle.PauseGame())
+                .AddTo(disposables);
+            
+            adController.OnRewardedAdShowCompleted
+                .Subscribe(_ => gameCycle.ResumeGame())
+                .AddTo(disposables);
+
+            Observable.Merge(
+                    adController.OnRewardedAdShowFailed,
+                    adController.OnInterstitialAdShowFailed,
+                    adController.OnInterstitialAdShowCompleted)
                 .Subscribe(_ => gameCycle.FinishGame())
                 .AddTo(disposables);
         }
