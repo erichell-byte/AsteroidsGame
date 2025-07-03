@@ -1,23 +1,19 @@
 using System;
-using UniRx;
 using UnityEngine.Advertisements;
-using Zenject;
 
 namespace GameAdvertisement
 {
-    public interface IAdController : IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener, IInitializable
+    public interface IAdService : IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
     {
-        public ReactiveCommand OnRewardedAdShowCompleted { get; }
-        public ReactiveCommand OnRewardedAdShowFailed { get; }
+        public IObservable<AdPlace> OnRewardedAdShowCompleted { get; }
+        public IObservable<AdPlace> OnRewardedAdShowFailed { get; }
         
-        public ReactiveCommand OnInterstitialAdShowCompleted { get; }
-        public ReactiveCommand OnInterstitialAdShowFailed { get; }
+        public IObservable<AdPlace> OnInterstitialAdShowCompleted { get; }
+        public IObservable<AdPlace> OnInterstitialAdShowFailed { get; }
         
-        protected internal void AdInit();
+        public void ShowInterstitialAd(AdPlace place);
         
-        public void ShowInterstitialAd();
-        
-        public void ShowRewardedAd();
+        public void ShowRewardedAd(AdPlace place);
 
     }
 }

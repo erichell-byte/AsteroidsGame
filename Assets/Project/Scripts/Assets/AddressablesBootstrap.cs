@@ -1,15 +1,15 @@
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Zenject;
 
 namespace AssetsLoader
 {
-    public class AddressablesBootstrap : MonoBehaviour
+    public class AddressablesBootstrap : IInitializable
     {
-        private async void Awake()
+        public void Initialize()
         {
             var initHandle = Addressables.InitializeAsync(false);
-            await initHandle.Task.AsUniTask();
+            initHandle.Task.AsUniTask().Forget();
         }
     }
 }

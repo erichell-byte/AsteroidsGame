@@ -9,7 +9,7 @@ namespace UI
     public class UIController : IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener
     {
         private SpaceshipModel spaceshipModel;
-        private IAdController adController;
+        private IAdService adService;
         private GameUIView gameUIView;
         private AdView adView;
         
@@ -22,12 +22,12 @@ namespace UI
             GameUIView gameUIView,
             AdView adView,
             GameCycle gameCycle,
-            IAdController adController)
+            IAdService adService)
         {
             spaceshipModel = shipController.SpaceshipModel;
             this.gameUIView = gameUIView;
             this.adView = adView;
-            this.adController = adController;
+            this.adService = adService;
             
             gameCycle.AddListener(this);
         }
@@ -42,7 +42,7 @@ namespace UI
         public void OnPauseGame()
         {
             gameUIView.Hide();
-            adViewModel = new AdViewModel(adController);
+            adViewModel = new AdViewModel(adService);
             adView.Initialize(adViewModel);
             adView.Show();
         }

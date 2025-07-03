@@ -1,6 +1,5 @@
 using Config;
 using MovementBehavior;
-using UnityEngine;
 
 namespace Enemies
 {
@@ -17,7 +16,6 @@ namespace Enemies
 
         public override void SetActive(bool isActive)
         {
-            Debug.Log($"AsteroidEnemy.SetActive: {isActive}");
             if (isActive)
             {
                 movementBehavior.ResumeMove();

@@ -7,8 +7,6 @@ namespace AssetsLoader
 {
     public class LocalAssetLoader<T> : IAssetLoader<T>
     {
-        private T cachedAsset;
-        
         public async UniTask<T> InstantiateAsset(AssetReferenceGameObject assetId)
         {
             var handle = Addressables.InstantiateAsync(assetId);

@@ -5,24 +5,21 @@ namespace Project.Scripts.UI
 {
     public class AdViewModel
     {
-        private IAdController adController;
+        private IAdService adService;
 
-        public ReactiveCommand<Unit> ShowRewardedButtonClickedCommand { get; } = new();
-        public ReactiveCommand<Unit> SkipRewardedButtonClickedCommand { get; } = new();
-
-        public AdViewModel(IAdController adController)
+        public AdViewModel(IAdService adService)
         {
-            this.adController = adController;
+            this.adService = adService;
         }
 
         public void ShowRewardedButtonClicked()
         {
-            adController.ShowRewardedAd();
+            adService.ShowRewardedAd(AdPlace.GameOver);
         }
 
         public void SkipRewardedButtonClicked()
         {
-            adController.ShowInterstitialAd();
+            adService.ShowInterstitialAd(AdPlace.GameOver);
         }
     }
 }

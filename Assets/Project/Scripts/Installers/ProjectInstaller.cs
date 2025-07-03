@@ -1,4 +1,5 @@
 using Analytics;
+using AssetsLoader;
 using Character;
 using Config;
 using GameAdvertisement;
@@ -20,10 +21,13 @@ namespace Project.Scripts
             Container.Bind<SpaceshipModel>().AsSingle();
             Container.Bind<IGameRepository>().To<PlayerPrefsGameRepository>().AsSingle();
             Container.Bind<ISaveLoader>().To<SaveLoader>().AsSingle();
-            Container.Bind<GameConfiguration>().FromInstance(gameConfiguration);
+            Container.Bind<GameConfiguration>().FromInstance(gameConfiguration).AsSingle();
             Container.BindInterfacesAndSelfTo<SaveLoadManager>().AsSingle();
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
-            Container.BindInterfacesAndSelfTo<UnityAdController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UnityAdsService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AddressablesBootstrap>().AsSingle();
+            Container.Bind<IConfigProvider>().To<FirebaseConfigProvider>().AsSingle();
+            Container.Bind<IInitializable>().To<GameConfigApplier>().AsSingle().NonLazy();
         }
     }
 }

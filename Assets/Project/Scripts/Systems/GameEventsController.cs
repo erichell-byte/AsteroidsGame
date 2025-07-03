@@ -10,7 +10,7 @@ namespace Systems
     {
         private GameCycle gameCycle;
         private SpaceshipController spaceship;
-        private IAdController adController;
+        private IAdService adService;
         
         private CompositeDisposable disposables = new ();
         
@@ -18,11 +18,11 @@ namespace Systems
         private void Construct(
             GameCycle gameCycle,
             SpaceshipController spaceship,
-            IAdController adController)
+            IAdService adService)
         {
             this.gameCycle = gameCycle;
             this.spaceship = spaceship;
-            this.adController = adController;
+            this.adService = adService;
         }
         
         public void Initialize()
@@ -41,14 +41,16 @@ namespace Systems
                 .Subscribe(_ => gameCycle.PauseGame())
                 .AddTo(disposables);
             
-            adController.OnRewardedAdShowCompleted
+            adService.OnRewardedAdShowCompleted
+                .Where(adPlace => AdPlace.GameOver == adPlace)
                 .Subscribe(_ => gameCycle.ResumeGame())
                 .AddTo(disposables);
 
             Observable.Merge(
-                    adController.OnRewardedAdShowFailed,
-                    adController.OnInterstitialAdShowFailed,
-                    adController.OnInterstitialAdShowCompleted)
+                    adService.OnRewardedAdShowFailed,
+                    adService.OnInterstitialAdShowFailed,
+                    adService.OnInterstitialAdShowCompleted)
+                .Where(adPlace => AdPlace.GameOver == adPlace)
                 .Subscribe(_ => gameCycle.FinishGame())
                 .AddTo(disposables);
         }
