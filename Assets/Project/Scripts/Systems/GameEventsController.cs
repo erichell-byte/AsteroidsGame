@@ -11,6 +11,7 @@ namespace Systems
         private GameCycle gameCycle;
         private SpaceshipController spaceship;
         private IAdService adService;
+        private IGameEvents gameEvents;
         
         private CompositeDisposable disposables = new ();
         
@@ -18,11 +19,13 @@ namespace Systems
         private void Construct(
             GameCycle gameCycle,
             SpaceshipController spaceship,
-            IAdService adService)
+            IAdService adService,
+            IGameEvents gameEvents)
         {
             this.gameCycle = gameCycle;
             this.spaceship = spaceship;
             this.adService = adService;
+            this.gameEvents = gameEvents;
         }
         
         public void Initialize()
@@ -37,7 +40,7 @@ namespace Systems
                 .Subscribe(_ => gameCycle.FinishGame())
                 .AddTo(disposables);
 
-            spaceship.IsCollisionWithEnemy
+            gameEvents.OnSpaceshipCollidedWithEnemy
                 .Subscribe(_ => gameCycle.PauseGame())
                 .AddTo(disposables);
             

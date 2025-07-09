@@ -41,6 +41,7 @@ public class GameInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<AnalyticsMediator>().AsSingle();
         Container.Bind<IAssetLoader<Enemy>>().To<LocalAssetLoader<Enemy>>().AsSingle().NonLazy();
         Container.Bind<IAssetLoader<Bullet>>().To<LocalAssetLoader<Bullet>>().AsSingle().NonLazy();
+        Container.Bind<IGameEvents>().To<GameEvents>().AsSingle();
         
     }
 }

@@ -15,12 +15,12 @@ namespace Utils
         private Timer laserDurationTimer;
         private Timer shotTimer;
 
-        private GameConfiguration config;
+        private GameConfigurationSO config;
         
         [Inject]
         private void Construct(
             Timer.Factory timersFactory,
-            GameConfiguration config)
+            GameConfigurationSO config)
         {
             this.timersFactory = timersFactory;
             this.config = config;

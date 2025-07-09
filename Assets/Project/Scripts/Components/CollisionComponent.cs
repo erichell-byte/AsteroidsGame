@@ -1,5 +1,6 @@
-using Character;
 using Enemies;
+using Systems;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -7,19 +8,19 @@ namespace Components
 {
     public class CollisionComponent : MonoBehaviour
     {
-        private SpaceshipController spaceshipController;
+        private IGameEvents gameEvents;
 
         [Inject]
-        private void Construct(SpaceshipController spaceshipController)
+        private void Construct(IGameEvents gameEvents)
         {
-            this.spaceshipController = spaceshipController;
+            this.gameEvents = gameEvents;
         }
         
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.GetComponent<Enemy>())
             {
-                spaceshipController.IsCollisionWithEnemy.Execute();
+                gameEvents.NotifySpaceshipCollidedWithEnemy();
             }
         }
     }

@@ -7,13 +7,15 @@ using SaveLoad;
 using SaveLoad.GameRepository;
 using Systems;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Project.Scripts
 {
     public class ProjectInstaller : MonoInstaller
     {
-        [SerializeField] private GameConfiguration gameConfiguration;
+        [FormerlySerializedAs("gameConfiguration")]
+        [SerializeField] private GameConfigurationSO gameConfigurationSo;
         
         public override void InstallBindings()
         {
@@ -21,13 +23,13 @@ namespace Project.Scripts
             Container.Bind<SpaceshipModel>().AsSingle();
             Container.Bind<IGameRepository>().To<PlayerPrefsGameRepository>().AsSingle();
             Container.Bind<ISaveLoader>().To<SaveLoader>().AsSingle();
-            Container.Bind<GameConfiguration>().FromInstance(gameConfiguration).AsSingle();
+            Container.Bind<GameConfigurationSO>().FromInstance(gameConfigurationSo).AsSingle();
             Container.BindInterfacesAndSelfTo<SaveLoadManager>().AsSingle();
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnityAdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AddressablesBootstrap>().AsSingle();
             Container.Bind<IConfigProvider>().To<FirebaseConfigProvider>().AsSingle();
-            Container.Bind<IInitializable>().To<GameConfigApplier>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<GameConfigApplier>().AsSingle().NonLazy();
         }
     }
 }

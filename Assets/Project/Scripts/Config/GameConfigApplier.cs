@@ -1,5 +1,3 @@
-using System.Reflection;
-using UnityEngine;
 using Zenject;
 
 namespace Config
@@ -7,34 +5,30 @@ namespace Config
     public class GameConfigApplier : IInitializable
     {
         private readonly IConfigProvider configProvider;
-        private readonly GameConfiguration gameConfig;
+        private readonly GameConfigurationSO gameConfigSO;
 
         [Inject]
-        public GameConfigApplier(IConfigProvider configProvider, GameConfiguration gameConfig)
+        public GameConfigApplier(IConfigProvider configProvider, GameConfigurationSO gameConfigSO)
         {
             this.configProvider = configProvider;
-            this.gameConfig = gameConfig;
+            this.gameConfigSO = gameConfigSO;
         }
 
-        public async void Initialize()
+        async void IInitializable.Initialize()
         {
             await configProvider.FetchAndActivateAsync();
+            var remote = configProvider.GetRemoteConfig();
+            if (remote == null) return;
 
-            var type = gameConfig.GetType();
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var field in fields)
+            var remoteType = remote.GetType();
+            var soType = gameConfigSO.GetType();
+
+            foreach (var remoteField in remoteType.GetFields())
             {
-                if (field.FieldType == typeof(float)) {
-                    if (configProvider.TryGetValue(field.Name, out float remoteValue)) {
-                        field.SetValue(gameConfig, remoteValue);
-                    }
-                }
-                else if (field.FieldType == typeof(int))
+                var soField = soType.GetField(remoteField.Name);
+                if (soField != null && soField.FieldType == remoteField.FieldType)
                 {
-                    if (configProvider.TryGetValue(field.Name, out float remoteValue))
-                    {
-                        field.SetValue(gameConfig, Mathf.RoundToInt(remoteValue));
-                    }
+                    soField.SetValue(gameConfigSO, remoteField.GetValue(remote));
                 }
             }
         }

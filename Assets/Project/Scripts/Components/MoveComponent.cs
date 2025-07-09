@@ -11,7 +11,7 @@ namespace Components
         IGamePauseListener,
         ITickable
     {
-        private GameConfiguration config;
+        private GameConfigurationSO config;
         
         private Rigidbody2D rb2d;
         private float moveСoefficient;
@@ -22,7 +22,7 @@ namespace Components
         [Inject]
         private void Construct(
             GameCycle gameCycle,
-            GameConfiguration config)
+            GameConfigurationSO config)
         {
             this.config = config;
             gameCycle.AddListener(this);

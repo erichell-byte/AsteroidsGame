@@ -21,11 +21,11 @@ namespace Enemies
         private EnemyPoolFacade asteroidSmallPoolFacade;
         private EnemyPoolFacade ufoPoolFacade;
         private Dictionary<EnemyType, EnemyConfig> enemyConfigMap;
-        private GameConfiguration config;
+        private GameConfigurationSO config;
 
         public EnemiesFactory(
             Transform poolParent,
-            GameConfiguration config,
+            GameConfigurationSO config,
             IAssetLoader<Enemy> loader)
         {
             this.config = config;

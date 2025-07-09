@@ -17,7 +17,7 @@ namespace Enemies
         IGamePauseListener,
         IGameResumeListener
     {
-        private GameConfiguration config;
+        private GameConfigurationSO config;
         private TimersController timersController;
         private MoveComponent moveComponent;
         
@@ -32,7 +32,7 @@ namespace Enemies
         [Inject]
         private void Construct(
             TimersController timersController,
-            GameConfiguration config,
+            GameConfigurationSO config,
             Transform poolParent,
             MoveComponent moveComponent,
             GameCycle gameCycle,

@@ -20,7 +20,7 @@ namespace Components
         private DiContainer container;
         private CompositeDisposable disposables = new ();
         private BulletPoolFacade bulletPool;
-        private GameConfiguration config;
+        private GameConfigurationSO config;
         
         public MainWeapon MainWeapon => mainWeapon;
         public LaserWeapon LaserWeapon => laserWeapon;
@@ -28,7 +28,7 @@ namespace Components
         [Inject]
         private void Construct(
             DiContainer container,
-            GameConfiguration config,
+            GameConfigurationSO config,
             Transform poolParent,
             IAssetLoader<Bullet> loader)
         {

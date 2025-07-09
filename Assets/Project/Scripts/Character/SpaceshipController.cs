@@ -1,3 +1,4 @@
+using System;
 using Components;
 using Config;
 using Input;
@@ -15,18 +16,17 @@ namespace Character
         IGameFinishListener,
         ITickable
     {
-        private GameConfiguration config;
+        private GameConfigurationSO config;
         private MoveComponent moveComponent;
         private AttackComponent attackComponent;
         private SpaceshipModel spaceshipModel;
         private KeyboardInputReceiver inputReceiver;
         
-        public ReactiveCommand IsCollisionWithEnemy { get; } = new();
         public SpaceshipModel SpaceshipModel => spaceshipModel;
-
+ 
         [Inject]
         private void Construct(
-            GameConfiguration config,
+            GameConfigurationSO config,
             MoveComponent moveComponent,
             AttackComponent attackComponent,
             GameCycle gameCycle,

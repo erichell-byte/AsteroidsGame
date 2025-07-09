@@ -39,11 +39,11 @@ namespace GameAdvertisement
         public IObservable<AdPlace> OnInterstitialAdShowFailed => onInterstitialAdShowFailed;
 
         [Inject]
-        private void Construct(GameConfiguration gameConfiguration)
+        private void Construct(GameConfigurationSO gameConfigurationSO)
         {
-            androidGameId = gameConfiguration.androidGameId;
-            iOSGameId = gameConfiguration.iOSGameId;
-            testMode = gameConfiguration.adTestMode;
+            androidGameId = gameConfigurationSO.androidGameId;
+            iOSGameId = gameConfigurationSO.iOSGameId;
+            testMode = gameConfigurationSO.adTestMode;
         }
         
         public void Initialize()

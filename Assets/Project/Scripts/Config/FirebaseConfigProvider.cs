@@ -13,7 +13,7 @@ namespace Config
     {
         private readonly string configKey = "GameConfiguration";
         
-        private Dictionary<string, float> parsed = new ();
+        private RemoteConfig parsedConfig = new ();
         
         public async UniTask FetchAndActivateAsync() {
             
@@ -28,17 +28,14 @@ namespace Config
             Debug.Log("Firebase Remote Config fetched and activated.");
             
             string jsonString = remoteConfig.GetValue(configKey).StringValue;
-            try { parsed = JsonConvert.DeserializeObject<Dictionary<string, float>>(jsonString); } 
+            try { this.parsedConfig = JsonConvert.DeserializeObject<RemoteConfig>(jsonString); } 
             catch (Exception e) 
             {
                 Debug.LogError("Failed to parse remote config: " + e);
-                parsed = new();
+                this.parsedConfig = new();
             }
         }
-
-        public bool TryGetValue(string key, out float value)
-        {
-            return parsed.TryGetValue(key, out value);
-        }
+        
+        public RemoteConfig GetRemoteConfig() => parsedConfig;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 namespace Config
 {
     [CreateAssetMenu(fileName = "GameConfiguration", menuName = "ScriptableObjects/GameConfiguration", order = 0)]
-    public class GameConfiguration : ScriptableObject
+    public class GameConfigurationSO : ScriptableObject
     {
         [Header("Character Configuration")]
         public float moveCoefficient;
