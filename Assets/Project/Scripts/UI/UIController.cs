@@ -1,5 +1,6 @@
 using Character;
 using GameAdvertisement;
+using Project.Scripts.Purchasing;
 using Project.Scripts.UI;
 using Systems;
 using Zenject;
@@ -10,8 +11,10 @@ namespace UI
     {
         private SpaceshipModel spaceshipModel;
         private IAdService adService;
+        private IPurchaseService purchaseService;
         private GameUIView gameUIView;
         private AdView adView;
+        
         
         private GameUIViewModel gameViewModel;
         private AdViewModel adViewModel;
@@ -22,12 +25,14 @@ namespace UI
             GameUIView gameUIView,
             AdView adView,
             GameCycle gameCycle,
-            IAdService adService)
+            IAdService adService,
+            IPurchaseService purchaseService)
         {
             spaceshipModel = shipController.SpaceshipModel;
             this.gameUIView = gameUIView;
             this.adView = adView;
             this.adService = adService;
+            this.purchaseService = purchaseService;
             
             gameCycle.AddListener(this);
         }
@@ -42,7 +47,7 @@ namespace UI
         public void OnPauseGame()
         {
             gameUIView.Hide();
-            adViewModel = new AdViewModel(adService);
+            adViewModel = new AdViewModel(adService, purchaseService);
             adView.Initialize(adViewModel);
             adView.Show();
         }

@@ -35,5 +35,9 @@ namespace Config
         public string androidGameId;
         public string iOSGameId;
         public bool adTestMode;
+        
+        [Space(20)]
+        [Header("Purchasing Configuration")]
+        public string noAdsProductId;
     }
 }

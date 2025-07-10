@@ -1,15 +1,20 @@
 using GameAdvertisement;
-using UniRx;
+using Project.Scripts.Purchasing;
 
 namespace Project.Scripts.UI
 {
     public class AdViewModel
     {
         private IAdService adService;
+        private IPurchaseService purchaseService;
+        private bool isNoAdsPurchased => purchaseService.GetPurchasedData().noAds;
 
-        public AdViewModel(IAdService adService)
+        public AdViewModel(
+            IAdService adService,
+            IPurchaseService purchaseService)
         {
             this.adService = adService;
+            this.purchaseService = purchaseService;
         }
 
         public void ShowRewardedButtonClicked()
@@ -19,7 +24,10 @@ namespace Project.Scripts.UI
 
         public void SkipRewardedButtonClicked()
         {
-            adService.ShowInterstitialAd(AdPlace.GameOver);
+            if (isNoAdsPurchased)
+                adService.SkipInterstitial();
+            else
+                adService.ShowInterstitialAd(AdPlace.GameOver);
         }
     }
 }

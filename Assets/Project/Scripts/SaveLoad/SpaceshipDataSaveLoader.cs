@@ -5,7 +5,7 @@ using Zenject;
 
 namespace SaveLoad
 {
-    public class SaveLoader : ISaveLoader
+    public class SpaceshipDataSaveLoader : ISaveLoader
     {
         private SpaceshipModel service;
 

@@ -3,33 +3,34 @@ using AssetsLoader;
 using Character;
 using Config;
 using GameAdvertisement;
+using Project.Scripts.Purchasing;
 using SaveLoad;
 using SaveLoad.GameRepository;
 using Systems;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace Project.Scripts
 {
     public class ProjectInstaller : MonoInstaller
     {
-        [FormerlySerializedAs("gameConfiguration")]
-        [SerializeField] private GameConfigurationSO gameConfigurationSo;
+        [SerializeField] private GameConfigurationSO gameConfigurationSO;
         
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
             Container.Bind<SpaceshipModel>().AsSingle();
             Container.Bind<IGameRepository>().To<PlayerPrefsGameRepository>().AsSingle();
-            Container.Bind<ISaveLoader>().To<SaveLoader>().AsSingle();
-            Container.Bind<GameConfigurationSO>().FromInstance(gameConfigurationSo).AsSingle();
+            Container.Bind<ISaveLoader>().To<SpaceshipDataSaveLoader>().AsSingle();
+            Container.Bind<ISaveLoader>().To<PurchasedDataSaveLoader>().AsSingle();
+            Container.Bind<GameConfigurationSO>().FromInstance(gameConfigurationSO).AsSingle();
             Container.BindInterfacesAndSelfTo<SaveLoadManager>().AsSingle();
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnityAdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AddressablesBootstrap>().AsSingle();
             Container.Bind<IConfigProvider>().To<FirebaseConfigProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameConfigApplier>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UnityPurchaseService>().AsSingle();
         }
     }
 }

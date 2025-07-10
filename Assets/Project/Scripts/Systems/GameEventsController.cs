@@ -48,6 +48,10 @@ namespace Systems
                 .Where(adPlace => AdPlace.GameOver == adPlace)
                 .Subscribe(_ => gameCycle.ResumeGame())
                 .AddTo(disposables);
+            
+            adService.OnSkipInterstitialAdBecauseNoAdsPurchased
+                .Subscribe(_ => gameCycle.FinishGame())
+                .AddTo(disposables);
 
             Observable.Merge(
                     adService.OnRewardedAdShowFailed,

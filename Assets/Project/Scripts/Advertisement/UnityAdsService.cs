@@ -33,10 +33,12 @@ namespace GameAdvertisement
         private readonly Subject<AdPlace> onRewardedAdShowFailed = new ();
         private readonly Subject<AdPlace> onInterstitialAdShowCompleted = new ();
         private readonly Subject<AdPlace> onInterstitialAdShowFailed = new ();
+        private readonly Subject<Unit> onSkipInterstitialNoAdsPurchased = new ();
         public IObservable<AdPlace> OnRewardedAdShowCompleted => onRewardedAdShowCompleted;
         public IObservable<AdPlace> OnRewardedAdShowFailed => onRewardedAdShowFailed;
         public IObservable<AdPlace> OnInterstitialAdShowCompleted => onInterstitialAdShowCompleted;
         public IObservable<AdPlace> OnInterstitialAdShowFailed => onInterstitialAdShowFailed;
+        public IObservable<Unit> OnSkipInterstitialAdBecauseNoAdsPurchased => onSkipInterstitialNoAdsPurchased;
 
         [Inject]
         private void Construct(GameConfigurationSO gameConfigurationSO)
@@ -83,6 +85,11 @@ namespace GameAdvertisement
         {
             currentAdPlace = place;
             Advertisement.Show(adRewardUnitId, this as IUnityAdsShowListener);
+        }
+
+        public void SkipInterstitial()
+        {
+            onSkipInterstitialNoAdsPurchased.OnNext(Unit.Default);
         }
 
         public void OnInitializationComplete()

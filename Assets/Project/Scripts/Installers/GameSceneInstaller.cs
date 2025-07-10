@@ -11,7 +11,7 @@ using Utils;
 using Weapon;
 using Zenject;
 
-public class GameInstaller : MonoInstaller
+public class GameSceneInstaller : MonoInstaller
 {
     [SerializeField] private AttackComponent attackComponent;
     [SerializeField] private MoveComponent moveComponent;

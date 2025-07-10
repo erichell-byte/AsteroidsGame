@@ -19,7 +19,7 @@ MonoBehaviour:
   shotFrequency: 1
   timeToRecoveryLaser: 3
   timeToDurationLaser: 0.5
-  countOfLaserShots: 3
+  countOfLaserShots: 10
   bulletId:
     m_AssetGUID: c4340b47122e44efe9b51ea351165b0a
     m_SubObjectName: 
@@ -59,3 +59,4 @@ MonoBehaviour:
   androidGameId: 5880362
   iOSGameId: 5880363
   adTestMode: 1
+  noAdsProductId: noads
