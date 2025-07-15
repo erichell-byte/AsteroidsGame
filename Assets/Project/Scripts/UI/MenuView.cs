@@ -1,4 +1,5 @@
 using System;
+using Purchasing;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,8 +31,11 @@ public class MenuView : MonoBehaviour
     private void OnBuyAdsClicked() => BuyAdsClicked?.Invoke();
     private void OnExitGameClicked() => ExitGameClicked?.Invoke();
 
-    public void DisableBuyButton()
+    public void DisableBuyButton(TypeOfPurchase typeOfPurchase)
     {
-        buyAdsButton.gameObject.SetActive(false);
+        if (typeOfPurchase == TypeOfPurchase.NoAds)
+        {
+            buyAdsButton.gameObject.SetActive(false);
+        }
     }
 }

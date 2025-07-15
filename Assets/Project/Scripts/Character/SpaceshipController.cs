@@ -47,7 +47,7 @@ namespace Character
             spaceshipModel.SetPosition(Vector3.zero);
             spaceshipModel.SetRotation(0f);
             spaceshipModel.SetSpeed(0f);
-            spaceshipModel.SetLaserCount(config.countOfLaserShots);
+            spaceshipModel.SetLaserCount(config.remoteConfig.countOfLaserShots);
             spaceshipModel.SetTimeToRecoveryLaser(0f);
             spaceshipModel.SetIsDead(true);
         }

@@ -45,14 +45,14 @@ namespace Components
         {
             mainWeapon.Initialize(
                 shotPoint,
-                config.bulletSpeed,
+                config.remoteConfig.bulletSpeed,
                 bulletPool);
 
             laserWeapon.Initialize(
                 shotPoint,
                 laser,
                 laserLayerMask,
-                config.countOfLaserShots);
+                config.remoteConfig.countOfLaserShots);
 
             laserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(disposables);
             laserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(disposables);

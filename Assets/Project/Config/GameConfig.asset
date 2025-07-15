@@ -12,22 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c890a6a27b445cba822d58ae69e1a28, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  moveCoefficient: 0.1
-  rotateCoefficient: 140
-  maxVelocityMagnitude: 2.5
-  bulletSpeed: 5
-  shotFrequency: 1
-  timeToRecoveryLaser: 3
-  timeToDurationLaser: 0.5
-  countOfLaserShots: 10
+  remoteConfig:
+    moveCoefficient: 0.1
+    rotateCoefficient: 140
+    maxVelocityMagnitude: 2.5
+    bulletSpeed: 5
+    shotFrequency: 1
+    timeToRecoveryLaser: 3
+    timeToDurationLaser: 0.5
+    countOfLaserShots: 1
+    asteroidSpawnFrequency: 1
+    ufoSpawnFrequency: 5
   bulletId:
     m_AssetGUID: c4340b47122e44efe9b51ea351165b0a
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  asteroidSpawnFrequency: 1
-  ufoSpawnFrequency: 5
   asteroidId:
     m_AssetGUID: 7cc34207e03574af6b70b86bb118af96
     m_SubObjectName: 

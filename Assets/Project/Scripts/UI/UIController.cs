@@ -1,6 +1,6 @@
 using Character;
 using GameAdvertisement;
-using Project.Scripts.Purchasing;
+using Purchasing;
 using Project.Scripts.UI;
 using Systems;
 using Zenject;

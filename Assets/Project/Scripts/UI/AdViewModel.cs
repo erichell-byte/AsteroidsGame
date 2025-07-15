@@ -1,5 +1,5 @@
 using GameAdvertisement;
-using Project.Scripts.Purchasing;
+using Purchasing;
 
 namespace Project.Scripts.UI
 {

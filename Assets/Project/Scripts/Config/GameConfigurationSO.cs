@@ -7,27 +7,16 @@ namespace Config
     [CreateAssetMenu(fileName = "GameConfiguration", menuName = "ScriptableObjects/GameConfiguration", order = 0)]
     public class GameConfigurationSO : ScriptableObject
     {
-        [Header("Character Configuration")]
-        public float moveCoefficient;
-        public float rotateCoefficient;
-        public float maxVelocityMagnitude;
-
-        [Space(20)]
-        [Header("Attack Configuration")]
-        public float bulletSpeed;
-        public float shotFrequency;
-        public float timeToRecoveryLaser;
-        public float timeToDurationLaser;
-        public int countOfLaserShots;
+        [Header("Remote Configuration")]
+        public RemoteConfig remoteConfig;
+        
+        [Header("Addressable Assets Configuration")]
         public AssetReferenceGameObject bulletId;
-
-        [Space(20)]
-        [Header("Enemies Configuration")]
-        public float asteroidSpawnFrequency;
-        public float ufoSpawnFrequency;
         public AssetReferenceGameObject asteroidId;
         public AssetReferenceGameObject asteroidSmallId;
         public AssetReferenceGameObject ufoId;
+        
+        [Header("Enemy Configuration")]
         public List<EnemyConfig> enemiesConfigs;
         
         [Space(20)]

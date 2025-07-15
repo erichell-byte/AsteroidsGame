@@ -31,9 +31,9 @@ namespace Utils
         public void SubscribeToSpawnEnemies(Action spawnAsteroidAction, Action spawnUFOAction)
         {
             asteroidSpawnTimer = timersFactory.Create();
-            asteroidSpawnTimer.Init(config.asteroidSpawnFrequency);
+            asteroidSpawnTimer.Init(config.remoteConfig.asteroidSpawnFrequency);
             ufoSpawnTimer = timersFactory.Create();
-            ufoSpawnTimer.Init(config.ufoSpawnFrequency);
+            ufoSpawnTimer.Init(config.remoteConfig.ufoSpawnFrequency);
 
             asteroidSpawnTimer.Play();
             asteroidSpawnTimer.TimerIsExpired += spawnAsteroidAction;
@@ -83,9 +83,9 @@ namespace Utils
             Action<float> changedTimeToRecoveryAction)
         {
             laserRecoveryTimer = timersFactory.Create();
-            laserRecoveryTimer.Init(config.timeToRecoveryLaser);
+            laserRecoveryTimer.Init(config.remoteConfig.timeToRecoveryLaser);
             laserDurationTimer = timersFactory.Create();
-            laserDurationTimer.Init(config.timeToDurationLaser);
+            laserDurationTimer.Init(config.remoteConfig.timeToDurationLaser);
             laserRecoveryTimer.RemainingTimeChanged += changedTimeToRecoveryAction;
         }
 
@@ -135,7 +135,7 @@ namespace Utils
         public void InitMainWeaponTimer()
         {
             shotTimer = timersFactory.Create();
-            shotTimer.Init(config.shotFrequency);
+            shotTimer.Init(config.remoteConfig.shotFrequency);
         }
         
         public void PlayMainWeaponTimer()

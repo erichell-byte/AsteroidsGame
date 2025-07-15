@@ -1,6 +1,6 @@
 using System;
 using Config;
-using Project.Scripts.Purchasing;
+using Purchasing;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -28,11 +28,11 @@ namespace Project.Scripts.UI
             menuView.BuyAdsClicked += OnBuyAdsClicked;
             menuView.ExitGameClicked += OnExitGameClicked;
             
-            purchaseService.NoAdsPurchased += menuView.DisableBuyButton;
+            purchaseService.OnPurchasedAction += menuView.DisableBuyButton;
             
             if (purchaseService.GetPurchasedData().noAds)
             {
-                menuView.DisableBuyButton();
+                menuView.DisableBuyButton(TypeOfPurchase.NoAds);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Project.Scripts.UI
             menuView.BuyAdsClicked -= OnBuyAdsClicked;
             menuView.ExitGameClicked -= OnExitGameClicked;
             
-            purchaseService.NoAdsPurchased -= menuView.DisableBuyButton;
+            purchaseService.OnPurchasedAction -= menuView.DisableBuyButton;
         }
     }
 }

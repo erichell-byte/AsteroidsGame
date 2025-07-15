@@ -20,17 +20,7 @@ namespace Config
             var remote = configProvider.GetRemoteConfig();
             if (remote == null) return;
 
-            var remoteType = remote.GetType();
-            var soType = gameConfigSO.GetType();
-
-            foreach (var remoteField in remoteType.GetFields())
-            {
-                var soField = soType.GetField(remoteField.Name);
-                if (soField != null && soField.FieldType == remoteField.FieldType)
-                {
-                    soField.SetValue(gameConfigSO, remoteField.GetValue(remote));
-                }
-            }
+            gameConfigSO.remoteConfig = remote;
         }
     }
 }

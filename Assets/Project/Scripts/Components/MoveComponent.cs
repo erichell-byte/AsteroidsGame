@@ -31,9 +31,9 @@ namespace Components
         public void Initialize(
             SpaceshipModel spaceshipModel)
         {
-            moveСoefficient = config.moveCoefficient;
-            rotateCoefficient = config.rotateCoefficient;
-            maxVelocityMagnitude = config.maxVelocityMagnitude;
+            moveСoefficient = config.remoteConfig.moveCoefficient;
+            rotateCoefficient = config.remoteConfig.rotateCoefficient;
+            maxVelocityMagnitude = config.remoteConfig.maxVelocityMagnitude;
             this.spaceshipModel = spaceshipModel;
         }
 

@@ -3,7 +3,7 @@ using AssetsLoader;
 using Character;
 using Config;
 using GameAdvertisement;
-using Project.Scripts.Purchasing;
+using Purchasing;
 using SaveLoad;
 using SaveLoad.GameRepository;
 using Systems;

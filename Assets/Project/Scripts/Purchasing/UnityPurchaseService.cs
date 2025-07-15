@@ -9,8 +9,12 @@ using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 using Zenject;
 
-namespace Project.Scripts.Purchasing
+namespace Purchasing
 {
+    public enum TypeOfPurchase
+    {
+        NoAds,
+    }
     public class UnityPurchaseService : IPurchaseService, IInitializable
     {
         private IStoreController controller;
@@ -21,8 +25,7 @@ namespace Project.Scripts.Purchasing
         private string noAdsProductId;
         
         public ProductCollection products { get; }
-
-        public event Action NoAdsPurchased;
+        public event Action<TypeOfPurchase> OnPurchasedAction;
         [Inject]
         private void Construct(
             GameConfigurationSO gameConfigSO,
@@ -76,10 +79,11 @@ namespace Project.Scripts.Purchasing
             {
                 Debug.Log("No ads product purchased successfully: " + purchaseEvent.purchasedProduct.definition.id);
                 purchasedData.noAds = true;
-                NoAdsPurchased?.Invoke();
-                saveLoadManager.SaveGame();
+                OnPurchasedAction?.Invoke(TypeOfPurchase.NoAds);
+                
             }
             
+            saveLoadManager.SaveGame();
             return PurchaseProcessingResult.Complete;
         }
 

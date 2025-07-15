@@ -1,4 +1,4 @@
-using Project.Scripts.Purchasing;
+using Purchasing;
 using SaveLoad.GameRepository;
 using Zenject;
 
