@@ -1,20 +1,22 @@
+using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace SaveLoad.GameRepository
+namespace SaveLoad
 {
-    public class PlayerPrefsGameRepository: IGameRepository
+    public class PlayerPrefsRepository : ILocalRepository
     {
         private const string GAME_STATE_KEY = "GameStateKey";
         
-        private Dictionary<string, string> _gameState = new();
+        private Dictionary<string, string> gameState = new();
         
         public bool TryGetData<T>(out T data)
         {
-            var key = typeof(T).ToString();
+            var key = typeof(T).Name;
 
-            if (_gameState.TryGetValue(key, out var jsonData))
+            if (gameState.TryGetValue(key, out var jsonData))
             {
                 data = JsonConvert.DeserializeObject<T>(jsonData);
                 return true;
@@ -27,27 +29,35 @@ namespace SaveLoad.GameRepository
         public void SetData<T>(T data)
         {
             var jsonData = JsonConvert.SerializeObject(data);
-            var key = typeof(T).ToString();
-            _gameState[key] = jsonData;
+            var key = typeof(T).Name;
+            gameState[key] = jsonData;
         }
 
-        public void LoadState()
+        public UniTask LoadState()
         {
             if (PlayerPrefs.HasKey(GAME_STATE_KEY))
             {
                 var gameStateJson = PlayerPrefs.GetString(GAME_STATE_KEY);
-                _gameState = JsonConvert.DeserializeObject<Dictionary<string, string>>(gameStateJson);
+                gameState = JsonConvert.DeserializeObject<Dictionary<string, string>>(gameStateJson);
             }
             else
             {
                 Debug.Log("No save!");
             }
-        }
 
+            return default;
+        }
+        
         public void SaveState()
         {
-            var gameStateJson = JsonConvert.SerializeObject(_gameState);
+            AddSaveTimeToState();
+            var gameStateJson = JsonConvert.SerializeObject(gameState);
             PlayerPrefs.SetString(GAME_STATE_KEY, gameStateJson);
+        }
+
+        public void AddSaveTimeToState()
+        {
+            SetData(new SaveTimestamp()); 
         }
     }
 }

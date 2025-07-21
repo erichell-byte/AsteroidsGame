@@ -1,4 +1,4 @@
-using SaveLoad.GameRepository;
+
 
 namespace SaveLoad
 {
@@ -7,5 +7,7 @@ namespace SaveLoad
         public void SaveGame(IGameRepository repository);
         
         public void LoadGame(IGameRepository repository);
+
+        public string GetSavedDataName();
     }
 }

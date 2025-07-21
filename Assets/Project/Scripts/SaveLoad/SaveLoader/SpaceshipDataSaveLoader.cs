@@ -1,5 +1,4 @@
 using Character;
-using SaveLoad.GameRepository;
 using UnityEngine;
 using Zenject;
 
@@ -31,6 +30,11 @@ namespace SaveLoad
             {
                 SetupDefaultData(service);
             }
+        }
+
+        public string GetSavedDataName()
+        {
+            return nameof(SpaceshipData);
         }
 
         private SpaceshipData ConvertToData(SpaceshipModel model)

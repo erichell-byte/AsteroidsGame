@@ -1,4 +1,4 @@
-using SaveLoad.GameRepository;
+
 using UnityEngine;
 using Zenject;
 
@@ -7,12 +7,16 @@ namespace SaveLoad
     public class SaveLoadManager
     {
         private ISaveLoader[] saveLoaders;
-        private IGameRepository gameRepository;
+        private ILocalRepository localRepository;
+        private IRemoteRepository remoteRepository;
 
         [Inject]
-        private void Construct(IGameRepository gameRepository, ISaveLoader[] saveLoaders)
+        private void Construct(ILocalRepository localRepository,
+            IRemoteRepository remoteRepository,
+            ISaveLoader[] saveLoaders)
         {
-            this.gameRepository = gameRepository;
+            this.localRepository = localRepository;
+            this.remoteRepository = remoteRepository;
             this.saveLoaders = saveLoaders;
         }
         
@@ -20,23 +24,44 @@ namespace SaveLoad
         {
             foreach (var saveLoader in saveLoaders)
             {
-                saveLoader.SaveGame(gameRepository);
+                saveLoader.SaveGame(localRepository);
+                saveLoader.SaveGame(remoteRepository);
             }
             
-            gameRepository.SaveState();
+            localRepository.SaveState();
+            remoteRepository.SaveState();
             
             Debug.Log("Game saved");
         }
         
-        public void LoadGame()
+        public async void LoadGame()
         {
-            gameRepository.LoadState();
-            
+            await localRepository.LoadState();
+            await remoteRepository.LoadState();
+
+            IGameRepository relevantRepository = IsRemoteDataRelevant() ? remoteRepository : localRepository;
+
             foreach (var saveLoader in saveLoaders)
             {
-                saveLoader.LoadGame(gameRepository);
+                saveLoader.LoadGame(relevantRepository);
             }
+
+            SaveGame();
             Debug.Log("Game loaded");
+        }
+
+        private bool IsRemoteDataRelevant()
+        {
+            if (localRepository.TryGetData<SaveTimestamp>(out var localTimestamp) &&
+                remoteRepository.TryGetData<SaveTimestamp>(out var remoteTimestamp))
+            {
+                return remoteTimestamp.ticks >= localTimestamp.ticks;
+            }
+
+            if (remoteRepository.TryGetData<SaveTimestamp>(out _))
+                return true;
+
+            return false;
         }
     }
 }

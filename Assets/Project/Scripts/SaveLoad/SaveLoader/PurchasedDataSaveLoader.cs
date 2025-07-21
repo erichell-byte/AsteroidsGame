@@ -1,5 +1,4 @@
 using Purchasing;
-using SaveLoad.GameRepository;
 using Zenject;
 
 namespace SaveLoad
@@ -32,9 +31,14 @@ namespace SaveLoad
             }
         }
 
-        private PurchasedData ConvertToData(IPurchaseService model)
+        public string GetSavedDataName()
         {
-            var purchasedData = model.GetPurchasedData();
+            return nameof(PurchasedData);
+        }
+
+        private PurchasedData ConvertToData(IPurchaseService service)
+        {
+            var purchasedData = service.GetPurchasedData();
             return new PurchasedData()
             {
                 noAds = purchasedData.noAds
@@ -46,7 +50,7 @@ namespace SaveLoad
             service.SetPurchasedData(data);
         }
 
-        protected void SetupDefaultData()
+        private void SetupDefaultData()
         {
             service.SetPurchasedData(new PurchasedData { noAds = false });
         }

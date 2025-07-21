@@ -5,7 +5,6 @@ using Config;
 using GameAdvertisement;
 using Purchasing;
 using SaveLoad;
-using SaveLoad.GameRepository;
 using Systems;
 using UnityEngine;
 using Zenject;
@@ -20,7 +19,8 @@ namespace Project.Scripts
         {
             Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
             Container.Bind<SpaceshipModel>().AsSingle();
-            Container.Bind<IGameRepository>().To<PlayerPrefsGameRepository>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UnityCloudSaveRepository>().AsSingle();
+            Container.Bind<ILocalRepository>().To<PlayerPrefsRepository>().AsSingle();
             Container.Bind<ISaveLoader>().To<SpaceshipDataSaveLoader>().AsSingle();
             Container.Bind<ISaveLoader>().To<PurchasedDataSaveLoader>().AsSingle();
             Container.Bind<GameConfigurationSO>().FromInstance(gameConfigurationSO).AsSingle();

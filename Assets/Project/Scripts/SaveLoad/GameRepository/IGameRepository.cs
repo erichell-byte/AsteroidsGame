@@ -1,4 +1,7 @@
-namespace SaveLoad.GameRepository
+using System;
+using Cysharp.Threading.Tasks;
+
+namespace SaveLoad
 {
     public interface IGameRepository
     {
@@ -8,6 +11,8 @@ namespace SaveLoad.GameRepository
         
         public void SaveState();
         
-        public void LoadState();
+        public UniTask LoadState();
+
+        public void AddSaveTimeToState();
     }
 }
