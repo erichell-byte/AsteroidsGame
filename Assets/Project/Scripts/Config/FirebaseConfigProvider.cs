@@ -1,22 +1,21 @@
 using System;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Firebase;
 using Firebase.RemoteConfig;
 using Newtonsoft.Json;
 using UnityEngine;
+using Zenject;
 
 
 namespace Config
 {
-    public class FirebaseConfigProvider : IConfigProvider
+    public class FirebaseConfigProvider : IConfigProvider, IInitializable
     {
-        private readonly string configKey = "GameConfiguration";
+        private readonly string _configKey = "GameConfiguration";
         
-        private RemoteConfig parsedConfig = new ();
+        private RemoteConfig _parsedConfig = new ();
         
-        public async UniTask FetchAndActivateAsync() {
-            
+        public async void Initialize()
+        {
             var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
             if (dependencyStatus != DependencyStatus.Available) {
                 Debug.LogError("Firebase dependencies error: " + dependencyStatus);
@@ -27,15 +26,16 @@ namespace Config
             await remoteConfig.ActivateAsync();
             Debug.Log("Firebase Remote Config fetched and activated.");
             
-            string jsonString = remoteConfig.GetValue(configKey).StringValue;
-            try { this.parsedConfig = JsonConvert.DeserializeObject<RemoteConfig>(jsonString); } 
+            string jsonString = remoteConfig.GetValue(_configKey).StringValue;
+            try { this._parsedConfig = JsonConvert.DeserializeObject<RemoteConfig>(jsonString); } 
             catch (Exception e) 
             {
                 Debug.LogError("Failed to parse remote config: " + e);
-                this.parsedConfig = new();
+                this._parsedConfig = new();
             }
         }
         
-        public RemoteConfig GetRemoteConfig() => parsedConfig;
+        public RemoteConfig GetRemoteConfig() => _parsedConfig;
+        
     }
 }

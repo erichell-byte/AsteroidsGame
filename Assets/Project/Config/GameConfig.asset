@@ -12,52 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c890a6a27b445cba822d58ae69e1a28, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  remoteConfig:
-    moveCoefficient: 0.1
-    rotateCoefficient: 140
-    maxVelocityMagnitude: 2.5
-    bulletSpeed: 5
-    shotFrequency: 1
-    timeToRecoveryLaser: 3
-    timeToDurationLaser: 0.5
-    countOfLaserShots: 1
-    asteroidSpawnFrequency: 1
-    ufoSpawnFrequency: 5
-  bulletId:
+  BulletId:
     m_AssetGUID: c4340b47122e44efe9b51ea351165b0a
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  asteroidId:
+  AsteroidId:
     m_AssetGUID: 7cc34207e03574af6b70b86bb118af96
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  asteroidSmallId:
+  AsteroidSmallId:
     m_AssetGUID: 4e631c415ab5c44489f886540d6236e6
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  ufoId:
+  UfoId:
     m_AssetGUID: 5baedea8325f34a69bba707c2abd5be0
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  enemiesConfigs:
-  - type: 0
-    speed: 1
-    speedModifier: 1
-  - type: 1
-    speed: 1
-    speedModifier: 1
-  - type: 2
-    speed: 0.5
-    speedModifier: 1
-  androidGameId: 5880362
-  iOSGameId: 5880363
-  adTestMode: 1
-  noAdsProductId: noads
+  EnemiesConfigs:
+  - Type: 0
+    Speed: 1
+    SpeedModifier: 1
+  - Type: 1
+    Speed: 1
+    SpeedModifier: 1
+  - Type: 2
+    Speed: 0.5
+    SpeedModifier: 1
+  AndroidGameId: 5880362
+  IOSGameId: 5880363
+  AdTestMode: 1
+  NoAdsProductId: noads

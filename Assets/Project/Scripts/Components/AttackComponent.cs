@@ -4,6 +4,7 @@ using Config;
 using Pools;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Weapon;
 using Zenject;
 
@@ -11,73 +12,73 @@ namespace Components
 {
     public class AttackComponent : MonoBehaviour, ITickable
     {
-        [SerializeField] private Transform shotPoint;
-        [SerializeField] private GameObject laser;
-        [SerializeField] private LayerMask laserLayerMask;
+        [SerializeField] private Transform _shotPoint;
+        [SerializeField] private GameObject _laser;
+        [SerializeField] private LayerMask _laserLayerMask;
 
-        private MainWeapon mainWeapon;
-        private LaserWeapon laserWeapon;
-        private DiContainer container;
-        private CompositeDisposable disposables = new ();
-        private BulletPoolFacade bulletPool;
-        private GameConfigurationSO config;
+        private readonly CompositeDisposable _disposables = new ();
         
-        public MainWeapon MainWeapon => mainWeapon;
-        public LaserWeapon LaserWeapon => laserWeapon;
+        private MainWeapon _mainWeapon;
+        private LaserWeapon _laserWeapon;
+        private BulletPoolFacade _bulletPool;
+        private RemoteConfig _remoteConfig;
+        
+        public MainWeapon MainWeapon => _mainWeapon;
+        public LaserWeapon LaserWeapon => _laserWeapon;
 
         [Inject]
         private void Construct(
             DiContainer container,
-            GameConfigurationSO config,
+            IConfigProvider configProvider,
+            GameConfiguration localConfig,
             Transform poolParent,
             IAssetLoader<Bullet> loader)
         {
-            this.container = container;
-            this.config = config;
-            mainWeapon = container.Instantiate<MainWeapon>();
-            laserWeapon = container.Instantiate<LaserWeapon>();
+            _remoteConfig = configProvider.GetRemoteConfig();
+            _mainWeapon = container.Instantiate<MainWeapon>();
+            _laserWeapon = container.Instantiate<LaserWeapon>();
             
-            bulletPool = new BulletPoolFacade(loader, config.bulletId, poolParent);
+            _bulletPool = new BulletPoolFacade(loader, localConfig.BulletId, poolParent);
         }
 
         public void Initialize(
             SpaceshipModel spaceshipModel)
         {
-            mainWeapon.Initialize(
-                shotPoint,
-                config.remoteConfig.bulletSpeed,
-                bulletPool);
+            _mainWeapon.Initialize(
+                _shotPoint,
+                _remoteConfig.BulletSpeed,
+                _bulletPool);
 
-            laserWeapon.Initialize(
-                shotPoint,
-                laser,
-                laserLayerMask,
-                config.remoteConfig.countOfLaserShots);
+            _laserWeapon.Initialize(
+                _shotPoint,
+                _laser,
+                _laserLayerMask,
+                _remoteConfig.CountOfLaserShots);
 
-            laserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(disposables);
-            laserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(disposables);
+            _laserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(_disposables);
+            _laserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(_disposables);
         }
 
         public void AttackByMainShot()
         {
-            mainWeapon.Attack();
+            _mainWeapon.Attack();
         }
 
         public void AttackByLaserShot()
         {
-            laserWeapon.Attack();
+            _laserWeapon.Attack();
         }
 
         public void ResetWeapon()
         {
-            laserWeapon.TurnOffLaser();
-            mainWeapon.Reset();
-            disposables.Clear();
+            _laserWeapon.TurnOffLaser();
+            _mainWeapon.Reset();
+            _disposables.Clear();
         }
 
         public void Tick()
         {
-            laserWeapon.Tick();
+            _laserWeapon.Tick();
         }
     }
 }

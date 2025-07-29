@@ -5,17 +5,17 @@ namespace SaveLoad
 {
     public class PurchasedDataSaveLoader : ISaveLoader
     {
-        private IPurchaseService service;
+        private IPurchaseService _service;
 
         [Inject]
         private void Construct(IPurchaseService service)
         {
-            this.service = service;
+            _service = service;
         }
         
         public void SaveGame(IGameRepository repository)
         {
-            PurchasedData data = ConvertToData(service);
+            PurchasedData data = ConvertToData(_service);
             repository.SetData(data);
         }
 
@@ -41,18 +41,18 @@ namespace SaveLoad
             var purchasedData = service.GetPurchasedData();
             return new PurchasedData()
             {
-                noAds = purchasedData.noAds
+                NoAds = purchasedData.NoAds
             };
         }
 
         private void SetupData(PurchasedData data)
         {
-            service.SetPurchasedData(data);
+            _service.SetPurchasedData(data);
         }
 
         private void SetupDefaultData()
         {
-            service.SetPurchasedData(new PurchasedData { noAds = false });
+            _service.SetPurchasedData(new PurchasedData { NoAds = false });
         }
         
     }

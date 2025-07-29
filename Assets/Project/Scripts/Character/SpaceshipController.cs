@@ -16,27 +16,27 @@ namespace Character
         IGameFinishListener,
         ITickable
     {
-        private GameConfigurationSO config;
-        private MoveComponent moveComponent;
-        private AttackComponent attackComponent;
-        private SpaceshipModel spaceshipModel;
-        private KeyboardInputReceiver inputReceiver;
+        private RemoteConfig _remoteConfig;
+        private MoveComponent _moveComponent;
+        private AttackComponent _attackComponent;
+        private SpaceshipModel _spaceshipModel;
+        private KeyboardInputReceiver _inputReceiver;
         
-        public SpaceshipModel SpaceshipModel => spaceshipModel;
+        public SpaceshipModel SpaceshipModel => _spaceshipModel;
  
         [Inject]
         private void Construct(
-            GameConfigurationSO config,
+            IConfigProvider configProvider,
             MoveComponent moveComponent,
             AttackComponent attackComponent,
             GameCycle gameCycle,
             SpaceshipModel spaceshipModel)
         {
-            this.config = config;
-            this.moveComponent = moveComponent;
-            this.attackComponent = attackComponent;
-            this.spaceshipModel = spaceshipModel;
-            inputReceiver = new KeyboardInputReceiver();
+            _remoteConfig = configProvider.GetRemoteConfig();
+            _moveComponent = moveComponent;
+            _attackComponent = attackComponent;
+            _spaceshipModel = spaceshipModel;
+            _inputReceiver = new KeyboardInputReceiver();
             
             gameCycle.AddListener(this);
             moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
@@ -44,62 +44,62 @@ namespace Character
         
         private void ResetCharacterModel()
         {
-            spaceshipModel.SetPosition(Vector3.zero);
-            spaceshipModel.SetRotation(0f);
-            spaceshipModel.SetSpeed(0f);
-            spaceshipModel.SetLaserCount(config.remoteConfig.countOfLaserShots);
-            spaceshipModel.SetTimeToRecoveryLaser(0f);
-            spaceshipModel.SetIsDead(true);
+            _spaceshipModel.SetPosition(Vector3.zero);
+            _spaceshipModel.SetRotation(0f);
+            _spaceshipModel.SetSpeed(0f);
+            _spaceshipModel.SetLaserCount(_remoteConfig.CountOfLaserShots);
+            _spaceshipModel.SetTimeToRecoveryLaser(0f);
+            _spaceshipModel.SetIsDead(true);
         }
 
         public void OnStartGame()
         {
-            moveComponent.Initialize(spaceshipModel);
-            attackComponent.Initialize(spaceshipModel);
+            _moveComponent.Initialize(_spaceshipModel);
+            _attackComponent.Initialize(_spaceshipModel);
 
-            inputReceiver.InputMoveValue += moveComponent.MoveForward;
-            inputReceiver.InputRotationValue += moveComponent.Rotate;
+            _inputReceiver.InputMoveValue += _moveComponent.MoveForward;
+            _inputReceiver.InputRotationValue += _moveComponent.Rotate;
 
-            inputReceiver.InputMainShotValue += attackComponent.AttackByMainShot;
-            inputReceiver.InputAdditionalShotValue += attackComponent.AttackByLaserShot;
+            _inputReceiver.InputMainShotValue += _attackComponent.AttackByMainShot;
+            _inputReceiver.InputAdditionalShotValue += _attackComponent.AttackByLaserShot;
         }
         
         public void OnFinishGame()
         {
-            inputReceiver.InputMoveValue -= moveComponent.MoveForward;
-            inputReceiver.InputRotationValue -= moveComponent.Rotate;
+            _inputReceiver.InputMoveValue -= _moveComponent.MoveForward;
+            _inputReceiver.InputRotationValue -= _moveComponent.Rotate;
 
-            inputReceiver.InputMainShotValue -= attackComponent.AttackByMainShot;
-            inputReceiver.InputAdditionalShotValue -= attackComponent.AttackByLaserShot;
+            _inputReceiver.InputMainShotValue -= _attackComponent.AttackByMainShot;
+            _inputReceiver.InputAdditionalShotValue -= _attackComponent.AttackByLaserShot;
 
-            attackComponent.ResetWeapon();
+            _attackComponent.ResetWeapon();
             ResetCharacterModel();
         }
 
         public void Tick()
         {
-            inputReceiver.Tick();
+            _inputReceiver.Tick();
         }
 
         public void OnPauseGame()
         {
-            inputReceiver.InputMoveValue -= moveComponent.MoveForward;
-            inputReceiver.InputRotationValue -= moveComponent.Rotate;
+            _inputReceiver.InputMoveValue -= _moveComponent.MoveForward;
+            _inputReceiver.InputRotationValue -= _moveComponent.Rotate;
 
-            inputReceiver.InputMainShotValue -= attackComponent.AttackByMainShot;
-            inputReceiver.InputAdditionalShotValue -= attackComponent.AttackByLaserShot;
+            _inputReceiver.InputMainShotValue -= _attackComponent.AttackByMainShot;
+            _inputReceiver.InputAdditionalShotValue -= _attackComponent.AttackByLaserShot;
         }
 
         public void OnResumeGame()
         {
-            moveComponent.Initialize(spaceshipModel);
-            attackComponent.Initialize(spaceshipModel);
+            _moveComponent.Initialize(_spaceshipModel);
+            _attackComponent.Initialize(_spaceshipModel);
 
-            inputReceiver.InputMoveValue += moveComponent.MoveForward;
-            inputReceiver.InputRotationValue += moveComponent.Rotate;
+            _inputReceiver.InputMoveValue += _moveComponent.MoveForward;
+            _inputReceiver.InputRotationValue += _moveComponent.Rotate;
 
-            inputReceiver.InputMainShotValue += attackComponent.AttackByMainShot;
-            inputReceiver.InputAdditionalShotValue += attackComponent.AttackByLaserShot;
+            _inputReceiver.InputMainShotValue += _attackComponent.AttackByMainShot;
+            _inputReceiver.InputAdditionalShotValue += _attackComponent.AttackByLaserShot;
         }
     }
 }

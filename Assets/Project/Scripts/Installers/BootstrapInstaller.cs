@@ -1,10 +1,13 @@
 using Zenject;
 using Systems;
 
-public class BootstrapInstaller : MonoInstaller
+namespace Installers
 {
-    public override void InstallBindings()
+    public class BootstrapInstaller : MonoInstaller
     {
-        Container.BindInterfacesTo<ApplicationManager>().AsSingle();
+        public override void InstallBindings()
+        {
+            Container.BindInterfacesTo<ApplicationManager>().AsSingle();
+        }
     }
 }

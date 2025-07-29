@@ -15,37 +15,37 @@ namespace GameAdvertisement
     
     public class UnityAdsService : IAdService, IInitializable
     { 
-        private const string androidInterAdUnitId = "Interstitial_Android";
-        private const string iOSInterAdUnitId = "Interstitial_iOS";
-        private const string androidRewardAdUnitId = "Rewarded_Android";
-        private const string iOSRewardAdUnitId = "Rewarded_iOS";
+        private const string AndroidInterAdUnitId = "Interstitial_Android";
+        private const string IOSInterAdUnitId = "Interstitial_iOS";
+        private const string AndroidRewardAdUnitId = "Rewarded_Android";
+        private const string IOSRewardAdUnitId = "Rewarded_iOS";
         
-        private string adInterUnitId;
-        private string adRewardUnitId;
+        private string _adInterUnitId;
+        private string _adRewardUnitId;
 
-        private string androidGameId;
-        private string iOSGameId;
-        private bool testMode;
-        private string gameId;
-        private AdPlace currentAdPlace = AdPlace.Unknown;
+        private string _androidGameId;
+        private string _iOSGameId;
+        private bool _testMode;
+        private string _gameId;
+        private AdPlace _currentAdPlace = AdPlace.Unknown;
         
-        private readonly Subject<AdPlace> onRewardedAdShowCompleted = new ();
-        private readonly Subject<AdPlace> onRewardedAdShowFailed = new ();
-        private readonly Subject<AdPlace> onInterstitialAdShowCompleted = new ();
-        private readonly Subject<AdPlace> onInterstitialAdShowFailed = new ();
-        private readonly Subject<Unit> onSkipInterstitialNoAdsPurchased = new ();
-        public IObservable<AdPlace> OnRewardedAdShowCompleted => onRewardedAdShowCompleted;
-        public IObservable<AdPlace> OnRewardedAdShowFailed => onRewardedAdShowFailed;
-        public IObservable<AdPlace> OnInterstitialAdShowCompleted => onInterstitialAdShowCompleted;
-        public IObservable<AdPlace> OnInterstitialAdShowFailed => onInterstitialAdShowFailed;
-        public IObservable<Unit> OnSkipInterstitialAdBecauseNoAdsPurchased => onSkipInterstitialNoAdsPurchased;
+        private readonly Subject<AdPlace> _onRewardedAdShowCompleted = new ();
+        private readonly Subject<AdPlace> _onRewardedAdShowFailed = new ();
+        private readonly Subject<AdPlace> _onInterstitialAdShowCompleted = new ();
+        private readonly Subject<AdPlace> _onInterstitialAdShowFailed = new ();
+        private readonly Subject<Unit> _onSkipInterstitialNoAdsPurchased = new ();
+        public IObservable<AdPlace> OnRewardedAdShowCompleted => _onRewardedAdShowCompleted;
+        public IObservable<AdPlace> OnRewardedAdShowFailed => _onRewardedAdShowFailed;
+        public IObservable<AdPlace> OnInterstitialAdShowCompleted => _onInterstitialAdShowCompleted;
+        public IObservable<AdPlace> OnInterstitialAdShowFailed => _onInterstitialAdShowFailed;
+        public IObservable<Unit> OnSkipInterstitialAdBecauseNoAdsPurchased => _onSkipInterstitialNoAdsPurchased;
 
         [Inject]
-        private void Construct(GameConfigurationSO gameConfigurationSO)
+        private void Construct(GameConfiguration gameConfiguration)
         {
-            androidGameId = gameConfigurationSO.androidGameId;
-            iOSGameId = gameConfigurationSO.iOSGameId;
-            testMode = gameConfigurationSO.adTestMode;
+            _androidGameId = gameConfiguration.AndroidGameId;
+            _iOSGameId = gameConfiguration.IOSGameId;
+            _testMode = gameConfiguration.AdTestMode;
         }
         
         public void Initialize()
@@ -53,43 +53,43 @@ namespace GameAdvertisement
 #if UNITY_IOS
             gameId = iOSGameId;
 #elif UNITY_ANDROID
-            gameId = androidGameId;
+            _gameId = _androidGameId;
 #elif UNITY_EDITOR
             gameId = androidGameId;
 #endif
  
             if (!Advertisement.isInitialized && Advertisement.isSupported)
             {
-                Advertisement.Initialize(gameId, testMode, this);
+                Advertisement.Initialize(_gameId, _testMode, this);
             }
             
-            adInterUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
-                ? iOSInterAdUnitId
-                : androidInterAdUnitId;
+            _adInterUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
+                ? IOSInterAdUnitId
+                : AndroidInterAdUnitId;
             
-            adRewardUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
-                ? iOSRewardAdUnitId
-                : androidRewardAdUnitId;
+            _adRewardUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
+                ? IOSRewardAdUnitId
+                : AndroidRewardAdUnitId;
             
-            Advertisement.Load(adInterUnitId, this);
-            Advertisement.Load(adRewardUnitId, this);
+            Advertisement.Load(_adInterUnitId, this);
+            Advertisement.Load(_adRewardUnitId, this);
         }
 
         public void ShowInterstitialAd(AdPlace place)
         {
-            currentAdPlace = place;
-            Advertisement.Show(adInterUnitId, this as IUnityAdsShowListener);
+            _currentAdPlace = place;
+            Advertisement.Show(_adInterUnitId, this as IUnityAdsShowListener);
         }
 
         public void ShowRewardedAd(AdPlace place)
         {
-            currentAdPlace = place;
-            Advertisement.Show(adRewardUnitId, this as IUnityAdsShowListener);
+            _currentAdPlace = place;
+            Advertisement.Show(_adRewardUnitId, this as IUnityAdsShowListener);
         }
 
         public void SkipInterstitial()
         {
-            onSkipInterstitialNoAdsPurchased.OnNext(Unit.Default);
+            _onSkipInterstitialNoAdsPurchased.OnNext(Unit.Default);
         }
 
         public void OnInitializationComplete()
@@ -104,9 +104,9 @@ namespace GameAdvertisement
 
         public void OnUnityAdsAdLoaded(string placementId)
         {
-            if (placementId.Equals(adRewardUnitId))
+            if (placementId.Equals(_adRewardUnitId))
                 Debug.Log("Rewarded ad loaded successfully.");
-            else if (placementId.Equals(adInterUnitId))
+            else if (placementId.Equals(_adInterUnitId))
                 Debug.Log("Interstitial ad loaded successfully.");
         }
 
@@ -117,10 +117,10 @@ namespace GameAdvertisement
 
         public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
         {
-            if (placementId.Equals(adRewardUnitId))
-                onRewardedAdShowFailed.OnNext(currentAdPlace);
-            else if (placementId.Equals(adInterUnitId))
-                onInterstitialAdShowFailed.OnNext(currentAdPlace);
+            if (placementId.Equals(_adRewardUnitId))
+                _onRewardedAdShowFailed.OnNext(_currentAdPlace);
+            else if (placementId.Equals(_adInterUnitId))
+                _onInterstitialAdShowFailed.OnNext(_currentAdPlace);
             
             Debug.Log($"Error showing Ad Unit {placementId}: {error.ToString()} - {message}");
         }
@@ -137,10 +137,10 @@ namespace GameAdvertisement
 
         public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
         {
-            if (placementId.Equals(adRewardUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
-                onRewardedAdShowCompleted.OnNext(currentAdPlace);
-            else if (placementId.Equals(adInterUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
-                onInterstitialAdShowCompleted.OnNext(currentAdPlace);
+            if (placementId.Equals(_adRewardUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
+                _onRewardedAdShowCompleted.OnNext(_currentAdPlace);
+            else if (placementId.Equals(_adInterUnitId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
+                _onInterstitialAdShowCompleted.OnNext(_currentAdPlace);
         }
     }
 }

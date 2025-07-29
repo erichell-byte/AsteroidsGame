@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -8,15 +7,15 @@ namespace SaveLoad
 {
     public class PlayerPrefsRepository : ILocalRepository
     {
-        private const string GAME_STATE_KEY = "GameStateKey";
+        private const string GameStateKey = "GameStateKey";
         
-        private Dictionary<string, string> gameState = new();
+        private Dictionary<string, string> _gameState = new();
         
         public bool TryGetData<T>(out T data)
         {
             var key = typeof(T).Name;
 
-            if (gameState.TryGetValue(key, out var jsonData))
+            if (_gameState.TryGetValue(key, out var jsonData))
             {
                 data = JsonConvert.DeserializeObject<T>(jsonData);
                 return true;
@@ -30,15 +29,15 @@ namespace SaveLoad
         {
             var jsonData = JsonConvert.SerializeObject(data);
             var key = typeof(T).Name;
-            gameState[key] = jsonData;
+            _gameState[key] = jsonData;
         }
 
         public UniTask LoadState()
         {
-            if (PlayerPrefs.HasKey(GAME_STATE_KEY))
+            if (PlayerPrefs.HasKey(GameStateKey))
             {
-                var gameStateJson = PlayerPrefs.GetString(GAME_STATE_KEY);
-                gameState = JsonConvert.DeserializeObject<Dictionary<string, string>>(gameStateJson);
+                var gameStateJson = PlayerPrefs.GetString(GameStateKey);
+                _gameState = JsonConvert.DeserializeObject<Dictionary<string, string>>(gameStateJson);
             }
             else
             {
@@ -51,8 +50,8 @@ namespace SaveLoad
         public void SaveState()
         {
             AddSaveTimeToState();
-            var gameStateJson = JsonConvert.SerializeObject(gameState);
-            PlayerPrefs.SetString(GAME_STATE_KEY, gameStateJson);
+            var gameStateJson = JsonConvert.SerializeObject(_gameState);
+            PlayerPrefs.SetString(GameStateKey, gameStateJson);
         }
 
         public void AddSaveTimeToState()

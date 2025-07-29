@@ -8,14 +8,14 @@ namespace Analytics
 {
     public class AnalyticsMediator : IGameStartListener, IGameFinishListener, IDisposable
     {
-        private IAnalyticsHandler analyticsHandler;
-        private AttackComponent attackComponent;
-        private EnemiesManager enemiesManager;
+        private IAnalyticsHandler _analyticsHandler;
+        private AttackComponent _attackComponent;
+        private EnemiesManager _enemiesManager;
 
-        private int laserShotCount;
-        private int mainShotCount;
-        private int asteroidsDestroyedCount;
-        private int ufoDestroyedCount;
+        private int _laserShotCount;
+        private int _mainShotCount;
+        private int _asteroidsDestroyedCount;
+        private int _ufoDestroyedCount;
 
         [Inject]
         private void Construct(
@@ -24,13 +24,13 @@ namespace Analytics
             EnemiesManager enemiesManager,
             GameCycle gameCycle)
         {
-            this.analyticsHandler = analyticsHandler;
-            this.attackComponent = attackComponent;
-            this.enemiesManager = enemiesManager;
+            this._analyticsHandler = analyticsHandler;
+            this._attackComponent = attackComponent;
+            this._enemiesManager = enemiesManager;
 
-            this.attackComponent.LaserWeapon.OnLaserShot += OnLaserShot;
-            this.attackComponent.MainWeapon.OnShot += IncreaseMainShotCount;
-            this.enemiesManager.OnEnemyDeath += OnEnemyDeath;
+            this._attackComponent.LaserWeapon.OnLaserShot += OnLaserShot;
+            this._attackComponent.MainWeapon.OnShot += IncreaseMainShotCount;
+            this._enemiesManager.OnEnemyDeath += OnEnemyDeath;
 
             gameCycle.AddListener(this);
         }
@@ -39,11 +39,11 @@ namespace Analytics
         {
             if (enemyType == EnemyType.Asteroid || enemyType == EnemyType.AsteroidSmall)
             {
-                asteroidsDestroyedCount++;
+                _asteroidsDestroyedCount++;
             }
             else if (enemyType == EnemyType.UFO)
             {
-                ufoDestroyedCount++;
+                _ufoDestroyedCount++;
             }
         }
 
@@ -59,39 +59,39 @@ namespace Analytics
 
         private void SendStartGame()
         {
-            analyticsHandler.StartGame();
+            _analyticsHandler.StartGame();
         }
 
         private void SendFinishGame()
         {
-            analyticsHandler.FinishGame(mainShotCount, laserShotCount, asteroidsDestroyedCount, ufoDestroyedCount);
+            _analyticsHandler.FinishGame(_mainShotCount, _laserShotCount, _asteroidsDestroyedCount, _ufoDestroyedCount);
             ResetCounters();
         }
 
         private void OnLaserShot()
         {
-            analyticsHandler.LaserShotFired();
-            laserShotCount++;
+            _analyticsHandler.LaserShotFired();
+            _laserShotCount++;
         }
 
         private void IncreaseMainShotCount()
         {
-            mainShotCount++;
+            _mainShotCount++;
         }
 
         private void ResetCounters()
         {
-            laserShotCount = 0;
-            mainShotCount = 0;
-            asteroidsDestroyedCount = 0;
-            ufoDestroyedCount = 0;
+            _laserShotCount = 0;
+            _mainShotCount = 0;
+            _asteroidsDestroyedCount = 0;
+            _ufoDestroyedCount = 0;
         }
 
         public void Dispose()
         {
-            attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
-            attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
-            enemiesManager.OnEnemyDeath -= OnEnemyDeath;
+            _attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
+            _attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
+            _enemiesManager.OnEnemyDeath -= OnEnemyDeath;
         }
     }
 }

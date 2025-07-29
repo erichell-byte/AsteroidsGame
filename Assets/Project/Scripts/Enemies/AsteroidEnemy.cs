@@ -5,25 +5,25 @@ namespace Enemies
 {
     public class AsteroidEnemy : Enemy
     {
-        private IMovementBehavior movementBehavior;
+        private IMovementBehavior _movementBehavior;
 
         public override void Initialize(EnemyConfig config)
         {
             base.Initialize(config);
-            movementBehavior = new RandomMovementBehavior(rb);
-            movementBehavior.Move(config);
+            _movementBehavior = new RandomMovementBehavior(Rb);
+            _movementBehavior.Move(config);
         }
 
         public override void SetActive(bool isActive)
         {
             if (isActive)
             {
-                movementBehavior.ResumeMove();
-                movementBehavior.Move(config);
+                _movementBehavior.ResumeMove();
+                _movementBehavior.Move(Config);
             }
             else
             {
-                movementBehavior.StopMove();
+                _movementBehavior.StopMove();
             }
             base.SetActive(isActive);
         }

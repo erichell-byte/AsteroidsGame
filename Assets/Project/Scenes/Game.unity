@@ -571,8 +571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7bc5d2ae3cae4827b1c936148674819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showRewardedAdButton: {fileID: 672458773}
-  skipRewardedAdButton: {fileID: 474566184}
+  _showRewardedAdButton: {fileID: 672458773}
+  _skipRewardedAdButton: {fileID: 474566184}
 --- !u!1 &672458768
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,13 +873,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476c6a119057544b28bc714860512be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackComponent: {fileID: 1074242085}
-  moveComponent: {fileID: 1074242079}
-  collisionComponent: {fileID: 1074242086}
-  poolParent: {fileID: 1645708912}
-  enemiesManager: {fileID: 2026412837}
-  gameUIView: {fileID: 1528456291}
-  adView: {fileID: 672281933}
+  _attackComponent: {fileID: 1074242085}
+  _moveComponent: {fileID: 1074242079}
+  _collisionComponent: {fileID: 1074242086}
+  _poolParent: {fileID: 1645708912}
+  _enemiesManager: {fileID: 2026412837}
+  _gameUIView: {fileID: 1528456291}
+  _adView: {fileID: 672281933}
 --- !u!114 &785692755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1340,9 +1340,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32280c784f4c4b3cb4906af11fea6131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotPoint: {fileID: 1481658810}
-  laser: {fileID: 1296203732}
-  laserLayerMask:
+  _shotPoint: {fileID: 1481658810}
+  _laser: {fileID: 1296203732}
+  _laserLayerMask:
     serializedVersion: 2
     m_Bits: 55
 --- !u!114 &1074242086
@@ -2121,12 +2121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa927def769e74427abd363a8d8682f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coordinateText: {fileID: 1399952004}
-  rotationAngleText: {fileID: 1415948278}
-  currentSpeedText: {fileID: 815347300}
-  countOfAvailableLaserText: {fileID: 756528402}
-  timeToResetLaserText: {fileID: 259071064}
-  startGameButton: {fileID: 1716670804}
+  _coordinateText: {fileID: 1399952004}
+  _rotationAngleText: {fileID: 1415948278}
+  _currentSpeedText: {fileID: 815347300}
+  _countOfAvailableLaserText: {fileID: 756528402}
+  _timeToResetLaserText: {fileID: 259071064}
+  _startGameButton: {fileID: 1716670804}
 --- !u!114 &1528456292
 MonoBehaviour:
   m_ObjectHideFlags: 0

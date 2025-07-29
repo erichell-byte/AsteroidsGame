@@ -1,32 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 
 namespace Config
 {
     [CreateAssetMenu(fileName = "GameConfiguration", menuName = "ScriptableObjects/GameConfiguration", order = 0)]
-    public class GameConfigurationSO : ScriptableObject
+    public class GameConfiguration : ScriptableObject
     {
-        [Header("Remote Configuration")]
-        public RemoteConfig remoteConfig;
-        
-        [Header("Addressable Assets Configuration")]
-        public AssetReferenceGameObject bulletId;
-        public AssetReferenceGameObject asteroidId;
-        public AssetReferenceGameObject asteroidSmallId;
-        public AssetReferenceGameObject ufoId;
+        public AssetReferenceGameObject BulletId;
+        public AssetReferenceGameObject AsteroidId;
+        public AssetReferenceGameObject AsteroidSmallId;
+        public AssetReferenceGameObject UfoId;
         
         [Header("Enemy Configuration")]
-        public List<EnemyConfig> enemiesConfigs;
+        public List<EnemyConfig> EnemiesConfigs;
         
         [Space(20)]
-        [Header("Advertisement Configuration")]
-        public string androidGameId;
-        public string iOSGameId;
-        public bool adTestMode;
+        public string AndroidGameId;
+        public string IOSGameId;
+        public bool AdTestMode;
         
         [Space(20)]
         [Header("Purchasing Configuration")]
-        public string noAdsProductId;
+        public string NoAdsProductId;
     }
 }

@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using SaveLoad;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,13 +7,14 @@ namespace Systems
 {
     public class ApplicationManager : IInitializable
     {
-        private SaveLoadManager saveLoadManager;
-        private UnityServicesInitializator unityServicesInitializator = new ();
-
+        private readonly UnityServicesInitializator _unityServicesInitializator = new ();
+        
+        private SaveLoadManager _saveLoadManager;
+        
         [Inject]
         private void Construct(SaveLoadManager saveLoadManager)
         {
-            this.saveLoadManager = saveLoadManager;
+            _saveLoadManager = saveLoadManager;
         }
             
         public void LoadGame()
@@ -34,8 +34,8 @@ namespace Systems
 
         public async void Initialize()
         {
-            await unityServicesInitializator.SetupAndSignIn();
-            saveLoadManager.LoadGame();
+            await _unityServicesInitializator.SetupAndSignIn();
+            _saveLoadManager.LoadGame();
             LoadGame();
         }
     }

@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 using Zenject;
 
-namespace GameSystem
+namespace Utils
 {
     public class Timer : ITickable
     {
-        private float duration;
-        private float remainingTime;
-        private bool isPaused;
+        private float _duration;
+        private float _remainingTime;
+        private bool _isPaused;
 
         public Action TimerIsExpired;
         public Action<float> RemainingTimeChanged;
@@ -22,28 +22,28 @@ namespace GameSystem
 
         public void Init(float duration)
         {
-            this.duration = duration;
+            this._duration = duration;
         }
 
         public void Play()
         {
-            remainingTime = duration;
-            isPaused = false;
+            _remainingTime = _duration;
+            _isPaused = false;
         }
 
         public bool IsPlaying()
         {
-            return remainingTime > 0;
+            return _remainingTime > 0;
         }
 
         public void Pause()
         {
-            isPaused = true;
+            _isPaused = true;
         }
         
         public void Resume()
         {
-            isPaused = false;
+            _isPaused = false;
         }
         
         public class Factory : PlaceholderFactory<Timer>
@@ -52,14 +52,14 @@ namespace GameSystem
 
         public void Tick()
         {
-            if (remainingTime > 0 && isPaused == false)
+            if (_remainingTime > 0 && _isPaused == false)
             {
-                remainingTime -= Time.deltaTime;
-                RemainingTimeChanged?.Invoke(remainingTime);
+                _remainingTime -= Time.deltaTime;
+                RemainingTimeChanged?.Invoke(_remainingTime);
 
-                if (remainingTime <= 0f)
+                if (_remainingTime <= 0f)
                 {
-                    remainingTime = 0f;
+                    _remainingTime = 0f;
                     TimerIsExpired?.Invoke();
                 }
             }

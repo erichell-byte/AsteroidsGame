@@ -2,26 +2,29 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class ButtonView : MonoBehaviour
+namespace UI
 {
-    public event Action OnClick;
-
-    private Button button;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    public class ButtonView : MonoBehaviour
     {
-        button = GetComponent<Button>();
-        button.onClick.AddListener(Click);
-    }
+        private Button _button;
+    
+        public event Action OnClick;
+    
+        private void Awake()
+        {
+            _button = GetComponent<Button>();
+            _button.onClick.AddListener(Click);
+        }
 
-    private void Click()
-    {
-        OnClick?.Invoke();
-    }
+        private void Click()
+        {
+            OnClick?.Invoke();
+        }
 
-    private void OnDestroy()
-    {
-        button.onClick.RemoveListener(Click);
+        private void OnDestroy()
+        {
+            _button.onClick.RemoveListener(Click);
+        }
     }
 }

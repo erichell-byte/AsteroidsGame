@@ -1,33 +1,33 @@
 using GameAdvertisement;
 using Purchasing;
 
-namespace Project.Scripts.UI
+namespace UI
 {
     public class AdViewModel
     {
-        private IAdService adService;
-        private IPurchaseService purchaseService;
-        private bool isNoAdsPurchased => purchaseService.GetPurchasedData().noAds;
+        private readonly IAdService _adService;
+        private readonly IPurchaseService _purchaseService;
+        private bool IsNoAdsPurchased => _purchaseService.GetPurchasedData().NoAds;
 
         public AdViewModel(
             IAdService adService,
             IPurchaseService purchaseService)
         {
-            this.adService = adService;
-            this.purchaseService = purchaseService;
+            _adService = adService;
+            _purchaseService = purchaseService;
         }
 
         public void ShowRewardedButtonClicked()
         {
-            adService.ShowRewardedAd(AdPlace.GameOver);
+            _adService.ShowRewardedAd(AdPlace.GameOver);
         }
 
         public void SkipRewardedButtonClicked()
         {
-            if (isNoAdsPurchased)
-                adService.SkipInterstitial();
+            if (IsNoAdsPurchased)
+                _adService.SkipInterstitial();
             else
-                adService.ShowInterstitialAd(AdPlace.GameOver);
+                _adService.ShowInterstitialAd(AdPlace.GameOver);
         }
     }
 }

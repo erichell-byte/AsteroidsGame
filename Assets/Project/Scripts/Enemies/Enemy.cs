@@ -6,18 +6,18 @@ namespace Enemies
 {
     public abstract class Enemy : MonoBehaviour
     {
-        protected EnemyConfig config;
-        protected Rigidbody2D rb;
-        protected EnemyType enemyType;
-        protected bool isActive;
+        protected EnemyConfig Config;
+        protected Rigidbody2D Rb;
+        protected EnemyType EnemyType;
+        protected bool IsActive;
 
         public Action<Enemy> OnDeath;
 
         public virtual void Initialize(EnemyConfig config)
         {
-            this.config = config;
-            enemyType = config.type;
-            rb = GetComponent<Rigidbody2D>();
+            this.Config = config;
+            EnemyType = config.Type;
+            Rb = GetComponent<Rigidbody2D>();
         }
 
         public virtual void Die()
@@ -27,12 +27,12 @@ namespace Enemies
 
         public EnemyType GetEnemyType()
         {
-            return enemyType;
+            return EnemyType;
         }
         
         public virtual void SetActive(bool isActive)
         {
-            this.isActive = isActive;
+            this.IsActive = isActive;
         }
     }
 }

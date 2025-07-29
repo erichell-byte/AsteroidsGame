@@ -6,37 +6,37 @@ namespace Enemies
 {
     public class UFOEnemy : Enemy
     {
-        private IMovementBehavior movementBehavior;
+        private IMovementBehavior _movementBehavior;
 
         public override void Initialize(EnemyConfig config)
         { 
             base.Initialize(config);
-            if (movementBehavior != null)
+            if (_movementBehavior != null)
             {
-                movementBehavior.Move(config);
+                _movementBehavior.Move(config);
             }
         }
         
         public void InitMovement(Transform target)
         {
-            movementBehavior = new ChaseMovementBehavior(target, rb);
+            _movementBehavior = new ChaseMovementBehavior(target, Rb);
         }
 
         public override void SetActive(bool isActive)
         {
             if (isActive)
-                movementBehavior.ResumeMove();
+                _movementBehavior.ResumeMove();
             else
-                movementBehavior.StopMove();
+                _movementBehavior.StopMove();
             
             base.SetActive(isActive);
         }
 
         private void Update()
         {
-            if (movementBehavior != null)
+            if (_movementBehavior != null)
             {
-                movementBehavior.Move(config);
+                _movementBehavior.Move(Config);
             }
         }
     }

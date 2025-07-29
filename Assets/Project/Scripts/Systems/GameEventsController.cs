@@ -8,12 +8,12 @@ namespace Systems
 {
     public class GameEventsController : IInitializable, IDisposable
     {
-        private GameCycle gameCycle;
-        private SpaceshipController spaceship;
-        private IAdService adService;
-        private IGameEvents gameEvents;
+        private readonly CompositeDisposable _disposables = new ();
         
-        private CompositeDisposable disposables = new ();
+        private GameCycle _gameCycle;
+        private SpaceshipController _spaceship;
+        private IAdService _adService;
+        private IGameEvents _gameEvents;
         
         [Inject]
         private void Construct(
@@ -22,49 +22,49 @@ namespace Systems
             IAdService adService,
             IGameEvents gameEvents)
         {
-            this.gameCycle = gameCycle;
-            this.spaceship = spaceship;
-            this.adService = adService;
-            this.gameEvents = gameEvents;
+            this._gameCycle = gameCycle;
+            this._spaceship = spaceship;
+            this._adService = adService;
+            this._gameEvents = gameEvents;
         }
         
         public void Initialize()
         {
-            spaceship.SpaceshipModel.IsDead
+            _spaceship.SpaceshipModel.IsDead
                 .Where(isDead => isDead == false)
-                .Subscribe(_ => gameCycle.StartGame())
-                .AddTo(disposables);
+                .Subscribe(_ => _gameCycle.StartGame())
+                .AddTo(_disposables);
             
-            spaceship.SpaceshipModel.IsDead
+            _spaceship.SpaceshipModel.IsDead
                 .Where(isDead => isDead)
-                .Subscribe(_ => gameCycle.FinishGame())
-                .AddTo(disposables);
+                .Subscribe(_ => _gameCycle.FinishGame())
+                .AddTo(_disposables);
 
-            gameEvents.OnSpaceshipCollidedWithEnemy
-                .Subscribe(_ => gameCycle.PauseGame())
-                .AddTo(disposables);
+            _gameEvents.OnSpaceshipCollidedWithEnemy
+                .Subscribe(_ => _gameCycle.PauseGame())
+                .AddTo(_disposables);
             
-            adService.OnRewardedAdShowCompleted
+            _adService.OnRewardedAdShowCompleted
                 .Where(adPlace => AdPlace.GameOver == adPlace)
-                .Subscribe(_ => gameCycle.ResumeGame())
-                .AddTo(disposables);
+                .Subscribe(_ => _gameCycle.ResumeGame())
+                .AddTo(_disposables);
             
-            adService.OnSkipInterstitialAdBecauseNoAdsPurchased
-                .Subscribe(_ => gameCycle.FinishGame())
-                .AddTo(disposables);
+            _adService.OnSkipInterstitialAdBecauseNoAdsPurchased
+                .Subscribe(_ => _gameCycle.FinishGame())
+                .AddTo(_disposables);
 
             Observable.Merge(
-                    adService.OnRewardedAdShowFailed,
-                    adService.OnInterstitialAdShowFailed,
-                    adService.OnInterstitialAdShowCompleted)
+                    _adService.OnRewardedAdShowFailed,
+                    _adService.OnInterstitialAdShowFailed,
+                    _adService.OnInterstitialAdShowCompleted)
                 .Where(adPlace => AdPlace.GameOver == adPlace)
-                .Subscribe(_ => gameCycle.FinishGame())
-                .AddTo(disposables);
+                .Subscribe(_ => _gameCycle.FinishGame())
+                .AddTo(_disposables);
         }
         
         public void Dispose()
         {
-            disposables?.Dispose();
+            _disposables?.Dispose();
         }
     }
 }

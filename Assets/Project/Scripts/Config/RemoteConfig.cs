@@ -7,19 +7,19 @@ namespace Config
     public class RemoteConfig
     {
         [Header("Character Configuration")]
-        public float moveCoefficient;
-        public float rotateCoefficient;
-        public float maxVelocityMagnitude;
+        public float MoveCoefficient;
+        public float RotateCoefficient;
+        public float MaxVelocityMagnitude;
         
         [Header("Attack Configuration")]
-        public float bulletSpeed;
-        public float shotFrequency;
-        public float timeToRecoveryLaser;
-        public float timeToDurationLaser;
-        public int countOfLaserShots;
+        public float BulletSpeed;
+        public float ShotFrequency;
+        public float TimeToRecoveryLaser;
+        public float TimeToDurationLaser;
+        public int CountOfLaserShots;
         
         [Header("Enemies Configuration")]
-        public float asteroidSpawnFrequency;
-        public float ufoSpawnFrequency;
+        public float AsteroidSpawnFrequency;
+        public float UfoSpawnFrequency;
     }
 }

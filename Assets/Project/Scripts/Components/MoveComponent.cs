@@ -11,35 +11,36 @@ namespace Components
         IGamePauseListener,
         ITickable
     {
-        private GameConfigurationSO config;
+        private RemoteConfig _remoteConfig;
         
-        private Rigidbody2D rb2d;
-        private float moveСoefficient;
-        private float rotateCoefficient;
-        private float maxVelocityMagnitude;
-        private SpaceshipModel spaceshipModel;
+        private Rigidbody2D _rb2d;
+        private float _moveСoefficient;
+        private float _rotateCoefficient;
+        private float _maxVelocityMagnitude;
+        private SpaceshipModel _spaceshipModel;
 
         [Inject]
         private void Construct(
             GameCycle gameCycle,
-            GameConfigurationSO config)
+            IConfigProvider configProvider)
         {
-            this.config = config;
+            _remoteConfig = configProvider.GetRemoteConfig();
+            
             gameCycle.AddListener(this);
         }
         
         public void Initialize(
             SpaceshipModel spaceshipModel)
         {
-            moveСoefficient = config.remoteConfig.moveCoefficient;
-            rotateCoefficient = config.remoteConfig.rotateCoefficient;
-            maxVelocityMagnitude = config.remoteConfig.maxVelocityMagnitude;
-            this.spaceshipModel = spaceshipModel;
+            _moveСoefficient = _remoteConfig.MoveCoefficient;
+            _rotateCoefficient = _remoteConfig.RotateCoefficient;
+            _maxVelocityMagnitude = _remoteConfig.MaxVelocityMagnitude;
+            this._spaceshipModel = spaceshipModel;
         }
 
         private void Awake()
         {
-            rb2d = GetComponent<Rigidbody2D>();
+            _rb2d = GetComponent<Rigidbody2D>();
         }
 
         public void SetInitialPositionAndRotation(Vector3 position, float rotationZ)
@@ -50,34 +51,34 @@ namespace Components
 
         public void MoveForward()
         {
-            rb2d.linearVelocity += (Vector2)transform.up * (Time.fixedDeltaTime * moveСoefficient);
-            rb2d.linearVelocity = Vector2.ClampMagnitude(rb2d.linearVelocity, maxVelocityMagnitude);
-            spaceshipModel?.SetSpeed(rb2d.linearVelocity.magnitude);
+            _rb2d.linearVelocity += (Vector2)transform.up * (Time.fixedDeltaTime * _moveСoefficient);
+            _rb2d.linearVelocity = Vector2.ClampMagnitude(_rb2d.linearVelocity, _maxVelocityMagnitude);
+            _spaceshipModel?.SetSpeed(_rb2d.linearVelocity.magnitude);
         }
 
         public void Rotate(int clockwiseDirection)
         {
-            transform.Rotate(Vector3.back, clockwiseDirection * rotateCoefficient * Time.deltaTime);
-            spaceshipModel?.SetRotation(transform.eulerAngles.z);
+            transform.Rotate(Vector3.back, clockwiseDirection * _rotateCoefficient * Time.deltaTime);
+            _spaceshipModel?.SetRotation(transform.eulerAngles.z);
         }
 
         public void OnFinishGame()
         {
-            rb2d.linearVelocity = Vector2.zero;
+            _rb2d.linearVelocity = Vector2.zero;
             transform.rotation = Quaternion.identity;
             transform.position = Vector3.zero;
         }
         
         public void OnPauseGame()
         {
-            rb2d.linearVelocity = Vector2.zero;
+            _rb2d.linearVelocity = Vector2.zero;
         }
 
         public void Tick()
         {
-            if (rb2d.linearVelocity.magnitude > 0)
+            if (_rb2d.linearVelocity.magnitude > 0)
             {
-                spaceshipModel?.SetPosition(transform.position);
+                _spaceshipModel?.SetPosition(transform.position);
             }
         }
     }

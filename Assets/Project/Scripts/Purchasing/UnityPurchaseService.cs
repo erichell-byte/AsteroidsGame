@@ -17,22 +17,23 @@ namespace Purchasing
     }
     public class UnityPurchaseService : IPurchaseService, IInitializable
     {
-        private IStoreController controller;
-        private IExtensionProvider extensions;
-        private SaveLoadManager saveLoadManager;
+        private IStoreController _controller;
+        private IExtensionProvider _extensions;
+        private SaveLoadManager _saveLoadManager;
         
-        private PurchasedData purchasedData = new ();
-        private string noAdsProductId;
+        private PurchasedData _purchasedData = new ();
+        private string _noAdsProductId;
         
         public ProductCollection products { get; }
         public event Action<TypeOfPurchase> OnPurchasedAction;
+        
         [Inject]
         private void Construct(
-            GameConfigurationSO gameConfigSO,
+            GameConfiguration gameConfig,
             SaveLoadManager saveLoadManager)
         {
-            noAdsProductId = gameConfigSO.noAdsProductId;
-            this.saveLoadManager = saveLoadManager;
+            _noAdsProductId = gameConfig.NoAdsProductId;
+            _saveLoadManager = saveLoadManager;
         }
         
         public void Initialize()
@@ -59,7 +60,7 @@ namespace Purchasing
         private void InitializePurchasing()
         {
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-            builder.AddProduct(noAdsProductId, ProductType.NonConsumable);
+            builder.AddProduct(_noAdsProductId, ProductType.NonConsumable);
             UnityPurchasing.Initialize(this, builder);
         }
         
@@ -75,15 +76,15 @@ namespace Purchasing
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
         {
-            if (purchaseEvent.purchasedProduct.definition.id == noAdsProductId)
+            if (purchaseEvent.purchasedProduct.definition.id == _noAdsProductId)
             {
                 Debug.Log("No ads product purchased successfully: " + purchaseEvent.purchasedProduct.definition.id);
-                purchasedData.noAds = true;
+                _purchasedData.NoAds = true;
                 OnPurchasedAction?.Invoke(TypeOfPurchase.NoAds);
                 
             }
             
-            saveLoadManager.SaveGame();
+            _saveLoadManager.SaveGame();
             return PurchaseProcessingResult.Complete;
         }
 
@@ -94,8 +95,8 @@ namespace Purchasing
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
-            this.controller = controller;
-            this.extensions = extensions;
+            this._controller = controller;
+            this._extensions = extensions;
             
             Debug.Log("Unity purchase service initialized");
         }
@@ -114,13 +115,13 @@ namespace Purchasing
                 return;
             }
 
-            if (controller == null)
+            if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
                 return;
             }
 
-            controller.InitiatePurchase(product, payload);
+            _controller.InitiatePurchase(product, payload);
         }
 
         public void InitiatePurchase(string productId, string payload)
@@ -131,13 +132,13 @@ namespace Purchasing
                 return;
             }
 
-            if (controller == null)
+            if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
                 return;
             }
 
-            controller.InitiatePurchase(productId, payload);
+            _controller.InitiatePurchase(productId, payload);
         }
 
         public void InitiatePurchase(Product product)
@@ -148,13 +149,13 @@ namespace Purchasing
                 return;
             }
 
-            if (controller == null)
+            if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
                 return;
             }
 
-            controller.InitiatePurchase(product);
+            _controller.InitiatePurchase(product);
         }
 
         public void InitiatePurchase(string productId)
@@ -165,13 +166,13 @@ namespace Purchasing
                 return;
             }
 
-            if (controller == null)
+            if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
                 return;
             }
 
-            controller.InitiatePurchase(productId);
+            _controller.InitiatePurchase(productId);
         }
 
         public void FetchAdditionalProducts(HashSet<ProductDefinition> additionalProducts, Action successCallback, Action<InitializationFailureReason> failCallback)
@@ -187,23 +188,23 @@ namespace Purchasing
         public void ConfirmPendingPurchase(Product product)
         {
             
-            if (controller == null)
+            if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
                 return;
             }
 
-            controller.ConfirmPendingPurchase(product);
+            _controller.ConfirmPendingPurchase(product);
         }
 
         public PurchasedData GetPurchasedData()
         {
-            return purchasedData;
+            return _purchasedData;
         }
         
         public void SetPurchasedData(PurchasedData data)
         {
-            purchasedData = data;
+            _purchasedData = data;
         }
     }
 }

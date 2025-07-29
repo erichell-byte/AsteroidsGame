@@ -7,7 +7,10 @@ namespace Pools
 {
     public class EnemyPoolFacade : AbstractPool<Enemy>
     {
-        public EnemyPoolFacade(IAssetLoader<Enemy> loader, AssetReferenceGameObject assetId, Transform parent = null)
+        public EnemyPoolFacade(
+            IAssetLoader<Enemy> loader,
+            AssetReferenceGameObject assetId,
+            Transform parent = null)
             : base(loader, assetId, parent)
         {
         }

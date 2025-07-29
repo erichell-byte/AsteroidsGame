@@ -194,9 +194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74baa6f2c3828440bbc615a03ac671bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startButton: {fileID: 6888460134429981206}
-  buyAdsButton: {fileID: 7474729524556616919}
-  exitGameButton: {fileID: 672539830696069463}
+  _startButton: {fileID: 6888460134429981206}
+  _buyAdsButton: {fileID: 7474729524556616919}
+  _exitGameButton: {fileID: 672539830696069463}
 --- !u!114 &7366526541590826110
 MonoBehaviour:
   m_ObjectHideFlags: 0

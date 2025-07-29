@@ -5,6 +5,6 @@ namespace SaveLoad
     [Serializable]
     public class PurchasedData : ISavedData
     {
-        public bool noAds;
+        public bool NoAds;
     }
 }

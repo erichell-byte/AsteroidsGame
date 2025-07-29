@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using Zenject;
 
@@ -6,42 +5,42 @@ namespace SaveLoad
 {
     public class SaveLoadManager
     {
-        private ISaveLoader[] saveLoaders;
-        private ILocalRepository localRepository;
-        private IRemoteRepository remoteRepository;
+        private ISaveLoader[] _saveLoaders;
+        private ILocalRepository _localRepository;
+        private IRemoteRepository _remoteRepository;
 
         [Inject]
         private void Construct(ILocalRepository localRepository,
             IRemoteRepository remoteRepository,
             ISaveLoader[] saveLoaders)
         {
-            this.localRepository = localRepository;
-            this.remoteRepository = remoteRepository;
-            this.saveLoaders = saveLoaders;
+            this._localRepository = localRepository;
+            this._remoteRepository = remoteRepository;
+            this._saveLoaders = saveLoaders;
         }
         
         public void SaveGame()
         {
-            foreach (var saveLoader in saveLoaders)
+            foreach (var saveLoader in _saveLoaders)
             {
-                saveLoader.SaveGame(localRepository);
-                saveLoader.SaveGame(remoteRepository);
+                saveLoader.SaveGame(_localRepository);
+                saveLoader.SaveGame(_remoteRepository);
             }
             
-            localRepository.SaveState();
-            remoteRepository.SaveState();
+            _localRepository.SaveState();
+            _remoteRepository.SaveState();
             
             Debug.Log("Game saved");
         }
         
         public async void LoadGame()
         {
-            await localRepository.LoadState();
-            await remoteRepository.LoadState();
+            await _localRepository.LoadState();
+            await _remoteRepository.LoadState();
 
-            IGameRepository relevantRepository = IsRemoteDataRelevant() ? remoteRepository : localRepository;
+            IGameRepository relevantRepository = IsRemoteDataRelevant() ? _remoteRepository : _localRepository;
 
-            foreach (var saveLoader in saveLoaders)
+            foreach (var saveLoader in _saveLoaders)
             {
                 saveLoader.LoadGame(relevantRepository);
             }
@@ -52,13 +51,13 @@ namespace SaveLoad
 
         private bool IsRemoteDataRelevant()
         {
-            if (localRepository.TryGetData<SaveTimestamp>(out var localTimestamp) &&
-                remoteRepository.TryGetData<SaveTimestamp>(out var remoteTimestamp))
+            if (_localRepository.TryGetData<SaveTimestamp>(out var localTimestamp) &&
+                _remoteRepository.TryGetData<SaveTimestamp>(out var remoteTimestamp))
             {
                 return remoteTimestamp.ticks >= localTimestamp.ticks;
             }
 
-            if (remoteRepository.TryGetData<SaveTimestamp>(out _))
+            if (_remoteRepository.TryGetData<SaveTimestamp>(out _))
                 return true;
 
             return false;

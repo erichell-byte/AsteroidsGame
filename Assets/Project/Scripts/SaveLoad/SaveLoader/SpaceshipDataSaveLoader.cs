@@ -6,17 +6,17 @@ namespace SaveLoad
 {
     public class SpaceshipDataSaveLoader : ISaveLoader
     {
-        private SpaceshipModel service;
+        private SpaceshipModel _service;
 
         [Inject]
         private void Construct(SpaceshipModel service)
         {
-            this.service = service;
+            this._service = service;
         }
         
         public void SaveGame(IGameRepository repository)
         {
-            SpaceshipData data = ConvertToData(service);
+            SpaceshipData data = ConvertToData(_service);
             repository.SetData(data);
         }
 
@@ -24,11 +24,11 @@ namespace SaveLoad
         {
             if (repository.TryGetData(out SpaceshipData data))
             {
-                SetupData(service, data);
+                SetupData(_service, data);
             }
             else
             {
-                SetupDefaultData(service);
+                SetupDefaultData(_service);
             }
         }
 
@@ -41,16 +41,16 @@ namespace SaveLoad
         {
             return new SpaceshipData()
             {
-                positionX = model.Position.Value.x,
-                positionY = model.Position.Value.y,
-                rotationZ = model.Rotation.Value,
+                PositionX = model.Position.Value.x,
+                PositionY = model.Position.Value.y,
+                RotationZ = model.Rotation.Value,
             };
         }
 
         private void SetupData(SpaceshipModel service, SpaceshipData data)
         {
-            service.SetPosition(new Vector2(data.positionX, data.positionY));
-            service.SetRotation(data.rotationZ);
+            service.SetPosition(new Vector2(data.PositionX, data.PositionY));
+            service.SetRotation(data.RotationZ);
         }
 
         protected void SetupDefaultData(SpaceshipModel service)

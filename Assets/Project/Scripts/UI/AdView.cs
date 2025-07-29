@@ -1,32 +1,35 @@
-using Project.Scripts.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class AdView : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private ButtonView showRewardedAdButton;
-    [SerializeField] private ButtonView skipRewardedAdButton;
+    public class AdView : MonoBehaviour
+    {
+        [SerializeField] private ButtonView _showRewardedAdButton;
+        [SerializeField] private ButtonView _skipRewardedAdButton;
  
-    private AdViewModel adViewModel;
-    public void Initialize(AdViewModel adViewModel)
-    {
-        this.adViewModel = adViewModel;
-        showRewardedAdButton.OnClick += adViewModel.ShowRewardedButtonClicked;
-        skipRewardedAdButton.OnClick += adViewModel.SkipRewardedButtonClicked;
-    } 
+        private AdViewModel _adViewModel;
+        public void Initialize(AdViewModel adViewModel)
+        {
+            _adViewModel = adViewModel;
+            _showRewardedAdButton.OnClick += adViewModel.ShowRewardedButtonClicked;
+            _skipRewardedAdButton.OnClick += adViewModel.SkipRewardedButtonClicked;
+        } 
     
-    public void Show()
-    {
-        gameObject.SetActive(true);
-    }
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
     
-    public void Hide()
-    {
-        gameObject.SetActive(false);
-    }
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
     
-    public void Dispose()
-    {
-        showRewardedAdButton.OnClick -= adViewModel.ShowRewardedButtonClicked;
-        skipRewardedAdButton.OnClick -= adViewModel.SkipRewardedButtonClicked;
+        public void Dispose()
+        {
+            _showRewardedAdButton.OnClick -= _adViewModel.ShowRewardedButtonClicked;
+            _skipRewardedAdButton.OnClick -= _adViewModel.SkipRewardedButtonClicked;
+        }
     }
 }

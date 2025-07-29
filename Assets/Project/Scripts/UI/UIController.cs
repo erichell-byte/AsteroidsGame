@@ -1,7 +1,6 @@
 using Character;
 using GameAdvertisement;
 using Purchasing;
-using Project.Scripts.UI;
 using Systems;
 using Zenject;
 
@@ -9,15 +8,14 @@ namespace UI
 {
     public class UIController : IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener
     {
-        private SpaceshipModel spaceshipModel;
-        private IAdService adService;
-        private IPurchaseService purchaseService;
-        private GameUIView gameUIView;
-        private AdView adView;
+        private SpaceshipModel _spaceshipModel;
+        private IAdService _adService;
+        private IPurchaseService _purchaseService;
+        private GameUIView _gameUIView;
+        private AdView _adView;
         
-        
-        private GameUIViewModel gameViewModel;
-        private AdViewModel adViewModel;
+        private GameUIViewModel _gameViewModel;
+        private AdViewModel _adViewModel;
         
         [Inject]
         private void Construct(
@@ -28,41 +26,41 @@ namespace UI
             IAdService adService,
             IPurchaseService purchaseService)
         {
-            spaceshipModel = shipController.SpaceshipModel;
-            this.gameUIView = gameUIView;
-            this.adView = adView;
-            this.adService = adService;
-            this.purchaseService = purchaseService;
+            _spaceshipModel = shipController.SpaceshipModel;
+            _gameUIView = gameUIView;
+            _adView = adView;
+            _adService = adService;
+            _purchaseService = purchaseService;
             
             gameCycle.AddListener(this);
         }
 
         public void OnStartGame()
         {
-            gameUIView.Dispose();
-            gameViewModel = new GameUIViewModel(spaceshipModel);
-            gameUIView.Initialize(gameViewModel);
+            _gameUIView.Dispose();
+            _gameViewModel = new GameUIViewModel(_spaceshipModel);
+            _gameUIView.Initialize(_gameViewModel);
         }
 
         public void OnPauseGame()
         {
-            gameUIView.Hide();
-            adViewModel = new AdViewModel(adService, purchaseService);
-            adView.Initialize(adViewModel);
-            adView.Show();
+            _gameUIView.Hide();
+            _adViewModel = new AdViewModel(_adService, _purchaseService);
+            _adView.Initialize(_adViewModel);
+            _adView.Show();
         }
 
         public void OnResumeGame()
         {
-            gameUIView.Show();
-            adView.Hide();
-            adView.Dispose();
+            _gameUIView.Show();
+            _adView.Hide();
+            _adView.Dispose();
         }
 
         public void OnFinishGame()
         {
-            adView.Hide();
-            gameUIView.Show();
+            _adView.Hide();
+            _gameUIView.Show();
         }
     }
 }

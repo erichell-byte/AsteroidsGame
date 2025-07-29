@@ -4,14 +4,13 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Unity.Services.CloudSave;
-using UnityEngine;
 using Zenject;
 
 namespace SaveLoad
 {
     public class UnityCloudSaveRepository : IRemoteRepository
     {
-        private Dictionary<string, object> gameState = new();
+        private readonly Dictionary<string, object> _gameState = new();
 
         [Inject]
         private void Construct(ISaveLoader[] saveLoaders)
@@ -19,8 +18,8 @@ namespace SaveLoad
             foreach (var loader in saveLoaders)
             {
                 string key = loader.GetSavedDataName();
-                if (!gameState.ContainsKey(key))
-                    gameState[key] = null;
+                if (!_gameState.ContainsKey(key))
+                    _gameState[key] = null;
             }
         }
 
@@ -28,7 +27,7 @@ namespace SaveLoad
         {
             var key = typeof(T).Name;
             
-            if (gameState.TryGetValue(key, out var jsonData) && jsonData is string jsonString)
+            if (_gameState.TryGetValue(key, out var jsonData) && jsonData is string jsonString)
             {
                 data = JsonConvert.DeserializeObject<T>(jsonString);
                 return true;
@@ -41,14 +40,14 @@ namespace SaveLoad
         public void SetData<T>(T data)
         {
             var key = typeof(T).Name;
-            gameState[key] = data;
+            _gameState[key] = data;
         }
 
         public async void SaveState()
         {
             AddSaveTimeToState();
 
-            var toSave = gameState.ToDictionary(
+            var toSave = _gameState.ToDictionary(
                 kvp => kvp.Key,
                 kvp => (object)JsonConvert.SerializeObject(kvp.Value)
             );
@@ -70,7 +69,7 @@ namespace SaveLoad
                 var saved = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
                 foreach (var pair in saved)
                 {
-                    gameState[pair.Key] = pair.Value.Value;
+                    _gameState[pair.Key] = pair.Value.Value;
                 }
             }
             catch (Exception e)

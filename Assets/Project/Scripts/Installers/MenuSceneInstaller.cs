@@ -1,16 +1,16 @@
-using Project.Scripts.UI;
+using UI;
 using UnityEngine;
 using Zenject;
 
-namespace Project.Scripts
+namespace Installers
 {
     public class MenuSceneInstaller : MonoInstaller
     {
-        [SerializeField] private MenuView menuView;
+        [SerializeField] private MenuView _menuView;
 
         public override void InstallBindings()
         {
-            Container.Bind<MenuView>().FromInstance(menuView).AsSingle();
+            Container.Bind<MenuView>().FromInstance(_menuView).AsSingle();
             Container.Bind<MenuController>().AsSingle().NonLazy();
         }
     }

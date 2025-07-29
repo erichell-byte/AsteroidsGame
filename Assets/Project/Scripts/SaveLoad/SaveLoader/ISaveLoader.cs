@@ -1,5 +1,3 @@
-
-
 namespace SaveLoad
 {
     public interface ISaveLoader

@@ -4,10 +4,10 @@ namespace Utils
 {
     public class ObjectTeleportByScreenBound : MonoBehaviour
     {
-        private float screenLeft;
-        private float screenRight;
-        private float screenTop;
-        private float screenBottom;
+        private float _screenLeft;
+        private float _screenRight;
+        private float _screenTop;
+        private float _screenBottom;
 
         public void Awake()
         {
@@ -20,32 +20,32 @@ namespace Utils
                 mainCamera.ViewportToWorldPoint(new Vector3(1, 1,
                     transform.position.z - mainCamera.transform.position.z));
 
-            screenLeft = bottomLeft.x;
-            screenRight = topRight.x;
-            screenBottom = bottomLeft.y;
-            screenTop = topRight.y;
+            _screenLeft = bottomLeft.x;
+            _screenRight = topRight.x;
+            _screenBottom = bottomLeft.y;
+            _screenTop = topRight.y;
         }
 
         private void Update()
         {
             Vector3 pos = transform.position;
 
-            if (pos.x > screenRight)
+            if (pos.x > _screenRight)
             {
-                pos.x = screenLeft;
+                pos.x = _screenLeft;
             }
-            else if (pos.x < screenLeft)
+            else if (pos.x < _screenLeft)
             {
-                pos.x = screenRight;
+                pos.x = _screenRight;
             }
 
-            if (pos.y > screenTop)
+            if (pos.y > _screenTop)
             {
-                pos.y = screenBottom;
+                pos.y = _screenBottom;
             }
-            else if (pos.y < screenBottom)
+            else if (pos.y < _screenBottom)
             {
-                pos.y = screenTop;
+                pos.y = _screenTop;
             }
 
             transform.position = pos;

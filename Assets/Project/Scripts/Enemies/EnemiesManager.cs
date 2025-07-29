@@ -17,102 +17,103 @@ namespace Enemies
         IGamePauseListener,
         IGameResumeListener
     {
-        private GameConfigurationSO config;
-        private TimersController timersController;
-        private MoveComponent moveComponent;
+        private GameConfiguration _config;
+        private TimersController _timersController;
+        private MoveComponent _moveComponent;
         
-        private Transform poolParent;
-        private List<Vector3> spawnPoints = new();
-        private EnemiesFactory enemiesFactory;
-        private List<Enemy> activeEnemies = new();
-        private IAssetLoader<Enemy> loader;
+        private readonly List<Enemy> _activeEnemies = new();
+        private readonly List<Vector3> _spawnPoints = new();
+        
+        private Transform _poolParent;
+        private EnemiesFactory _enemiesFactory;
+        private IAssetLoader<Enemy> _loader;
 
         public Action<EnemyType> OnEnemyDeath;
             
         [Inject]
         private void Construct(
             TimersController timersController,
-            GameConfigurationSO config,
+            GameConfiguration config,
             Transform poolParent,
             MoveComponent moveComponent,
             GameCycle gameCycle,
             IAssetLoader<Enemy> loader)
         {
-            this.config = config;
-            this.timersController = timersController;
-            this.poolParent = poolParent;
-            this.moveComponent = moveComponent;
-            this.loader = loader;
+            this._config = config;
+            this._timersController = timersController;
+            this._poolParent = poolParent;
+            this._moveComponent = moveComponent;
+            this._loader = loader;
             gameCycle.AddListener(this);
         }
 
         public void OnStartGame()
         {
             CreateSpawnPoints();
-            timersController.SubscribeToSpawnEnemies(SpawnAsteroid, SpawnUFO);
+            _timersController.SubscribeToSpawnEnemies(SpawnAsteroid, SpawnUFO);
 
-            enemiesFactory = new EnemiesFactory(
-                poolParent,
-                config,
-                loader);
+            _enemiesFactory = new EnemiesFactory(
+                _poolParent,
+                _config,
+                _loader);
         }
 
         private void CreateSpawnPoints()
         {
-            spawnPoints.Clear();
+            _spawnPoints.Clear();
 
             var camera = Camera.main;
             float height = camera!.orthographicSize;
             float width = height * camera.aspect;
 
-            spawnPoints.Add(new Vector3(-width - 2, 0, 0));
-            spawnPoints.Add(new Vector3(width + 2, 0, 0));
-            spawnPoints.Add(new Vector3(0, height + 2, 0));
-            spawnPoints.Add(new Vector3(0, -height - 2, 0));
+            _spawnPoints.Add(new Vector3(-width - 2, 0, 0));
+            _spawnPoints.Add(new Vector3(width + 2, 0, 0));
+            _spawnPoints.Add(new Vector3(0, height + 2, 0));
+            _spawnPoints.Add(new Vector3(0, -height - 2, 0));
         }
 
         private async void SpawnAsteroid()
         {
-            var asteroid = await enemiesFactory.CreateEnemy(EnemyType.Asteroid) as AsteroidEnemy;
+            var asteroid = await _enemiesFactory.CreateEnemy(EnemyType.Asteroid) as AsteroidEnemy;
             PrepareEnemy(asteroid);
 
-            timersController.PlaySpawnAsteroid();
+            _timersController.PlaySpawnAsteroid();
         }
 
         private async void SpawnUFO()
         {
-            var ufo = await enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
-            ufo.InitMovement(moveComponent.transform);
+            var ufo = await _enemiesFactory.CreateEnemy(EnemyType.UFO) as UFOEnemy;
+            ufo.InitMovement(_moveComponent.transform);
             PrepareEnemy(ufo);
 
-            timersController.PlaySpawnUFO();
+            _timersController.PlaySpawnUFO();
         }
 
         private void PrepareEnemy(Enemy enemy)
         {
-            enemy.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count)];
+            enemy.transform.position = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
 
-            activeEnemies.Add(enemy);
+            _activeEnemies.Add(enemy);
             enemy.OnDeath += OnDeathEnemy;
         }
 
         private async void SpawnSmallAsteroids(Vector3 position)
         {
-            var firstAsteroid = await enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
-            var secondAsteroid = await enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            var firstAsteroid = await _enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
+            var secondAsteroid = await _enemiesFactory.CreateEnemy(EnemyType.AsteroidSmall) as AsteroidEnemy;
             
             firstAsteroid.OnDeath += OnDeathEnemy;
             secondAsteroid.OnDeath += OnDeathEnemy;
 
             firstAsteroid.transform.position = secondAsteroid.transform.position = position;
 
-            activeEnemies.Add(firstAsteroid);
-            activeEnemies.Add(secondAsteroid);
+            _activeEnemies.Add(firstAsteroid);
+            _activeEnemies.Add(secondAsteroid);
         }
         
         private void OnDeathEnemy(Enemy enemy)
         {
-            activeEnemies.Remove(enemy);
+            _activeEnemies.Remove(enemy);
             enemy.OnDeath -= OnDeathEnemy;
             
             OnEnemyDeath?.Invoke(enemy.GetEnemyType());
@@ -122,38 +123,38 @@ namespace Enemies
                 SpawnSmallAsteroids(enemy.transform.position);
             }
 
-            enemiesFactory.ReturnEnemy(enemy);
+            _enemiesFactory.ReturnEnemy(enemy);
         }
 
         public void OnFinishGame()
         {
-            foreach (var enemy in activeEnemies)
+            foreach (var enemy in _activeEnemies)
             {
                 enemy.OnDeath -= OnDeathEnemy;
                 Destroy(enemy.gameObject);
             }
 
-            timersController.UnsubscribeFromSpawnEnemies(SpawnAsteroid, SpawnUFO);
+            _timersController.UnsubscribeFromSpawnEnemies(SpawnAsteroid, SpawnUFO);
 
-            activeEnemies.Clear();
-            enemiesFactory?.Clear();
+            _activeEnemies.Clear();
+            _enemiesFactory?.Clear();
         }
 
         public void OnPauseGame()
         {
-            timersController.PauseEnemyTimers();
-            for (int i = 0; i < activeEnemies.Count; i++)
+            _timersController.PauseEnemyTimers();
+            for (int i = 0; i < _activeEnemies.Count; i++)
             {
-                activeEnemies[i].SetActive(false);
+                _activeEnemies[i].SetActive(false);
             }
         }
 
         public void OnResumeGame()
         {
-            timersController.ResumeEnemyTimers();
-            for (int i = 0; i < activeEnemies.Count; i++)
+            _timersController.ResumeEnemyTimers();
+            for (int i = 0; i < _activeEnemies.Count; i++)
             {
-                activeEnemies[i].SetActive(true);
+                _activeEnemies[i].SetActive(true);
             }
         }
     }

@@ -1,6 +1,5 @@
 using System;
 using Config;
-using GameSystem;
 using Zenject;
 
 namespace Utils
@@ -15,15 +14,16 @@ namespace Utils
         private Timer laserDurationTimer;
         private Timer shotTimer;
 
-        private GameConfigurationSO config;
+        private RemoteConfig remoteConfig;
         
         [Inject]
         private void Construct(
             Timer.Factory timersFactory,
-            GameConfigurationSO config)
+            IConfigProvider configProvider)
         {
             this.timersFactory = timersFactory;
-            this.config = config;
+            
+            remoteConfig = configProvider.GetRemoteConfig();
         }
 
         #region SpawnEnemies
@@ -31,9 +31,9 @@ namespace Utils
         public void SubscribeToSpawnEnemies(Action spawnAsteroidAction, Action spawnUFOAction)
         {
             asteroidSpawnTimer = timersFactory.Create();
-            asteroidSpawnTimer.Init(config.remoteConfig.asteroidSpawnFrequency);
+            asteroidSpawnTimer.Init(remoteConfig.AsteroidSpawnFrequency);
             ufoSpawnTimer = timersFactory.Create();
-            ufoSpawnTimer.Init(config.remoteConfig.ufoSpawnFrequency);
+            ufoSpawnTimer.Init(remoteConfig.UfoSpawnFrequency);
 
             asteroidSpawnTimer.Play();
             asteroidSpawnTimer.TimerIsExpired += spawnAsteroidAction;
@@ -83,9 +83,9 @@ namespace Utils
             Action<float> changedTimeToRecoveryAction)
         {
             laserRecoveryTimer = timersFactory.Create();
-            laserRecoveryTimer.Init(config.remoteConfig.timeToRecoveryLaser);
+            laserRecoveryTimer.Init(remoteConfig.TimeToRecoveryLaser);
             laserDurationTimer = timersFactory.Create();
-            laserDurationTimer.Init(config.remoteConfig.timeToDurationLaser);
+            laserDurationTimer.Init(remoteConfig.TimeToDurationLaser);
             laserRecoveryTimer.RemainingTimeChanged += changedTimeToRecoveryAction;
         }
 
@@ -135,7 +135,7 @@ namespace Utils
         public void InitMainWeaponTimer()
         {
             shotTimer = timersFactory.Create();
-            shotTimer.Init(config.remoteConfig.shotFrequency);
+            shotTimer.Init(remoteConfig.ShotFrequency);
         }
         
         public void PlayMainWeaponTimer()

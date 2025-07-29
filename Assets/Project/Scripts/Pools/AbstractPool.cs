@@ -8,35 +8,35 @@ namespace Pools
 {
     public class AbstractPool<T> where T : Object
     {
-        private readonly Stack<T> inactive = new ();
-        private readonly AssetReferenceGameObject assetId;
-        private readonly int maxSize;
-        private readonly IAssetLoader<T> loader;
-        private readonly Transform parent;
+        private readonly Stack<T> _inactive = new ();
+        private readonly AssetReferenceGameObject _assetId;
+        private readonly int _maxSize;
+        private readonly IAssetLoader<T> _loader;
+        private readonly Transform _parent;
         
 
         protected AbstractPool(IAssetLoader<T> loader, AssetReferenceGameObject assetId, Transform parent, int maxSize = 100)
         {
-            this.assetId = assetId;
-            this.parent = parent;
-            this.maxSize = maxSize;
-            this.loader = loader;
+            this._assetId = assetId;
+            this._parent = parent;
+            this._maxSize = maxSize;
+            this._loader = loader;
         }
 
         public async UniTask<T> GetAsync()
         {
-            if (inactive.Count > 0)
+            if (_inactive.Count > 0)
             {
-                var obj = inactive.Pop();
+                var obj = _inactive.Pop();
                 OnGet(obj);
                 return obj;
             }
 
-            var objNew = await loader.InstantiateAsset(assetId);
-            if (objNew is Component component && parent != null)
-                component.transform.SetParent(parent);
-            else if (objNew is GameObject go && parent != null)
-                go.transform.SetParent(parent);
+            var objNew = await _loader.InstantiateAsset(_assetId);
+            if (objNew is Component component && _parent != null)
+                component.transform.SetParent(_parent);
+            else if (objNew is GameObject go && _parent != null)
+                go.transform.SetParent(_parent);
 
             OnGet(objNew);
             return objNew;
@@ -44,24 +44,24 @@ namespace Pools
 
         protected virtual void OnGet(T obj) { }
         protected virtual void OnRelease(T obj) { }
-        protected virtual void OnDestroy(T obj) => loader.Unload(obj);
+        protected virtual void OnDestroy(T obj) => _loader.Unload(obj);
 
         public void Release(T obj)
         {
             if (obj == null) return;
-            if (inactive.Count >= maxSize)
+            if (_inactive.Count >= _maxSize)
                 OnDestroy(obj);
             else
             {
                 OnRelease(obj);
-                inactive.Push(obj);
+                _inactive.Push(obj);
             }
         }
 
         public void Clear()
         {
-            while (inactive.Count > 0)
-                OnDestroy(inactive.Pop());
+            while (_inactive.Count > 0)
+                OnDestroy(_inactive.Pop());
         }
     }
 }

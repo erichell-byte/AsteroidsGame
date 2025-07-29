@@ -5,24 +5,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace Project.Scripts.UI
+namespace UI
 {
     public class MenuController: IDisposable
     {
-        private MenuView menuView;
-        private IPurchaseService purchaseService;
-        private string noAdsProductId;
+        private MenuView _menuView;
+        private IPurchaseService _purchaseService;
+        private string _noAdsProductId;
 
         [Inject]
         private void Construct(
             MenuView menuView,
             IPurchaseService purchaseService,
-            GameConfigurationSO gameConfigSO)
+            GameConfiguration gameConfig)
         {
-            this.menuView = menuView;
-            this.purchaseService = purchaseService;
+            _menuView = menuView;
+            _purchaseService = purchaseService;
 
-            noAdsProductId = gameConfigSO.noAdsProductId;
+            _noAdsProductId = gameConfig.NoAdsProductId;
             
             menuView.StartClicked += OnStartClicked;
             menuView.BuyAdsClicked += OnBuyAdsClicked;
@@ -30,7 +30,7 @@ namespace Project.Scripts.UI
             
             purchaseService.OnPurchasedAction += menuView.DisableBuyButton;
             
-            if (purchaseService.GetPurchasedData().noAds)
+            if (purchaseService.GetPurchasedData().NoAds)
             {
                 menuView.DisableBuyButton(TypeOfPurchase.NoAds);
             }
@@ -52,7 +52,7 @@ namespace Project.Scripts.UI
 
         private void OnBuyAdsClicked()
         {
-            purchaseService.InitiatePurchase(noAdsProductId);
+            _purchaseService.InitiatePurchase(_noAdsProductId);
         }
 
         private void OnExitGameClicked()
@@ -62,11 +62,11 @@ namespace Project.Scripts.UI
 
         public void Dispose()
         {
-            menuView.StartClicked -= OnStartClicked;
-            menuView.BuyAdsClicked -= OnBuyAdsClicked;
-            menuView.ExitGameClicked -= OnExitGameClicked;
+            _menuView.StartClicked -= OnStartClicked;
+            _menuView.BuyAdsClicked -= OnBuyAdsClicked;
+            _menuView.ExitGameClicked -= OnExitGameClicked;
             
-            purchaseService.OnPurchasedAction -= menuView.DisableBuyButton;
+            _purchaseService.OnPurchasedAction -= _menuView.DisableBuyButton;
         }
     }
 }

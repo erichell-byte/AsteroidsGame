@@ -5,8 +5,8 @@ namespace SaveLoad
     [Serializable]
     public class SpaceshipData : ISavedData
     {
-        public float positionX;
-        public float positionY;
-        public float rotationZ;
+        public float PositionX;
+        public float PositionY;
+        public float RotationZ;
     }
 }

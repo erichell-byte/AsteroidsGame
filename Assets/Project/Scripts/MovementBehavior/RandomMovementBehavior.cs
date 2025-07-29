@@ -5,31 +5,31 @@ namespace MovementBehavior
 {
     public class RandomMovementBehavior : IMovementBehavior
     {
-        private Rigidbody2D rigidbody;
+        private readonly Rigidbody2D _rigidbody;
         public bool IsMove { get; set; }
 
         public RandomMovementBehavior(Rigidbody2D rigidbody)
         {
-            this.rigidbody = rigidbody;
+            this._rigidbody = rigidbody;
             ResumeMove();
         }
         
         public void Move(EnemyConfig config)
         {
-            if (rigidbody == null || IsMove == false) return;
+            if (_rigidbody == null || IsMove == false) return;
             
-            float speed = config.speed * config.speedModifier;
+            float speed = config.Speed * config.SpeedModifier;
             float randomAngle = Random.Range(0f, 360f);
             Vector2 direction = new Vector2(
                 Mathf.Cos(randomAngle * Mathf.Deg2Rad),
                 Mathf.Sin(randomAngle * Mathf.Deg2Rad)
             );
-            rigidbody.linearVelocity = direction * speed;
+            _rigidbody.linearVelocity = direction * speed;
         }
         
         public void StopMove()
         {
-            rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.linearVelocity = Vector3.zero;
             IsMove = false;
         }
         

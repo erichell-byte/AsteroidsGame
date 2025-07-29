@@ -5,9 +5,9 @@ namespace Systems
 {
     public class GameEvents : IGameEvents
     {
-        private readonly Subject<Unit> spaceshipCollidedWithEnemy = new();
+        private readonly Subject<Unit> _spaceshipCollidedWithEnemy = new();
         
-        public IObservable<Unit> OnSpaceshipCollidedWithEnemy => spaceshipCollidedWithEnemy;
-        public void NotifySpaceshipCollidedWithEnemy() => spaceshipCollidedWithEnemy.OnNext(Unit.Default);
+        public IObservable<Unit> OnSpaceshipCollidedWithEnemy => _spaceshipCollidedWithEnemy;
+        public void NotifySpaceshipCollidedWithEnemy() => _spaceshipCollidedWithEnemy.OnNext(Unit.Default);
     }
 }
