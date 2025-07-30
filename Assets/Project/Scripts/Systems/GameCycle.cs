@@ -17,14 +17,13 @@ namespace Systems
     {
         private readonly List<IGameListener> _gameListeners = new();
         
-        private SaveLoadManager _saveLoadManager;
+        private GameSaveService _gameSaveService;
         private GameState _state;
         
         [Inject]
-        private void Construct(SaveLoadManager saveLoadManager)
+        private void Construct(GameSaveService gameSaveService)
         {
-            _saveLoadManager = saveLoadManager;
-            _state = GameState.Off;
+            _gameSaveService = gameSaveService;
         }
 
         public void Initialize()
@@ -58,7 +57,7 @@ namespace Systems
 
         public void FinishGame()
         {
-            _saveLoadManager.SaveGame();
+            _gameSaveService.SaveGame();
 
             if (_state == GameState.Off || _state == GameState.Finished)
             {

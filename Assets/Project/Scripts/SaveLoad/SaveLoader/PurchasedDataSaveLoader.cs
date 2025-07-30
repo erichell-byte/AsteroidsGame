@@ -13,15 +13,15 @@ namespace SaveLoad
             _service = service;
         }
         
-        public void SaveGame(IGameRepository repository)
+        public void SaveGame(IGameStorage storage)
         {
             PurchasedData data = ConvertToData(_service);
-            repository.SetData(data);
+            storage.SetData(data);
         }
 
-        public void LoadGame(IGameRepository repository)
+        public void LoadGame(IGameStorage storage)
         {
-            if (repository.TryGetData(out PurchasedData data))
+            if (storage.TryGetData(out PurchasedData data))
             {
                 SetupData(data);
             }

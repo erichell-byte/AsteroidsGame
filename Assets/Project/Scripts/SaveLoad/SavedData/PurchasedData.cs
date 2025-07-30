@@ -3,7 +3,7 @@ using System;
 namespace SaveLoad
 {
     [Serializable]
-    public class PurchasedData : ISavedData
+    public class PurchasedData
     {
         public bool NoAds;
     }

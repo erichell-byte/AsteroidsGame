@@ -8,7 +8,7 @@ using Zenject;
 
 namespace SaveLoad
 {
-    public class UnityCloudSaveRepository : IRemoteRepository
+    public class UnityCloudSaveStorage : IRemoteStorage
     {
         private readonly Dictionary<string, object> _gameState = new();
 
@@ -45,8 +45,6 @@ namespace SaveLoad
 
         public async void SaveState()
         {
-            AddSaveTimeToState();
-
             var toSave = _gameState.ToDictionary(
                 kvp => kvp.Key,
                 kvp => (object)JsonConvert.SerializeObject(kvp.Value)
@@ -76,11 +74,6 @@ namespace SaveLoad
             {
                 UnityEngine.Debug.LogError($"[UnityCloudSaveRepository] Ошибка загрузки из облака: {e.Message}");
             }
-        }
-
-        public void AddSaveTimeToState()
-        {
-            SetData(new SaveTimestamp());
         }
     }
 }

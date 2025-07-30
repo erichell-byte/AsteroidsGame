@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 
 namespace SaveLoad
 {
-    public interface IGameRepository
+    public interface IGameStorage
     {
         public bool TryGetData<T>(out T data);
         
@@ -11,7 +11,5 @@ namespace SaveLoad
         public void SaveState();
         
         public UniTask LoadState();
-
-        public void AddSaveTimeToState();
     }
 }

@@ -22,10 +22,10 @@ namespace Systems
             IAdService adService,
             IGameEvents gameEvents)
         {
-            this._gameCycle = gameCycle;
-            this._spaceship = spaceship;
-            this._adService = adService;
-            this._gameEvents = gameEvents;
+            _gameCycle = gameCycle;
+            _spaceship = spaceship;
+            _adService = adService;
+            _gameEvents = gameEvents;
         }
         
         public void Initialize()

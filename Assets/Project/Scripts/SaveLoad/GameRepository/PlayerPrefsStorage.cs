@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SaveLoad
 {
-    public class PlayerPrefsRepository : ILocalRepository
+    public class PlayerPrefsStorage : ILocalStorage
     {
         private const string GameStateKey = "GameStateKey";
         
@@ -49,14 +49,9 @@ namespace SaveLoad
         
         public void SaveState()
         {
-            AddSaveTimeToState();
             var gameStateJson = JsonConvert.SerializeObject(_gameState);
             PlayerPrefs.SetString(GameStateKey, gameStateJson);
-        }
-
-        public void AddSaveTimeToState()
-        {
-            SetData(new SaveTimestamp()); 
+            PlayerPrefs.Save();
         }
     }
 }

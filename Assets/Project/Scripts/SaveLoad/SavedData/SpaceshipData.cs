@@ -3,7 +3,7 @@ using System;
 namespace SaveLoad
 {
     [Serializable]
-    public class SpaceshipData : ISavedData
+    public class SpaceshipData
     {
         public float PositionX;
         public float PositionY;

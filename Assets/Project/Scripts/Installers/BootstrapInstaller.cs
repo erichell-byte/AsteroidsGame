@@ -7,7 +7,7 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesTo<ApplicationManager>().AsSingle();
+            Container.BindInterfacesTo<GameBootstrapper>().AsSingle();
         }
     }
 }

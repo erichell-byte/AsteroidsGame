@@ -2,9 +2,9 @@ namespace SaveLoad
 {
     public interface ISaveLoader
     {
-        public void SaveGame(IGameRepository repository);
+        public void SaveGame(IGameStorage storage);
         
-        public void LoadGame(IGameRepository repository);
+        public void LoadGame(IGameStorage storage);
 
         public string GetSavedDataName();
     }

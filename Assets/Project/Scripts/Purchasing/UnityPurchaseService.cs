@@ -19,7 +19,7 @@ namespace Purchasing
     {
         private IStoreController _controller;
         private IExtensionProvider _extensions;
-        private SaveLoadManager _saveLoadManager;
+        private GameSaveService _gameSaveService;
         
         private PurchasedData _purchasedData = new ();
         private string _noAdsProductId;
@@ -30,10 +30,10 @@ namespace Purchasing
         [Inject]
         private void Construct(
             GameConfiguration gameConfig,
-            SaveLoadManager saveLoadManager)
+            GameSaveService gameSaveService)
         {
             _noAdsProductId = gameConfig.NoAdsProductId;
-            _saveLoadManager = saveLoadManager;
+            _gameSaveService = gameSaveService;
         }
         
         public void Initialize()
@@ -84,7 +84,7 @@ namespace Purchasing
                 
             }
             
-            _saveLoadManager.SaveGame();
+            _gameSaveService.SaveGame();
             return PurchaseProcessingResult.Complete;
         }
 
