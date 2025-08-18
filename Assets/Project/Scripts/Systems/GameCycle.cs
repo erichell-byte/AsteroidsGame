@@ -17,11 +17,11 @@ namespace Systems
     {
         private readonly List<IGameListener> _gameListeners = new();
         
-        private GameSaveService _gameSaveService;
+        private SaveSystemFacade _gameSaveService;
         private GameState _state;
         
         [Inject]
-        private void Construct(GameSaveService gameSaveService)
+        private void Construct(SaveSystemFacade gameSaveService)
         {
             _gameSaveService = gameSaveService;
         }
@@ -57,7 +57,8 @@ namespace Systems
 
         public void FinishGame()
         {
-            _gameSaveService.SaveGame();
+            _gameSaveService.SavePurchasedDataAsync();
+            _gameSaveService.SaveSpaceShipDataAsync();
 
             if (_state == GameState.Off || _state == GameState.Finished)
             {

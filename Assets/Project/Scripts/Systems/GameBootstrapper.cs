@@ -7,15 +7,15 @@ namespace Systems
     {
         private readonly UnityServicesInitializator _unityServicesInitializator = new ();
         
-        private GameSaveService _gameSaveService;
+        private SaveSystemFacade _saveSystemFacade;
         private ISceneLoader _sceneLoader;
         
         [Inject]
         private void Construct(
-            GameSaveService gameSaveService,
+            SaveSystemFacade gameSaveService,
             ISceneLoader sceneLoader)
         {
-            _gameSaveService = gameSaveService;
+            _saveSystemFacade = gameSaveService;
             _sceneLoader = sceneLoader;
         }
             
@@ -27,7 +27,8 @@ namespace Systems
         public async void Initialize()
         {
             await _unityServicesInitializator.SetupAndSignIn();
-            await _gameSaveService.LoadGame();
+            await _saveSystemFacade.LoadPurchasedDataAsync();
+            await _saveSystemFacade.LoadSpaceShipDataAsync();
             LoadScene();
         }
     }

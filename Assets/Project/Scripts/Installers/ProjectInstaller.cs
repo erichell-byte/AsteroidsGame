@@ -19,12 +19,16 @@ namespace Installers
         {
             Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
             Container.Bind<SpaceshipModel>().AsSingle();
-            Container.BindInterfacesAndSelfTo<UnityCloudSaveStorage>().AsSingle();
-            Container.Bind<ILocalStorage>().To<PlayerPrefsStorage>().AsSingle();
-            Container.Bind<ISaveLoader>().To<SpaceshipDataSaveLoader>().AsSingle();
-            Container.Bind<ISaveLoader>().To<PurchasedDataSaveLoader>().AsSingle();
             Container.Bind<GameConfiguration>().FromInstance(_gameConfiguration).AsSingle();
-            Container.BindInterfacesAndSelfTo<GameSaveService>().AsSingle();
+            Container.Bind<ISerializer>().To<NewtonsoftSerializer>().AsSingle();
+            Container.Bind<IKeysProvider>().To<MapKeysProvider>().AsSingle();
+            Container.Bind<SaveSystemFacade>().AsSingle();
+
+            Container.Bind<IDataStorage>().WithId(StorageId.Local).To<PlayerPrefsDataStorage>().AsSingle();
+            Container.Bind<IDataStorage>().WithId(StorageId.Cloud).To<CloudSaveDataStorage>().AsSingle();
+            
+            Container.Bind<ISaveSystem>().To<SaveSystem>().AsSingle().NonLazy();
+            
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnityAdsService>().AsSingle();
             Container.BindInterfacesAndSelfTo<AddressablesBootstrap>().AsSingle();
@@ -33,4 +37,6 @@ namespace Installers
             Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
         }
     }
+    
+    public enum StorageId { Local, Cloud }
 }

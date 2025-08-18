@@ -19,7 +19,7 @@ namespace Purchasing
     {
         private IStoreController _controller;
         private IExtensionProvider _extensions;
-        private GameSaveService _gameSaveService;
+        private SaveSystemFacade _saveSystemFacade;
         
         private PurchasedData _purchasedData = new ();
         private string _noAdsProductId;
@@ -30,10 +30,10 @@ namespace Purchasing
         [Inject]
         private void Construct(
             GameConfiguration gameConfig,
-            GameSaveService gameSaveService)
+            SaveSystemFacade saveSystemFacade)
         {
             _noAdsProductId = gameConfig.NoAdsProductId;
-            _gameSaveService = gameSaveService;
+            _saveSystemFacade = saveSystemFacade;
         }
         
         public void Initialize()
@@ -84,7 +84,7 @@ namespace Purchasing
                 
             }
             
-            _gameSaveService.SaveGame();
+            _saveSystemFacade.SavePurchasedDataAsync();
             return PurchaseProcessingResult.Complete;
         }
 
@@ -187,7 +187,6 @@ namespace Purchasing
 
         public void ConfirmPendingPurchase(Product product)
         {
-            
             if (_controller == null)
             {
                 Debug.LogError("StoreController is not initialized.");
@@ -204,6 +203,8 @@ namespace Purchasing
         
         public void SetPurchasedData(PurchasedData data)
         {
+            if (data == null) return;
+            
             _purchasedData = data;
         }
     }
