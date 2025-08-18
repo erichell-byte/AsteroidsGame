@@ -14,13 +14,12 @@ namespace Pools
         private readonly IAssetLoader<T> _loader;
         private readonly Transform _parent;
         
-
         protected AbstractPool(IAssetLoader<T> loader, AssetReferenceGameObject assetId, Transform parent, int maxSize = 100)
         {
-            this._assetId = assetId;
-            this._parent = parent;
-            this._maxSize = maxSize;
-            this._loader = loader;
+            _assetId = assetId;
+            _parent = parent;
+            _maxSize = maxSize;
+            _loader = loader;
         }
 
         public async UniTask<T> GetAsync()

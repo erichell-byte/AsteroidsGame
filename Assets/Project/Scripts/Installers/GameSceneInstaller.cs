@@ -40,8 +40,8 @@ namespace Installers
             Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
             Container.Bind<EnemiesManager>().FromInstance(_enemiesManager).AsSingle();
             Container.BindInterfacesAndSelfTo<AnalyticsMediator>().AsSingle();
-            Container.Bind<IAssetLoader<Enemy>>().To<LocalAssetLoader<Enemy>>().AsSingle().NonLazy();
-            Container.Bind<IAssetLoader<Bullet>>().To<LocalAssetLoader<Bullet>>().AsSingle().NonLazy();
+            Container.Bind<IAssetLoader<Enemy>>().To<AssetLoader<Enemy>>().AsSingle().NonLazy();
+            Container.Bind<IAssetLoader<Bullet>>().To<AssetLoader<Bullet>>().AsSingle().NonLazy();
             Container.Bind<IGameEvents>().To<GameEvents>().AsSingle();
         
         }

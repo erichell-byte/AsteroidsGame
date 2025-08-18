@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 
 namespace AssetsLoader
 {
-    public class LocalAssetLoader<T> : IAssetLoader<T>
+    public class AssetLoader<T> : IAssetLoader<T>
     {
         public async UniTask<T> InstantiateAsset(AssetReferenceGameObject assetId)
         {
