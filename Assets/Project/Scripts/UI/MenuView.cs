@@ -40,5 +40,10 @@ namespace UI
                 _buyAdsButton.gameObject.SetActive(false);
             }
         }
+
+        public void SetStartButtonInteractable(bool interactable)
+        {
+            _startButton.interactable = interactable;
+        }
     }
 }

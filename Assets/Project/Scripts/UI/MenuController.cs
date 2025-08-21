@@ -1,5 +1,7 @@
 using System;
+using AssetsLoader;
 using Config;
+using Cysharp.Threading.Tasks;
 using Purchasing;
 using Systems;
 using UnityEngine;
@@ -14,17 +16,22 @@ namespace UI
         private IPurchaseService _purchaseService;
         private ISceneLoader _sceneLoader;
         private string _noAdsProductId;
+        private IAssetsPreloader _assetsPreloader;
+        private GameConfiguration _gameConfig;
 
         [Inject]
         private void Construct(
             MenuView menuView,
             IPurchaseService purchaseService,
             GameConfiguration gameConfig,
-            ISceneLoader sceneLoader)
+            ISceneLoader sceneLoader,
+            IAssetsPreloader assetsPreloader)
         {
             _menuView = menuView;
             _purchaseService = purchaseService;
             _sceneLoader = sceneLoader;
+            _assetsPreloader = assetsPreloader;
+            _gameConfig = gameConfig;
 
             _noAdsProductId = gameConfig.NoAdsProductId;
             
@@ -38,6 +45,22 @@ namespace UI
             {
                 menuView.DisableBuyButton(TypeOfPurchase.NoAds);
             }
+
+            InitializeAsync().Forget();
+        }
+
+        private async UniTaskVoid InitializeAsync()
+        {
+            _menuView.SetStartButtonInteractable(false);
+            var assets = new []
+            {
+                _gameConfig.BulletId,
+                _gameConfig.AsteroidId,
+                _gameConfig.AsteroidSmallId,
+                _gameConfig.UfoId
+            };
+            await _assetsPreloader.PreloadAsync(assets);
+            _menuView.SetStartButtonInteractable(true);
         }
 
         private void OnStartClicked()

@@ -27,6 +27,7 @@ namespace Enemies
         private Transform _poolParent;
         private EnemiesFactory _enemiesFactory;
         private IAssetLoader<Enemy> _loader;
+        private IAssetsPreloader _preloader;
 
         public Action<EnemyType> OnEnemyDeath;
             
@@ -37,13 +38,15 @@ namespace Enemies
             Transform poolParent,
             MoveComponent moveComponent,
             GameCycle gameCycle,
-            IAssetLoader<Enemy> loader)
+            IAssetLoader<Enemy> loader,
+            IAssetsPreloader preloader)
         {
-            this._config = config;
-            this._timersController = timersController;
-            this._poolParent = poolParent;
-            this._moveComponent = moveComponent;
-            this._loader = loader;
+            _config = config;
+            _timersController = timersController;
+            _poolParent = poolParent;
+            _moveComponent = moveComponent;
+            _loader = loader;
+            _preloader = preloader;
             gameCycle.AddListener(this);
         }
 
@@ -138,6 +141,8 @@ namespace Enemies
 
             _activeEnemies.Clear();
             _enemiesFactory?.Clear();
+
+            _preloader.ReleaseAll();
         }
 
         public void OnPauseGame()

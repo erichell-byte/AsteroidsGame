@@ -29,7 +29,7 @@ namespace Enemies
             GameConfiguration config,
             IAssetLoader<Enemy> loader)
         {
-            this._config = config;
+            _config = config;
             _asteroidPoolFacade = new EnemyPoolFacade(loader,config.AsteroidId, poolParent);
             _asteroidSmallPoolFacade = new EnemyPoolFacade(loader, config.AsteroidSmallId, poolParent);
             _ufoPoolFacade = new EnemyPoolFacade(loader, config.UfoId, poolParent);

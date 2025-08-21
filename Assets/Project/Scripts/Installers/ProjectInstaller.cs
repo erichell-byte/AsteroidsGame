@@ -2,11 +2,13 @@ using Analytics;
 using AssetsLoader;
 using Character;
 using Config;
+using Enemies;
 using GameAdvertisement;
 using Purchasing;
 using SaveLoad;
 using Systems;
 using UnityEngine;
+using Weapon;
 using Zenject;
 
 namespace Installers
@@ -35,6 +37,9 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<FirebaseConfigProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnityPurchaseService>().AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
+            Container.Bind<IAssetLoader<Enemy>>().To<AssetLoader<Enemy>>().AsSingle().NonLazy();
+            Container.Bind<IAssetLoader<Bullet>>().To<AssetLoader<Bullet>>().AsSingle().NonLazy();
+            Container.Bind<IAssetsPreloader>().To<AddressablesPreloader>().AsSingle();
         }
     }
     
