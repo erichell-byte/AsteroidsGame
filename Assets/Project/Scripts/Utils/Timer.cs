@@ -4,65 +4,65 @@ using Zenject;
 
 namespace Utils
 {
-    public class Timer : ITickable
-    {
-        private float _duration;
-        private float _remainingTime;
-        private bool _isPaused;
+	public class Timer : ITickable
+	{
+		private float _duration;
+		private bool _isPaused;
+		private float _remainingTime;
+		public Action<float> RemainingTimeChanged;
 
-        public Action TimerIsExpired;
-        public Action<float> RemainingTimeChanged;
+		public Action TimerIsExpired;
 
-        
-        [Inject]
-        private void Construct(TickableManager tickableManager)
-        {
-            tickableManager.Add(this);
-        }
+		public void Tick()
+		{
+			if (_remainingTime > 0 && _isPaused == false)
+			{
+				_remainingTime -= Time.deltaTime;
+				RemainingTimeChanged?.Invoke(_remainingTime);
 
-        public void Init(float duration)
-        {
-            this._duration = duration;
-        }
+				if (_remainingTime <= 0f)
+				{
+					_remainingTime = 0f;
+					TimerIsExpired?.Invoke();
+				}
+			}
+		}
 
-        public void Play()
-        {
-            _remainingTime = _duration;
-            _isPaused = false;
-        }
 
-        public bool IsPlaying()
-        {
-            return _remainingTime > 0;
-        }
+		[Inject]
+		private void Construct(TickableManager tickableManager)
+		{
+			tickableManager.Add(this);
+		}
 
-        public void Pause()
-        {
-            _isPaused = true;
-        }
-        
-        public void Resume()
-        {
-            _isPaused = false;
-        }
-        
-        public class Factory : PlaceholderFactory<Timer>
-        {
-        }
+		public void Init(float duration)
+		{
+			_duration = duration;
+		}
 
-        public void Tick()
-        {
-            if (_remainingTime > 0 && _isPaused == false)
-            {
-                _remainingTime -= Time.deltaTime;
-                RemainingTimeChanged?.Invoke(_remainingTime);
+		public void Play()
+		{
+			_remainingTime = _duration;
+			_isPaused = false;
+		}
 
-                if (_remainingTime <= 0f)
-                {
-                    _remainingTime = 0f;
-                    TimerIsExpired?.Invoke();
-                }
-            }
-        }
-    }
+		public bool IsPlaying()
+		{
+			return _remainingTime > 0;
+		}
+
+		public void Pause()
+		{
+			_isPaused = true;
+		}
+
+		public void Resume()
+		{
+			_isPaused = false;
+		}
+
+		public class Factory : PlaceholderFactory<Timer>
+		{
+		}
+	}
 }

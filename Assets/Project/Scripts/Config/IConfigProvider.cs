@@ -1,8 +1,7 @@
-
 namespace Config
 {
-    public interface IConfigProvider
-    {
-        public RemoteConfig GetRemoteConfig();
-    }
+	public interface IConfigProvider
+	{
+		public RemoteConfig GetRemoteConfig();
+	}
 }

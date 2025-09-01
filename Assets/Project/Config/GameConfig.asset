@@ -36,6 +36,8 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  Effects: {fileID: 11400000, guid: a30eab64663ac4af3a9623d701e7e846, type: 2}
+  Audio: {fileID: 11400000, guid: 090c12057092448f0901d8a21d0ed630, type: 2}
   EnemiesConfigs:
   - Type: 0
     Speed: 1

@@ -4,12 +4,12 @@ using UnityEngine.Purchasing;
 
 namespace Purchasing
 {
-    public interface IPurchaseService: IDetailedStoreListener, IStoreController
-    {
-        public event Action<TypeOfPurchase> OnPurchasedAction;
-        
-        public PurchasedData GetPurchasedData();
+	public interface IPurchaseService : IDetailedStoreListener, IStoreController
+	{
+		public event Action<TypeOfPurchase> OnPurchasedAction;
 
-        public void SetPurchasedData(PurchasedData data);
-    }
+		public PurchasedData GetPurchasedData();
+
+		public void SetPurchasedData(PurchasedData data);
+	}
 }

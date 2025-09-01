@@ -7,103 +7,103 @@ using Zenject;
 
 namespace Weapon
 {
-    public class LaserWeapon : BaseWeapon, IDisposable
-    { 
-        private TimersController timersController;
+	public class LaserWeapon : BaseWeapon, IDisposable
+	{
+		private bool disposed;
+		private bool isActive;
+		private bool isRecovering;
 
-        private GameObject laser;
-        private LayerMask layerMask;
-        private int maxShots;
-        private bool isActive;
-        private bool isRecovering;
-        private bool disposed;
+		private GameObject laser;
+		private LayerMask layerMask;
+		private int maxShots;
+		public Action OnLaserShot;
+		private TimersController timersController;
 
-        public ReactiveProperty<int> RemainingShots { get; } = new();
-        public ReactiveProperty<float> TimeToRecovery { get; } = new();
-        public Action OnLaserShot;
-            
-        [Inject]
-        private void Construct(
-            TimersController timersController)
-        {
-            this.timersController = timersController;
-        }
+		public ReactiveProperty<int> RemainingShots { get; } = new();
+		public ReactiveProperty<float> TimeToRecovery { get; } = new();
 
-        public void Initialize(
-            Transform shotPoint,
-            GameObject laser,
-            LayerMask layerMask,
-            int maxShots)
-        {
-            this.shotPoint = shotPoint;
-            this.laser = laser;
-            this.layerMask = layerMask;
-            this.maxShots = maxShots;
-            RemainingShots.Value = maxShots;
-            TimeToRecovery.Value = 0f;
-            timersController.InitLaserTimers(ChangedTimeToRecovery);
-        }
+		public void Dispose()
+		{
+			if (disposed) return;
+			disposed = true;
+			timersController.UnsubscribeAllLaserTimers(ChangedTimeToRecovery, TurnOffLaser, RecoveryLaser);
+		}
 
-        public override void Attack()
-        {
-            if (RemainingShots.Value <= 0 || isActive) return;
+		[Inject]
+		private void Construct(
+			TimersController timersController)
+		{
+			this.timersController = timersController;
+		}
 
-            RemainingShots.Value--;
-            isActive = true;
-            laser.SetActive(true);
-            timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
-            OnLaserShot?.Invoke();
-        }
+		public void Initialize(
+			Transform shotPoint,
+			GameObject laser,
+			LayerMask layerMask,
+			int maxShots)
+		{
+			this.shotPoint = shotPoint;
+			this.laser = laser;
+			this.layerMask = layerMask;
+			this.maxShots = maxShots;
+			RemainingShots.Value = maxShots;
+			TimeToRecovery.Value = 0f;
+			timersController.InitLaserTimers(ChangedTimeToRecovery);
+		}
 
-        public void Tick()
-        {
-            HandleRecovery();
-            HandleLaserDamage();
-        }
+		public override void Attack()
+		{
+			if (RemainingShots.Value <= 0 || isActive) return;
 
-        private void HandleRecovery()
-        {
-            if (timersController.RecoveryTimerIsPlaying() == false && RemainingShots.Value < maxShots && !isRecovering)
-            {
-                isRecovering = true;
-                timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
-            }
-        }
+			RemainingShots.Value--;
+			isActive = true;
+			laser.SetActive(true);
+			timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
+			OnLaserShot?.Invoke();
+		}
 
-        private void HandleLaserDamage()
-        {
-            if (isActive == false) return;
+		public void Tick()
+		{
+			HandleRecovery();
+			HandleLaserDamage();
+		}
 
-            var hit = Physics2D.Raycast(shotPoint.position, shotPoint.up, float.PositiveInfinity, layerMask);
+		private void HandleRecovery()
+		{
+			if (timersController.RecoveryTimerIsPlaying() == false && RemainingShots.Value < maxShots && !isRecovering)
+			{
+				isRecovering = true;
+				timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
+			}
+		}
 
-            if (hit.collider == null) return;
-            if (hit.collider.TryGetComponent(out Enemy enemy)) enemy.Die();
-        }
+		private void HandleLaserDamage()
+		{
+			if (isActive == false) return;
 
-        public void TurnOffLaser()
-        {
-            timersController.UnsubscribeFromDurationTimer(TurnOffLaser);
-            isActive = false;
-            laser.SetActive(false);
-        }
+			var hit = Physics2D.Raycast(shotPoint.position, shotPoint.up, float.PositiveInfinity, layerMask);
 
-        private void RecoveryLaser()
-        {
-            timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
-            RemainingShots.Value++;
-            isRecovering = false;
-        }
+			if (hit.collider == null) return;
+			if (hit.collider.TryGetComponent(out Enemy enemy)) enemy.Die();
+		}
 
-        private void ChangedTimeToRecovery(float recoveryTime)
-        {
-            TimeToRecovery.Value = recoveryTime;
-        }
+		public void TurnOffLaser()
+		{
+			timersController.UnsubscribeFromDurationTimer(TurnOffLaser);
+			isActive = false;
+			laser.SetActive(false);
+		}
 
-        public void Dispose()
-        {
-            if (disposed) return;
-            disposed = true;
-            timersController.UnsubscribeAllLaserTimers(ChangedTimeToRecovery, TurnOffLaser, RecoveryLaser);
-        }
-    }
+		private void RecoveryLaser()
+		{
+			timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
+			RemainingShots.Value++;
+			isRecovering = false;
+		}
+
+		private void ChangedTimeToRecovery(float recoveryTime)
+		{
+			TimeToRecovery.Value = recoveryTime;
+		}
+	}
 }

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56970b6916b8438da6da23948130adef, type: 3}
+  m_Name: EffectsConfig
+  m_EditorClassIdentifier: 
+  ShotVfx:
+    m_AssetGUID: abf7a5669d3284ef9a5fb09a76d791bb
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  AsteroidExplosionVfx:
+    m_AssetGUID: d44a65b080bb841ee88b1fa00e1d15f2
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  UfoExplosionVfx:
+    m_AssetGUID: 880026d49b7f64bcfbb1b46e0ec62d72
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0

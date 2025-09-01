@@ -5,22 +5,19 @@ using Zenject;
 
 namespace Components
 {
-    public class CollisionComponent : MonoBehaviour
-    {
-        private IGameEvents _gameEvents;
+	public class CollisionComponent : MonoBehaviour
+	{
+		private IGameEvents _gameEvents;
 
-        [Inject]
-        private void Construct(IGameEvents gameEvents)
-        {
-            this._gameEvents = gameEvents;
-        }
-        
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.GetComponent<Enemy>())
-            {
-                _gameEvents.NotifySpaceshipCollidedWithEnemy();
-            }
-        }
-    }
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (other.GetComponent<Enemy>()) _gameEvents.NotifySpaceshipCollidedWithEnemy();
+		}
+
+		[Inject]
+		private void Construct(IGameEvents gameEvents)
+		{
+			_gameEvents = gameEvents;
+		}
+	}
 }

@@ -2,84 +2,91 @@ using AssetsLoader;
 using Character;
 using Config;
 using Pools;
+using Systems;
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Weapon;
 using Zenject;
 
 namespace Components
 {
-    public class AttackComponent : MonoBehaviour, ITickable
-    {
-        [SerializeField] private Transform _shotPoint;
-        [SerializeField] private GameObject _laser;
-        [SerializeField] private LayerMask _laserLayerMask;
+	public class AttackComponent : MonoBehaviour, ITickable
+	{
+		[SerializeField] private Transform _shotPoint;
+		[SerializeField] private GameObject _laser;
+		[SerializeField] private LayerMask _laserLayerMask;
 
-        private readonly CompositeDisposable _disposables = new ();
-        
-        private MainWeapon _mainWeapon;
-        private LaserWeapon _laserWeapon;
-        private BulletPoolFacade _bulletPool;
-        private RemoteConfig _remoteConfig;
-        
-        public MainWeapon MainWeapon => _mainWeapon;
-        public LaserWeapon LaserWeapon => _laserWeapon;
+		private readonly CompositeDisposable _disposables = new();
+		private BulletPoolFacade _bulletPool;
+		private IGameEvents _gameEvents;
 
-        [Inject]
-        private void Construct(
-            DiContainer container,
-            IConfigProvider configProvider,
-            GameConfiguration localConfig,
-            Transform poolParent,
-            IAssetLoader<Bullet> loader)
-        {
-            _remoteConfig = configProvider.GetRemoteConfig();
-            _mainWeapon = container.Instantiate<MainWeapon>();
-            _laserWeapon = container.Instantiate<LaserWeapon>();
-            
-            _bulletPool = new BulletPoolFacade(loader, localConfig.BulletId, poolParent);
-        }
+		private RemoteConfig _remoteConfig;
 
-        public void Initialize(
-            SpaceshipModel spaceshipModel)
-        {
-            _mainWeapon.Initialize(
-                _shotPoint,
-                _remoteConfig.BulletSpeed,
-                _bulletPool);
+		public MainWeapon MainWeapon { get; private set; }
 
-            _laserWeapon.Initialize(
-                _shotPoint,
-                _laser,
-                _laserLayerMask,
-                _remoteConfig.CountOfLaserShots);
+		public LaserWeapon LaserWeapon { get; private set; }
 
-            _laserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(_disposables);
-            _laserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(_disposables);
-        }
+		public void Tick()
+		{
+			LaserWeapon.Tick();
+		}
 
-        public void AttackByMainShot()
-        {
-            _mainWeapon.Attack();
-        }
+		[Inject]
+		private void Construct(
+			DiContainer container,
+			IConfigProvider configProvider,
+			GameConfiguration localConfig,
+			Transform poolParent,
+			IAssetLoader<Bullet> loader,
+			IGameEvents gameEvents)
+		{
+			_remoteConfig = configProvider.GetRemoteConfig();
+			MainWeapon = container.Instantiate<MainWeapon>();
+			LaserWeapon = container.Instantiate<LaserWeapon>();
+			_gameEvents = gameEvents;
 
-        public void AttackByLaserShot()
-        {
-            _laserWeapon.Attack();
-        }
+			_bulletPool = new BulletPoolFacade(loader, localConfig.BulletId, poolParent);
+		}
 
-        public void ResetWeapon()
-        {
-            _laserWeapon.TurnOffLaser();
-            _mainWeapon.Reset();
-            _disposables.Clear();
-        }
+		public void Initialize(
+			SpaceshipModel spaceshipModel)
+		{
+			MainWeapon.Initialize(
+				_shotPoint,
+				_remoteConfig.BulletSpeed,
+				_bulletPool);
 
-        public void Tick()
-        {
-            _laserWeapon.Tick();
-        }
-    }
+			LaserWeapon.Initialize(
+				_shotPoint,
+				_laser,
+				_laserLayerMask,
+				_remoteConfig.CountOfLaserShots);
+
+			LaserWeapon.RemainingShots.Subscribe(spaceshipModel.SetLaserCount).AddTo(_disposables);
+			LaserWeapon.TimeToRecovery.Subscribe(spaceshipModel.SetTimeToRecoveryLaser).AddTo(_disposables);
+			MainWeapon.OnShot += OnShotPerformed;
+		}
+
+		public void AttackByMainShot()
+		{
+			MainWeapon.Attack();
+		}
+
+		public void AttackByLaserShot()
+		{
+			LaserWeapon.Attack();
+		}
+
+		public void ResetWeapon()
+		{
+			LaserWeapon.TurnOffLaser();
+			MainWeapon.Reset();
+			_disposables.Clear();
+		}
+
+		private void OnShotPerformed()
+		{
+			_gameEvents.NotifySpaceshipShot(_shotPoint.position);
+		}
+	}
 }
-

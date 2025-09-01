@@ -1,130 +1,114 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using SaveLoad;
 using UnityEngine;
 using Zenject;
 
 namespace Systems
 {
-    public enum GameState
-    {
-        Off = 0,
-        Playing = 1,
-        Pause = 2,
-        Finished = 3,
-    }
+	public enum GameState
+	{
+		Off = 0,
+		Playing = 1,
+		Pause = 2,
+		Finished = 3
+	}
 
-    public class GameCycle : IInitializable
-    {
-        private readonly List<IGameListener> _gameListeners = new();
-        
-        private SaveSystemFacade _gameSaveService;
-        private GameState _state;
-        
-        [Inject]
-        private void Construct(SaveSystemFacade gameSaveService)
-        {
-            _gameSaveService = gameSaveService;
-        }
+	public class GameCycle : IInitializable
+	{
+		private readonly List<IGameListener> _gameListeners = new();
 
-        public void Initialize()
-        {
-            _state = GameState.Off;
-        }
+		private SaveSystemFacade _gameSaveService;
+		private GameState _state;
 
-        public void AddListener(IGameListener listener)
-        {
-            _gameListeners.Add(listener);
-        }
+		public void Initialize()
+		{
+			_state = GameState.Off;
+		}
 
-        public void StartGame()
-        {
-            if (_state == GameState.Playing || _state == GameState.Pause)
-            {
-                Debug.Log("Game is already started!");
-                return;
-            }
+		[Inject]
+		private void Construct(SaveSystemFacade gameSaveService)
+		{
+			_gameSaveService = gameSaveService;
+		}
 
-            _state = GameState.Playing;
+		public void AddListener(IGameListener listener)
+		{
+			_gameListeners.Add(listener);
+		}
 
-            for (int i = 0; i < _gameListeners.Count; i++)
-            {
-                if (_gameListeners[i] is IGameStartListener gameStartListener)
-                {
-                    gameStartListener.OnStartGame();
-                }
-            }
-        }
+		public void StartGame()
+		{
+			if (_state == GameState.Playing || _state == GameState.Pause)
+			{
+				Debug.Log("Game is already started!");
+				return;
+			}
 
-        public void FinishGame()
-        {
-            _gameSaveService.SavePurchasedDataAsync();
-            _gameSaveService.SaveSpaceShipDataAsync();
+			_state = GameState.Playing;
 
-            if (_state == GameState.Off || _state == GameState.Finished)
-            {
-                Debug.Log("Game is already finished!");
-                return;
-            }
+			for (var i = 0; i < _gameListeners.Count; i++)
+				if (_gameListeners[i] is IGameStartListener gameStartListener)
+					gameStartListener.OnStartGame();
+		}
 
-            _state = GameState.Finished;
+		public void FinishGame()
+		{
+			_gameSaveService.SaveSpaceShipData().Forget();
 
-            for (int i = 0; i < _gameListeners.Count; i++)
-            {
-                if (_gameListeners[i] is IGameFinishListener gameFinishListener)
-                {
-                    gameFinishListener.OnFinishGame();
-                }
-            }
-        }
+			if (_state == GameState.Off || _state == GameState.Finished)
+			{
+				Debug.Log("Game is already finished!");
+				return;
+			}
 
-        public void PauseGame()
-        {
-            if (_state == GameState.Pause)
-            {
-                Debug.Log("Game is already paused!");
-                return;
-            }
+			_state = GameState.Finished;
 
-            if (_state == GameState.Off || _state == GameState.Finished)
-            {
-                Debug.Log("Game is not started or already finished!");
-                return;
-            }
+			for (var i = 0; i < _gameListeners.Count; i++)
+				if (_gameListeners[i] is IGameFinishListener gameFinishListener)
+					gameFinishListener.OnFinishGame();
+		}
 
-            _state = GameState.Pause;
+		public void PauseGame()
+		{
+			if (_state == GameState.Pause)
+			{
+				Debug.Log("Game is already paused!");
+				return;
+			}
 
-            for (int i = 0; i < _gameListeners.Count; i++)
-            {
-                if (_gameListeners[i] is IGamePauseListener gamePauseListener)
-                {
-                    gamePauseListener.OnPauseGame();
-                }
-            }
-        }
+			if (_state == GameState.Off || _state == GameState.Finished)
+			{
+				Debug.Log("Game is not started or already finished!");
+				return;
+			}
 
-        public void ResumeGame()
-        {
-            if (_state == GameState.Playing)
-            {
-                Debug.Log("Game is already playing!");
-                return;
-            }
+			_state = GameState.Pause;
 
-            if (_state == GameState.Off || _state == GameState.Finished)
-            {
-                Debug.Log("Game is not started or already finished!");
-                return;
-            }
+			for (var i = 0; i < _gameListeners.Count; i++)
+				if (_gameListeners[i] is IGamePauseListener gamePauseListener)
+					gamePauseListener.OnPauseGame();
+		}
 
-            _state = GameState.Playing;
+		public void ResumeGame()
+		{
+			if (_state == GameState.Playing)
+			{
+				Debug.Log("Game is already playing!");
+				return;
+			}
 
-            for (int i = 0; i < _gameListeners.Count; i++)
-            {
-                if (_gameListeners[i] is IGameResumeListener gameResumeListener)
-                {
-                    gameResumeListener.OnResumeGame();
-                }
-            }
-        }
-    }
+			if (_state == GameState.Off || _state == GameState.Finished)
+			{
+				Debug.Log("Game is not started or already finished!");
+				return;
+			}
+
+			_state = GameState.Playing;
+
+			for (var i = 0; i < _gameListeners.Count; i++)
+				if (_gameListeners[i] is IGameResumeListener gameResumeListener)
+					gameResumeListener.OnResumeGame();
+		}
+	}
 }

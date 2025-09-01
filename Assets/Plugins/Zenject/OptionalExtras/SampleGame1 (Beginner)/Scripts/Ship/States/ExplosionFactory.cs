@@ -6,4 +6,3 @@ namespace Zenject.Asteroids
     {
     }
 }
-

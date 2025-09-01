@@ -1,7 +1,7 @@
 namespace SaveLoad
 {
-    public interface ISaveData
-    {
-        long Timestamp { get; set; }
-    }
+	public interface ISaveData
+	{
+		long Timestamp { get; set; }
+	}
 }

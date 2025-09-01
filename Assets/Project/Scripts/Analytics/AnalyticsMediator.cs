@@ -6,92 +6,87 @@ using Zenject;
 
 namespace Analytics
 {
-    public class AnalyticsMediator : IGameStartListener, IGameFinishListener, IDisposable
-    {
-        private IAnalyticsHandler _analyticsHandler;
-        private AttackComponent _attackComponent;
-        private EnemiesManager _enemiesManager;
+	public class AnalyticsMediator : IGameStartListener, IGameFinishListener, IDisposable
+	{
+		private IAnalyticsHandler _analyticsHandler;
+		private int _asteroidsDestroyedCount;
+		private AttackComponent _attackComponent;
+		private EnemiesManager _enemiesManager;
 
-        private int _laserShotCount;
-        private int _mainShotCount;
-        private int _asteroidsDestroyedCount;
-        private int _ufoDestroyedCount;
+		private int _laserShotCount;
+		private int _mainShotCount;
+		private int _ufoDestroyedCount;
 
-        [Inject]
-        private void Construct(
-            IAnalyticsHandler analyticsHandler,
-            AttackComponent attackComponent,
-            EnemiesManager enemiesManager,
-            GameCycle gameCycle)
-        {
-            this._analyticsHandler = analyticsHandler;
-            this._attackComponent = attackComponent;
-            this._enemiesManager = enemiesManager;
+		public void Dispose()
+		{
+			_attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
+			_attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
+			_enemiesManager.OnEnemyDeath -= OnEnemyDeath;
+		}
 
-            this._attackComponent.LaserWeapon.OnLaserShot += OnLaserShot;
-            this._attackComponent.MainWeapon.OnShot += IncreaseMainShotCount;
-            this._enemiesManager.OnEnemyDeath += OnEnemyDeath;
+		public void OnFinishGame()
+		{
+			SendFinishGame();
+		}
 
-            gameCycle.AddListener(this);
-        }
+		public void OnStartGame()
+		{
+			SendStartGame();
+		}
 
-        private void OnEnemyDeath(EnemyType enemyType)
-        {
-            if (enemyType == EnemyType.Asteroid || enemyType == EnemyType.AsteroidSmall)
-            {
-                _asteroidsDestroyedCount++;
-            }
-            else if (enemyType == EnemyType.UFO)
-            {
-                _ufoDestroyedCount++;
-            }
-        }
+		[Inject]
+		private void Construct(
+			IAnalyticsHandler analyticsHandler,
+			AttackComponent attackComponent,
+			EnemiesManager enemiesManager,
+			GameCycle gameCycle)
+		{
+			_analyticsHandler = analyticsHandler;
+			_attackComponent = attackComponent;
+			_enemiesManager = enemiesManager;
 
-        public void OnStartGame()
-        {
-            SendStartGame();
-        }
+			_attackComponent.LaserWeapon.OnLaserShot += OnLaserShot;
+			_attackComponent.MainWeapon.OnShot += IncreaseMainShotCount;
+			_enemiesManager.OnEnemyDeath += OnEnemyDeath;
 
-        public void OnFinishGame()
-        {
-            SendFinishGame();
-        }
+			gameCycle.AddListener(this);
+		}
 
-        private void SendStartGame()
-        {
-            _analyticsHandler.StartGame();
-        }
+		private void OnEnemyDeath(EnemyType enemyType)
+		{
+			if (enemyType == EnemyType.Asteroid || enemyType == EnemyType.AsteroidSmall)
+				_asteroidsDestroyedCount++;
+			else if (enemyType == EnemyType.UFO) _ufoDestroyedCount++;
+		}
 
-        private void SendFinishGame()
-        {
-            _analyticsHandler.FinishGame(_mainShotCount, _laserShotCount, _asteroidsDestroyedCount, _ufoDestroyedCount);
-            ResetCounters();
-        }
+		private void SendStartGame()
+		{
+			_analyticsHandler.StartGame();
+		}
 
-        private void OnLaserShot()
-        {
-            _analyticsHandler.LaserShotFired();
-            _laserShotCount++;
-        }
+		private void SendFinishGame()
+		{
+			_analyticsHandler.FinishGame(_mainShotCount, _laserShotCount, _asteroidsDestroyedCount, _ufoDestroyedCount);
+			ResetCounters();
+		}
 
-        private void IncreaseMainShotCount()
-        {
-            _mainShotCount++;
-        }
+		private void OnLaserShot()
+		{
+			_analyticsHandler.LaserShotFired();
+			_laserShotCount++;
+		}
 
-        private void ResetCounters()
-        {
-            _laserShotCount = 0;
-            _mainShotCount = 0;
-            _asteroidsDestroyedCount = 0;
-            _ufoDestroyedCount = 0;
-        }
+		private void IncreaseMainShotCount()
+		{
+			_mainShotCount++;
+		}
 
-        public void Dispose()
-        {
-            _attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
-            _attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
-            _enemiesManager.OnEnemyDeath -= OnEnemyDeath;
-        }
-    }
+		private void ResetCounters()
+		{
+			_laserShotCount = 0;
+			_mainShotCount = 0;
+			_asteroidsDestroyedCount = 0;
+			_ufoDestroyedCount = 0;
+		}
+	}
 }

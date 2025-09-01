@@ -2,30 +2,30 @@ using UnityEngine;
 
 namespace Utils
 {
-    public class GameBounds : MonoBehaviour
-    {
-        private BoxCollider2D _boundaryCollider;
+	public class GameBounds : MonoBehaviour
+	{
+		private BoxCollider2D _boundaryCollider;
 
-        private void Awake()
-        {
-            _boundaryCollider = GetComponent<BoxCollider2D>();
-            UpdateBoundarySize();
-        }
+		private void Awake()
+		{
+			_boundaryCollider = GetComponent<BoxCollider2D>();
+			UpdateBoundarySize();
+		}
 
-        private void UpdateBoundarySize()
-        {
-            if (_boundaryCollider == null) return;
+		private void OnRectTransformDimensionsChange()
+		{
+			UpdateBoundarySize();
+		}
 
-            float height = Camera.main!.orthographicSize;
-            float width = height * Camera.main.aspect;
+		private void UpdateBoundarySize()
+		{
+			if (_boundaryCollider == null) return;
 
-            _boundaryCollider.size = new Vector2(width * 2, height * 2);
-            _boundaryCollider.transform.position = Vector3.zero;
-        }
+			var height = Camera.main!.orthographicSize;
+			var width = height * Camera.main.aspect;
 
-        private void OnRectTransformDimensionsChange()
-        {
-            UpdateBoundarySize();
-        }
-    }
+			_boundaryCollider.size = new Vector2(width * 2, height * 2);
+			_boundaryCollider.transform.position = Vector3.zero;
+		}
+	}
 }
