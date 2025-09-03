@@ -13,6 +13,12 @@ namespace Utils
 
 		public Action TimerIsExpired;
 
+		[Inject]
+		private void Construct(TickableManager tickableManager)
+		{
+			tickableManager.Add(this);
+		}
+
 		public void Tick()
 		{
 			if (_remainingTime > 0 && _isPaused == false)
@@ -26,13 +32,6 @@ namespace Utils
 					TimerIsExpired?.Invoke();
 				}
 			}
-		}
-
-
-		[Inject]
-		private void Construct(TickableManager tickableManager)
-		{
-			tickableManager.Add(this);
 		}
 
 		public void Init(float duration)

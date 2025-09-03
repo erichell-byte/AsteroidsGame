@@ -24,6 +24,7 @@ namespace Character
 
 		public void SetSpeed(float speed)
 		{
+			speed = Mathf.Clamp(speed, 0, speed);
 			Speed.Value = speed;
 		}
 

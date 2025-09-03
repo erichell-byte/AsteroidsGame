@@ -4,6 +4,7 @@ using AssetsLoader;
 using Config;
 using Cysharp.Threading.Tasks;
 using Pools;
+using Systems;
 using UnityEngine;
 
 namespace Enemies
@@ -21,14 +22,17 @@ namespace Enemies
 		private readonly EnemyPoolFacade _asteroidSmallPoolFacade;
 		private readonly GameConfiguration _config;
 		private readonly EnemyPoolFacade _ufoPoolFacade;
+		private readonly IEnemySpawnPointProvider _spawnPointProvider;
 
 		private Dictionary<EnemyType, EnemyConfig> _enemyConfigMap;
 
 		public EnemiesFactory(
 			Transform poolParent,
 			GameConfiguration config,
-			IAssetLoader<Enemy> loader)
+			IAssetLoader<Enemy> loader,
+			IEnemySpawnPointProvider spawnPointProvider)
 		{
+			_spawnPointProvider = spawnPointProvider;
 			_config = config;
 			_asteroidPoolFacade = new EnemyPoolFacade(loader, config.AsteroidId, poolParent);
 			_asteroidSmallPoolFacade = new EnemyPoolFacade(loader, config.AsteroidSmallId, poolParent);
@@ -68,6 +72,7 @@ namespace Enemies
 					var enemy = await _asteroidPoolFacade.GetAsync();
 					var asteroid = (AsteroidEnemy)enemy;
 					asteroid.Initialize(GetEnemyConfig(EnemyType.Asteroid));
+					asteroid.transform.position = _spawnPointProvider.GetSpawnPoint();
 					return asteroid;
 				}
 				case EnemyType.UFO:
@@ -75,6 +80,7 @@ namespace Enemies
 					var enemy = await _ufoPoolFacade.GetAsync();
 					var ufo = (UFOEnemy)enemy;
 					ufo.Initialize(GetEnemyConfig(EnemyType.UFO));
+					ufo.transform.position = _spawnPointProvider.GetSpawnPoint();
 					return ufo;
 				}
 			}

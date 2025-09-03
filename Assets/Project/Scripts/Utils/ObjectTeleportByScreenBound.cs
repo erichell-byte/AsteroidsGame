@@ -13,17 +13,20 @@ namespace Utils
 		{
 			var mainCamera = Camera.main;
 
-			var bottomLeft =
-				mainCamera.ViewportToWorldPoint(new Vector3(0, 0,
-					transform.position.z - mainCamera.transform.position.z));
-			var topRight =
-				mainCamera.ViewportToWorldPoint(new Vector3(1, 1,
-					transform.position.z - mainCamera.transform.position.z));
+			if (mainCamera != null)
+			{
+				var bottomLeft =
+					mainCamera.ViewportToWorldPoint(new Vector3(0, 0,
+						transform.position.z - mainCamera.transform.position.z));
+				var topRight =
+					mainCamera.ViewportToWorldPoint(new Vector3(1, 1,
+						transform.position.z - mainCamera.transform.position.z));
 
-			_screenLeft = bottomLeft.x;
-			_screenRight = topRight.x;
-			_screenBottom = bottomLeft.y;
-			_screenTop = topRight.y;
+				_screenLeft = bottomLeft.x;
+				_screenRight = topRight.x;
+				_screenBottom = bottomLeft.y;
+				_screenTop = topRight.y;
+			}
 		}
 
 		private void Update()

@@ -10,14 +10,6 @@ namespace Systems
 		private SaveSystemFacade _saveSystemFacade;
 		private ISceneLoader _sceneLoader;
 
-		public async void Initialize()
-		{
-			await _unityServicesInitializator.SetupAndSignIn();
-			await _saveSystemFacade.LoadPurchasedData();
-			await _saveSystemFacade.LoadSpaceShipData();
-			LoadScene();
-		}
-
 		[Inject]
 		private void Construct(
 			SaveSystemFacade gameSaveService,
@@ -25,6 +17,14 @@ namespace Systems
 		{
 			_saveSystemFacade = gameSaveService;
 			_sceneLoader = sceneLoader;
+		}
+
+		public async void Initialize()
+		{
+			await _unityServicesInitializator.SetupAndSignIn();
+			await _saveSystemFacade.LoadPurchasedData();
+			await _saveSystemFacade.LoadSpaceShipData();
+			LoadScene();
 		}
 
 		private void LoadScene()

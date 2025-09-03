@@ -1,3 +1,4 @@
+using System;
 using Analytics;
 using Character;
 using Components;
@@ -23,21 +24,24 @@ namespace Installers
 
 		[Header("UI")]
 		[SerializeField] private GameUIView _gameUIView;
-		[SerializeField] private AdView _adView;
+
+		[SerializeField] private GameOverView _gameOverView;
 
 		public override void InstallBindings()
 		{
+			Container.Bind<IGameEvents>().To<GameEvents>().AsSingle();
+			Container.BindInterfacesAndSelfTo<GameCycle>().AsSingle();
+			Container.Bind<GameUIView>().FromInstance(_gameUIView).AsSingle();
+			Container.Bind<GameOverView>().FromInstance(_gameOverView).AsSingle();
+			Container.BindInterfacesAndSelfTo<AttackComponent>().FromInstance(_attackComponent).AsSingle();
+			Container.BindInterfacesAndSelfTo<MoveComponent>().FromInstance(_moveComponent).AsSingle();
+			Container.BindInterfacesAndSelfTo<SpaceshipController>().AsSingle();
+			Container.Bind<UIController>().AsSingle().NonLazy();
 			Container.BindInterfacesAndSelfTo<GameEventsController>().AsSingle();
 			Container.Bind<CollisionComponent>().FromInstance(_collisionComponent);
 			Container.BindFactory<Timer, Timer.Factory>().FromNew();
 			Container.BindInterfacesAndSelfTo<TimersController>().AsSingle();
-			Container.BindInterfacesAndSelfTo<AttackComponent>().FromInstance(_attackComponent).AsSingle();
-			Container.BindInterfacesAndSelfTo<MoveComponent>().FromInstance(_moveComponent).AsSingle();
-			Container.BindInterfacesAndSelfTo<SpaceshipController>().AsSingle();
 			Container.Bind<Transform>().FromInstance(_poolParent).AsSingle();
-			Container.Bind<GameUIView>().FromInstance(_gameUIView).AsSingle();
-			Container.Bind<AdView>().FromInstance(_adView).AsSingle();
-			Container.Bind<UIController>().AsSingle().NonLazy();
 			Container.Bind<IAnalyticsHandler>().To<FirebaseAnalyticsHandler>().AsSingle();
 			Container.Bind<EnemiesManager>().FromInstance(_enemiesManager).AsSingle();
 			Container.BindInterfacesAndSelfTo<AnalyticsMediator>().AsSingle();
@@ -46,9 +50,10 @@ namespace Installers
 			Container.Bind<AudioSource>().WithId(AudioSourceId.Music).FromInstance(_musicAudioSource).NonLazy();
 			Container.Bind<AudioSource>().WithId(AudioSourceId.Sfx).FromInstance(_sfxAudioSource).NonLazy();
 			Container.Bind<AudioMediator>().AsSingle().NonLazy();
+			Container.Bind<IEnemySpawnPointProvider>().To<CameraBoundsSpawnPointProvider>().AsSingle();
 		}
 	}
-	
+
 	public enum AudioSourceId
 	{
 		Music,

@@ -14,7 +14,7 @@ namespace Sounds
 		private readonly AudioConfig _audioConfig;
 		private readonly AudioSource _musicAudioSource;
 		private readonly AudioSource _sfxAudioSource;
-		private readonly CompositeDisposable _disposables = new ();
+		private readonly CompositeDisposable _disposables = new();
 
 		[Inject]
 		public AudioMediator(
@@ -34,7 +34,7 @@ namespace Sounds
 			events.OnEnemyKilled
 				.Subscribe(PlayEnemyKilledSound)
 				.AddTo(_disposables);
-			
+
 			gameCycle.AddListener(this);
 		}
 
@@ -67,7 +67,7 @@ namespace Sounds
 
 		public void Dispose()
 		{
-			_disposables?.Dispose();
+			_disposables?.Clear();
 		}
 	}
 }

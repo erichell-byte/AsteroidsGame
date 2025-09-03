@@ -15,6 +15,19 @@ namespace Systems
 		private IGameEvents _gameEvents;
 		private SpaceshipController _spaceship;
 
+		[Inject]
+		private void Construct(
+			GameCycle gameCycle,
+			SpaceshipController spaceship,
+			IAdService adService,
+			IGameEvents gameEvents)
+		{
+			_gameCycle = gameCycle;
+			_spaceship = spaceship;
+			_adService = adService;
+			_gameEvents = gameEvents;
+		}
+
 		public void Dispose()
 		{
 			_disposables?.Dispose();
@@ -50,19 +63,6 @@ namespace Systems
 				.Where(adPlace => AdPlace.GameOver == adPlace)
 				.Subscribe(_ => _gameCycle.FinishGame())
 				.AddTo(_disposables);
-		}
-
-		[Inject]
-		private void Construct(
-			GameCycle gameCycle,
-			SpaceshipController spaceship,
-			IAdService adService,
-			IGameEvents gameEvents)
-		{
-			_gameCycle = gameCycle;
-			_spaceship = spaceship;
-			_adService = adService;
-			_gameEvents = gameEvents;
 		}
 	}
 }

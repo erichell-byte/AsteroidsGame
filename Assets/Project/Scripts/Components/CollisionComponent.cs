@@ -9,15 +9,15 @@ namespace Components
 	{
 		private IGameEvents _gameEvents;
 
-		private void OnTriggerEnter2D(Collider2D other)
-		{
-			if (other.GetComponent<Enemy>()) _gameEvents.NotifySpaceshipCollidedWithEnemy();
-		}
-
 		[Inject]
 		private void Construct(IGameEvents gameEvents)
 		{
 			_gameEvents = gameEvents;
+		}
+
+		private void OnTriggerEnter2D(Collider2D other)
+		{
+			if (other.GetComponent<Enemy>()) _gameEvents.NotifySpaceshipCollidedWithEnemy();
 		}
 	}
 }

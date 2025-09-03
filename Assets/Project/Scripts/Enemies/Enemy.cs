@@ -18,7 +18,7 @@ namespace Enemies
 			Config = config;
 			EnemyType = config.Type;
 			Rb = GetComponent<Rigidbody2D>();
-			
+
 			gameObject.SetActive(true);
 			gameObject.GetComponent<Collider2D>().enabled = true;
 		}

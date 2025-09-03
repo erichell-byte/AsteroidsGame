@@ -40,6 +40,14 @@ namespace GameAdvertisement
 		public IObservable<AdPlace> OnInterstitialAdShowFailed => _onInterstitialAdShowFailed;
 		public IObservable<Unit> OnSkipInterstitialAdBecauseNoAdsPurchased => _onSkipInterstitialNoAdsPurchased;
 
+		[Inject]
+		private void Construct(GameConfiguration gameConfiguration)
+		{
+			_androidGameId = gameConfiguration.AndroidGameId;
+			_iOSGameId = gameConfiguration.IOSGameId;
+			_testMode = gameConfiguration.AdTestMode;
+		}
+
 		public void ShowInterstitialAd(AdPlace place)
 		{
 			_currentAdPlace = place;
@@ -133,14 +141,6 @@ namespace GameAdvertisement
 
 			Advertisement.Load(_adInterUnitId, this);
 			Advertisement.Load(_adRewardUnitId, this);
-		}
-
-		[Inject]
-		private void Construct(GameConfiguration gameConfiguration)
-		{
-			_androidGameId = gameConfiguration.AndroidGameId;
-			_iOSGameId = gameConfiguration.IOSGameId;
-			_testMode = gameConfiguration.AdTestMode;
 		}
 	}
 }

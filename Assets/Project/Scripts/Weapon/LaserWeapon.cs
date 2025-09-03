@@ -9,31 +9,31 @@ namespace Weapon
 {
 	public class LaserWeapon : BaseWeapon, IDisposable
 	{
-		private bool disposed;
-		private bool isActive;
-		private bool isRecovering;
+		private bool _disposed;
+		private bool _isActive;
+		private bool _isRecovering;
+		private GameObject _laser;
+		private LayerMask _layerMask;
+		private int _maxShots;
+		private TimersController _timersController;
 
-		private GameObject laser;
-		private LayerMask layerMask;
-		private int maxShots;
 		public Action OnLaserShot;
-		private TimersController timersController;
 
 		public ReactiveProperty<int> RemainingShots { get; } = new();
 		public ReactiveProperty<float> TimeToRecovery { get; } = new();
-
-		public void Dispose()
-		{
-			if (disposed) return;
-			disposed = true;
-			timersController.UnsubscribeAllLaserTimers(ChangedTimeToRecovery, TurnOffLaser, RecoveryLaser);
-		}
 
 		[Inject]
 		private void Construct(
 			TimersController timersController)
 		{
-			this.timersController = timersController;
+			_timersController = timersController;
+		}
+
+		public void Dispose()
+		{
+			if (_disposed) return;
+			_disposed = true;
+			_timersController.UnsubscribeAllLaserTimers(ChangedTimeToRecovery, TurnOffLaser, RecoveryLaser);
 		}
 
 		public void Initialize(
@@ -42,23 +42,23 @@ namespace Weapon
 			LayerMask layerMask,
 			int maxShots)
 		{
-			this.shotPoint = shotPoint;
-			this.laser = laser;
-			this.layerMask = layerMask;
-			this.maxShots = maxShots;
+			this.ShotPoint = shotPoint;
+			this._laser = laser;
+			this._layerMask = layerMask;
+			this._maxShots = maxShots;
 			RemainingShots.Value = maxShots;
 			TimeToRecovery.Value = 0f;
-			timersController.InitLaserTimers(ChangedTimeToRecovery);
+			_timersController.InitLaserTimers(ChangedTimeToRecovery);
 		}
 
 		public override void Attack()
 		{
-			if (RemainingShots.Value <= 0 || isActive) return;
+			if (RemainingShots.Value <= 0 || _isActive) return;
 
 			RemainingShots.Value--;
-			isActive = true;
-			laser.SetActive(true);
-			timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
+			_isActive = true;
+			_laser.SetActive(true);
+			_timersController.PlayAndSubscribeDurationTimer(TurnOffLaser);
 			OnLaserShot?.Invoke();
 		}
 
@@ -70,18 +70,19 @@ namespace Weapon
 
 		private void HandleRecovery()
 		{
-			if (timersController.RecoveryTimerIsPlaying() == false && RemainingShots.Value < maxShots && !isRecovering)
+			if (_timersController.RecoveryTimerIsPlaying() == false && RemainingShots.Value < _maxShots &&
+			    !_isRecovering)
 			{
-				isRecovering = true;
-				timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
+				_isRecovering = true;
+				_timersController.PlayAndSubscribeRecoveryTimer(RecoveryLaser);
 			}
 		}
 
 		private void HandleLaserDamage()
 		{
-			if (isActive == false) return;
+			if (_isActive == false) return;
 
-			var hit = Physics2D.Raycast(shotPoint.position, shotPoint.up, float.PositiveInfinity, layerMask);
+			var hit = Physics2D.Raycast(ShotPoint.position, ShotPoint.up, float.PositiveInfinity, _layerMask);
 
 			if (hit.collider == null) return;
 			if (hit.collider.TryGetComponent(out Enemy enemy)) enemy.Die();
@@ -89,16 +90,16 @@ namespace Weapon
 
 		public void TurnOffLaser()
 		{
-			timersController.UnsubscribeFromDurationTimer(TurnOffLaser);
-			isActive = false;
-			laser.SetActive(false);
+			_timersController.UnsubscribeFromDurationTimer(TurnOffLaser);
+			_isActive = false;
+			_laser.SetActive(false);
 		}
 
 		private void RecoveryLaser()
 		{
-			timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
+			_timersController.UnsubscribeFromRecoveryTimer(RecoveryLaser);
 			RemainingShots.Value++;
-			isRecovering = false;
+			_isRecovering = false;
 		}
 
 		private void ChangedTimeToRecovery(float recoveryTime)

@@ -19,6 +19,16 @@ namespace Components
 		private float _rotateCoefficient;
 		private SpaceshipModel _spaceshipModel;
 
+		[Inject]
+		private void Construct(
+			GameCycle gameCycle,
+			IConfigProvider configProvider)
+		{
+			_remoteConfig = configProvider.GetRemoteConfig();
+
+			gameCycle.AddListener(this);
+		}
+
 		private void Awake()
 		{
 			_rb2d = GetComponent<Rigidbody2D>();
@@ -41,15 +51,6 @@ namespace Components
 			if (_rb2d.linearVelocity.magnitude > 0) _spaceshipModel?.SetPosition(transform.position);
 		}
 
-		[Inject]
-		private void Construct(
-			GameCycle gameCycle,
-			IConfigProvider configProvider)
-		{
-			_remoteConfig = configProvider.GetRemoteConfig();
-
-			gameCycle.AddListener(this);
-		}
 
 		public void Initialize(
 			SpaceshipModel spaceshipModel)

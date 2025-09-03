@@ -15,9 +15,11 @@ namespace Pools
 		{
 		}
 
-        protected override void OnGet(Enemy obj)
-        {
-        }
+		protected override void OnGet(Enemy obj)
+		{
+			obj.GetComponent<Collider2D>().enabled = false;
+			obj.gameObject.SetActive(false);
+		}
 
 		protected override void OnRelease(Enemy obj)
 		{

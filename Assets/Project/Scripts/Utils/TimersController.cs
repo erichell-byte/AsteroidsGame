@@ -6,73 +6,73 @@ namespace Utils
 {
 	public class TimersController
 	{
-		private Timer asteroidSpawnTimer;
-		private Timer laserDurationTimer;
-		private Timer laserRecoveryTimer;
+		private Timer _asteroidSpawnTimer;
+		private Timer _laserDurationTimer;
+		private Timer _laserRecoveryTimer;
 
-		private RemoteConfig remoteConfig;
-		private Timer shotTimer;
-		private Timer.Factory timersFactory;
-		private Timer ufoSpawnTimer;
+		private RemoteConfig _remoteConfig;
+		private Timer _shotTimer;
+		private Timer.Factory _timersFactory;
+		private Timer _ufoSpawnTimer;
 
 		[Inject]
 		private void Construct(
 			Timer.Factory timersFactory,
 			IConfigProvider configProvider)
 		{
-			this.timersFactory = timersFactory;
+			this._timersFactory = timersFactory;
 
-			remoteConfig = configProvider.GetRemoteConfig();
+			_remoteConfig = configProvider.GetRemoteConfig();
 		}
 
 		#region SpawnEnemies
 
 		public void SubscribeToSpawnEnemies(Action spawnAsteroidAction, Action spawnUFOAction)
 		{
-			asteroidSpawnTimer = timersFactory.Create();
-			asteroidSpawnTimer.Init(remoteConfig.AsteroidSpawnFrequency);
-			ufoSpawnTimer = timersFactory.Create();
-			ufoSpawnTimer.Init(remoteConfig.UfoSpawnFrequency);
+			_asteroidSpawnTimer = _timersFactory.Create();
+			_asteroidSpawnTimer.Init(_remoteConfig.AsteroidSpawnFrequency);
+			_ufoSpawnTimer = _timersFactory.Create();
+			_ufoSpawnTimer.Init(_remoteConfig.UfoSpawnFrequency);
 
-			asteroidSpawnTimer.Play();
-			asteroidSpawnTimer.TimerIsExpired += spawnAsteroidAction;
+			_asteroidSpawnTimer.Play();
+			_asteroidSpawnTimer.TimerIsExpired += spawnAsteroidAction;
 
-			ufoSpawnTimer.Play();
-			ufoSpawnTimer.TimerIsExpired += spawnUFOAction;
+			_ufoSpawnTimer.Play();
+			_ufoSpawnTimer.TimerIsExpired += spawnUFOAction;
 		}
 
 		public void UnsubscribeFromSpawnEnemies(Action spawnAsteroidAction, Action spawnUFOAction)
 		{
-			if (asteroidSpawnTimer != null)
-				asteroidSpawnTimer.TimerIsExpired -= spawnAsteroidAction;
-			if (ufoSpawnTimer != null)
-				ufoSpawnTimer.TimerIsExpired -= spawnUFOAction;
+			if (_asteroidSpawnTimer != null)
+				_asteroidSpawnTimer.TimerIsExpired -= spawnAsteroidAction;
+			if (_ufoSpawnTimer != null)
+				_ufoSpawnTimer.TimerIsExpired -= spawnUFOAction;
 		}
 
 		public void PauseEnemyTimers()
 		{
-			if (asteroidSpawnTimer != null)
-				asteroidSpawnTimer.Pause();
-			if (ufoSpawnTimer != null)
-				ufoSpawnTimer.Pause();
+			if (_asteroidSpawnTimer != null)
+				_asteroidSpawnTimer.Pause();
+			if (_ufoSpawnTimer != null)
+				_ufoSpawnTimer.Pause();
 		}
 
 		public void ResumeEnemyTimers()
 		{
-			if (asteroidSpawnTimer != null)
-				asteroidSpawnTimer.Resume();
-			if (ufoSpawnTimer != null)
-				ufoSpawnTimer.Resume();
+			if (_asteroidSpawnTimer != null)
+				_asteroidSpawnTimer.Resume();
+			if (_ufoSpawnTimer != null)
+				_ufoSpawnTimer.Resume();
 		}
 
 		public void PlaySpawnAsteroid()
 		{
-			asteroidSpawnTimer.Play();
+			_asteroidSpawnTimer.Play();
 		}
 
 		public void PlaySpawnUFO()
 		{
-			ufoSpawnTimer.Play();
+			_ufoSpawnTimer.Play();
 		}
 
 		#endregion
@@ -82,51 +82,51 @@ namespace Utils
 		public void InitLaserTimers(
 			Action<float> changedTimeToRecoveryAction)
 		{
-			laserRecoveryTimer = timersFactory.Create();
-			laserRecoveryTimer.Init(remoteConfig.TimeToRecoveryLaser);
-			laserDurationTimer = timersFactory.Create();
-			laserDurationTimer.Init(remoteConfig.TimeToDurationLaser);
-			laserRecoveryTimer.RemainingTimeChanged += changedTimeToRecoveryAction;
+			_laserRecoveryTimer = _timersFactory.Create();
+			_laserRecoveryTimer.Init(_remoteConfig.TimeToRecoveryLaser);
+			_laserDurationTimer = _timersFactory.Create();
+			_laserDurationTimer.Init(_remoteConfig.TimeToDurationLaser);
+			_laserRecoveryTimer.RemainingTimeChanged += changedTimeToRecoveryAction;
 		}
 
 		public void PlayAndSubscribeDurationTimer(Action turnOffLaserAction)
 		{
-			laserDurationTimer.TimerIsExpired += turnOffLaserAction;
-			laserDurationTimer.Play();
+			_laserDurationTimer.TimerIsExpired += turnOffLaserAction;
+			_laserDurationTimer.Play();
 		}
 
 		public void PlayAndSubscribeRecoveryTimer(Action recoveryLaserAction)
 		{
-			laserRecoveryTimer.TimerIsExpired += recoveryLaserAction;
-			laserRecoveryTimer.Play();
+			_laserRecoveryTimer.TimerIsExpired += recoveryLaserAction;
+			_laserRecoveryTimer.Play();
 		}
 
 		public void UnsubscribeFromDurationTimer(Action turnOffLaserAction)
 		{
-			if (laserDurationTimer != null)
-				laserDurationTimer.TimerIsExpired -= turnOffLaserAction;
+			if (_laserDurationTimer != null)
+				_laserDurationTimer.TimerIsExpired -= turnOffLaserAction;
 		}
 
 		public void UnsubscribeFromRecoveryTimer(Action recoveryLaserAction)
 		{
-			if (laserRecoveryTimer != null)
-				laserRecoveryTimer.TimerIsExpired -= recoveryLaserAction;
+			if (_laserRecoveryTimer != null)
+				_laserRecoveryTimer.TimerIsExpired -= recoveryLaserAction;
 		}
 
 		public bool RecoveryTimerIsPlaying()
 		{
-			return laserRecoveryTimer != null && laserRecoveryTimer.IsPlaying();
+			return _laserRecoveryTimer != null && _laserRecoveryTimer.IsPlaying();
 		}
 
 		public void UnsubscribeAllLaserTimers(Action<float> changedTimeToRecoveryAction, Action turnOffLaserAction,
 			Action recoveryLaserAction)
 		{
-			if (laserRecoveryTimer != null)
-				laserRecoveryTimer.RemainingTimeChanged -= changedTimeToRecoveryAction;
-			if (laserDurationTimer != null)
-				laserDurationTimer.TimerIsExpired -= turnOffLaserAction;
-			if (laserRecoveryTimer != null)
-				laserRecoveryTimer.TimerIsExpired -= recoveryLaserAction;
+			if (_laserRecoveryTimer != null)
+				_laserRecoveryTimer.RemainingTimeChanged -= changedTimeToRecoveryAction;
+			if (_laserDurationTimer != null)
+				_laserDurationTimer.TimerIsExpired -= turnOffLaserAction;
+			if (_laserRecoveryTimer != null)
+				_laserRecoveryTimer.TimerIsExpired -= recoveryLaserAction;
 		}
 
 		#endregion
@@ -135,18 +135,18 @@ namespace Utils
 
 		public void InitMainWeaponTimer()
 		{
-			shotTimer = timersFactory.Create();
-			shotTimer.Init(remoteConfig.ShotFrequency);
+			_shotTimer = _timersFactory.Create();
+			_shotTimer.Init(_remoteConfig.ShotFrequency);
 		}
 
 		public void PlayMainWeaponTimer()
 		{
-			shotTimer.Play();
+			_shotTimer.Play();
 		}
 
 		public bool MainWeaponTimerIsPlaying()
 		{
-			return shotTimer != null && shotTimer.IsPlaying();
+			return _shotTimer != null && _shotTimer.IsPlaying();
 		}
 
 		#endregion

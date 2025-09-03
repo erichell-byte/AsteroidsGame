@@ -9,5 +9,8 @@ namespace Config
 		public AssetReferenceGameObject ShotVfx;
 		public AssetReferenceGameObject AsteroidExplosionVfx;
 		public AssetReferenceGameObject UfoExplosionVfx;
+		public int UfoExplosionDuration;
+		public int AsteroidExplosionDuration;
+		public int ShotDuration;
 	}
 }

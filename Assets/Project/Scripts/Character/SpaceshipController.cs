@@ -21,6 +21,24 @@ namespace Character
 
 		public SpaceshipModel SpaceshipModel { get; private set; }
 
+		[Inject]
+		private void Construct(
+			IConfigProvider configProvider,
+			MoveComponent moveComponent,
+			AttackComponent attackComponent,
+			GameCycle gameCycle,
+			SpaceshipModel spaceshipModel)
+		{
+			_remoteConfig = configProvider.GetRemoteConfig();
+			_moveComponent = moveComponent;
+			_attackComponent = attackComponent;
+			SpaceshipModel = spaceshipModel;
+			_inputReceiver = new KeyboardInputReceiver();
+
+			gameCycle.AddListener(this);
+			moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
+		}
+
 		public void OnFinishGame()
 		{
 			_inputReceiver.InputMoveValue -= _moveComponent.MoveForward;
@@ -69,24 +87,6 @@ namespace Character
 		public void Tick()
 		{
 			_inputReceiver.Tick();
-		}
-
-		[Inject]
-		private void Construct(
-			IConfigProvider configProvider,
-			MoveComponent moveComponent,
-			AttackComponent attackComponent,
-			GameCycle gameCycle,
-			SpaceshipModel spaceshipModel)
-		{
-			_remoteConfig = configProvider.GetRemoteConfig();
-			_moveComponent = moveComponent;
-			_attackComponent = attackComponent;
-			SpaceshipModel = spaceshipModel;
-			_inputReceiver = new KeyboardInputReceiver();
-
-			gameCycle.AddListener(this);
-			moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
 		}
 
 		private void ResetCharacterModel()

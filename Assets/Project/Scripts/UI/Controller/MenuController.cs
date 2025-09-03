@@ -18,15 +18,6 @@ namespace UI
 		private IPurchaseService _purchaseService;
 		private ISceneLoader _sceneLoader;
 
-		public void Dispose()
-		{
-			_menuView.StartClicked -= OnStartClicked;
-			_menuView.BuyAdsClicked -= OnBuyAdsClicked;
-			_menuView.ExitGameClicked -= OnExitGameClicked;
-
-			_purchaseService.OnPurchasedAction -= _menuView.DisableBuyButton;
-		}
-
 		[Inject]
 		private void Construct(
 			MenuView menuView,
@@ -54,8 +45,18 @@ namespace UI
 			InitializeAsync().Forget();
 		}
 
+		public void Dispose()
+		{
+			_menuView.StartClicked -= OnStartClicked;
+			_menuView.BuyAdsClicked -= OnBuyAdsClicked;
+			_menuView.ExitGameClicked -= OnExitGameClicked;
+
+			_purchaseService.OnPurchasedAction -= _menuView.DisableBuyButton;
+		}
+
 		private async UniTaskVoid InitializeAsync()
 		{
+			if (_menuView == null) return;
 			_menuView.SetStartButtonInteractable(false);
 			var assets = new[]
 			{

@@ -12,7 +12,6 @@ namespace Weapon
 		private float _bulletSpeed;
 		private TimersController _timersController;
 
-
 		public Action OnShot;
 
 		[Inject]
@@ -26,7 +25,7 @@ namespace Weapon
 			float bulletSpeed,
 			BulletPoolFacade bulletPool)
 		{
-			this.shotPoint = shotPoint;
+			this.ShotPoint = shotPoint;
 			_bulletSpeed = bulletSpeed;
 			_bulletPool = bulletPool;
 			_timersController.InitMainWeaponTimer();
@@ -45,9 +44,9 @@ namespace Weapon
 
 			var bullet = await _bulletPool.GetAsync();
 			bullet.OnHit += OnHitBullet;
-			bullet.transform.position = shotPoint.position;
-			bullet.transform.rotation = shotPoint.rotation;
-			bullet.GetComponent<Rigidbody2D>().linearVelocity = shotPoint.up * _bulletSpeed;
+			bullet.transform.position = ShotPoint.position;
+			bullet.transform.rotation = ShotPoint.rotation;
+			bullet.GetComponent<Rigidbody2D>().linearVelocity = ShotPoint.up * _bulletSpeed;
 		}
 
 		private void OnHitBullet(Bullet bullet)

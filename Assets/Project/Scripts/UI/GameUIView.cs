@@ -12,14 +12,16 @@ namespace UI
 		[SerializeField] private TMP_Text _countOfAvailableLaserText;
 		[SerializeField] private TMP_Text _timeToResetLaserText;
 		[SerializeField] private ButtonView _startGameButton;
+		[SerializeField] private ButtonView _finishGameButton;
 
-		private readonly CompositeDisposable _disposables = new();
+		private CompositeDisposable _disposables = new();
 
 		private GameUIViewModel _gameUIViewModel;
 
 		public void Initialize(GameUIViewModel gameUIViewModel)
 		{
 			_gameUIViewModel = gameUIViewModel;
+			_disposables = new CompositeDisposable();
 
 			gameUIViewModel.Coordinate.Subscribe(SetCoordinate).AddTo(_disposables);
 			gameUIViewModel.RotationAngle.Subscribe(SetRotationAngle).AddTo(_disposables);
@@ -28,7 +30,8 @@ namespace UI
 			gameUIViewModel.TimeToResetLaser.Subscribe(SetTimeToResetLaser).AddTo(_disposables);
 			gameUIViewModel.GameStartedButtonEnabled.Subscribe(SetStartGameButtonActive).AddTo(_disposables);
 
-			_startGameButton.OnClick += gameUIViewModel.StartGameButtonClicked;
+			_startGameButton.OnClick += _gameUIViewModel.StartGameButtonClicked;
+			_finishGameButton.OnClick += FinishGameButtonClicked;
 		}
 
 		public void Hide()
@@ -39,6 +42,12 @@ namespace UI
 		public void Show()
 		{
 			gameObject.SetActive(true);
+		}
+
+		private void FinishGameButtonClicked()
+		{
+			Hide();
+			_gameUIViewModel.FinishGameButtonClicked();
 		}
 
 		public void SetCoordinate(Vector2 coordinate)
@@ -68,14 +77,23 @@ namespace UI
 
 		public void SetStartGameButtonActive(bool isActive)
 		{
-			_startGameButton.gameObject.SetActive(isActive);
+			if (_startGameButton == null) return;
+			var go = _startGameButton.gameObject;
+			if (!go) return;
+			go.SetActive(isActive);
 		}
 
-		public void Dispose()
+		private void Dispose()
 		{
-			if (_gameUIViewModel == null) return;
-			_startGameButton.OnClick -= _gameUIViewModel.StartGameButtonClicked;
+			if (_startGameButton != null) _startGameButton.OnClick -= _gameUIViewModel.StartGameButtonClicked;
+			if (_finishGameButton != null) _finishGameButton.OnClick -= _gameUIViewModel.FinishGameButtonClicked;
 			_disposables?.Clear();
+			_gameUIViewModel = null;
+		}
+
+		private void OnDestroy()
+		{
+			Dispose();
 		}
 	}
 }

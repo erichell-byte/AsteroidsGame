@@ -14,7 +14,7 @@ namespace Config
 
 		[Header("Effects")]
 		public EffectsConfig Effects;
-		
+
 		[Header("Audio")]
 		public AudioConfig Audio;
 

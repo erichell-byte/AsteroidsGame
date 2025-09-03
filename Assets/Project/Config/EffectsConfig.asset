@@ -30,3 +30,6 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  UfoExplosionDuration: 2000
+  AsteroidExplosionDuration: 1500
+  ShotDuration: 500

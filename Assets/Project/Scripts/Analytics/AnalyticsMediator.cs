@@ -17,23 +17,6 @@ namespace Analytics
 		private int _mainShotCount;
 		private int _ufoDestroyedCount;
 
-		public void Dispose()
-		{
-			_attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
-			_attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
-			_enemiesManager.OnEnemyDeath -= OnEnemyDeath;
-		}
-
-		public void OnFinishGame()
-		{
-			SendFinishGame();
-		}
-
-		public void OnStartGame()
-		{
-			SendStartGame();
-		}
-
 		[Inject]
 		private void Construct(
 			IAnalyticsHandler analyticsHandler,
@@ -50,6 +33,23 @@ namespace Analytics
 			_enemiesManager.OnEnemyDeath += OnEnemyDeath;
 
 			gameCycle.AddListener(this);
+		}
+
+		public void Dispose()
+		{
+			_attackComponent.LaserWeapon.OnLaserShot -= OnLaserShot;
+			_attackComponent.MainWeapon.OnShot -= IncreaseMainShotCount;
+			_enemiesManager.OnEnemyDeath -= OnEnemyDeath;
+		}
+
+		public void OnFinishGame()
+		{
+			SendFinishGame();
+		}
+
+		public void OnStartGame()
+		{
+			SendStartGame();
 		}
 
 		private void OnEnemyDeath(EnemyType enemyType)

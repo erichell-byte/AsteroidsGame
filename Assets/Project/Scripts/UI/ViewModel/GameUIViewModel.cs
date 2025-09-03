@@ -1,4 +1,5 @@
 using Character;
+using Systems;
 using UniRx;
 using UnityEngine;
 
@@ -7,10 +8,14 @@ namespace UI
 	public class GameUIViewModel
 	{
 		private readonly SpaceshipModel _spaceshipModel;
+		private readonly ISceneLoader _sceneLoader;
 
-		public GameUIViewModel(SpaceshipModel spaceshipModel)
+		public GameUIViewModel(
+			SpaceshipModel spaceshipModel,
+			ISceneLoader sceneLoader)
 		{
 			_spaceshipModel = spaceshipModel;
+			_sceneLoader = sceneLoader;
 		}
 
 		public IReadOnlyReactiveProperty<Vector2> Coordinate => _spaceshipModel.Position;
@@ -19,12 +24,16 @@ namespace UI
 		public IReadOnlyReactiveProperty<int> LaserCount => _spaceshipModel.LaserCount;
 		public IReadOnlyReactiveProperty<float> TimeToResetLaser => _spaceshipModel.TimeToRecoveryLaser;
 		public IReadOnlyReactiveProperty<bool> GameStartedButtonEnabled => _spaceshipModel.IsDead;
-		public ReactiveCommand<Unit> StartGameButtonClickedCommand { get; } = new();
 
 		public void StartGameButtonClicked()
 		{
 			_spaceshipModel.SetIsDead(false);
-			StartGameButtonClickedCommand.Execute(Unit.Default);
+		}
+
+		public async void FinishGameButtonClicked()
+		{
+			_spaceshipModel.SetIsDead(true);
+			await _sceneLoader.LoadPreviousScene();
 		}
 	}
 }

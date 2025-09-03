@@ -18,18 +18,18 @@ namespace Systems
 	{
 		private readonly List<IGameListener> _gameListeners = new();
 
-		private SaveSystemFacade _gameSaveService;
+		private SaveSystemFacade _saveSystemFacade;
 		private GameState _state;
-
-		public void Initialize()
-		{
-			_state = GameState.Off;
-		}
 
 		[Inject]
 		private void Construct(SaveSystemFacade gameSaveService)
 		{
-			_gameSaveService = gameSaveService;
+			_saveSystemFacade = gameSaveService;
+		}
+
+		public void Initialize()
+		{
+			_state = GameState.Off;
 		}
 
 		public void AddListener(IGameListener listener)
@@ -54,7 +54,7 @@ namespace Systems
 
 		public void FinishGame()
 		{
-			_gameSaveService.SaveSpaceShipData().Forget();
+			_saveSystemFacade.SaveSpaceShipData().Forget();
 
 			if (_state == GameState.Off || _state == GameState.Finished)
 			{

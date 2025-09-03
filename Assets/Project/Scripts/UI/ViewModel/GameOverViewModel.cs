@@ -3,12 +3,12 @@ using Purchasing;
 
 namespace UI
 {
-	public class AdViewModel
+	public class GameOverViewModel
 	{
 		private readonly IAdService _adService;
 		private readonly IPurchaseService _purchaseService;
 
-		public AdViewModel(
+		public GameOverViewModel(
 			IAdService adService,
 			IPurchaseService purchaseService)
 		{

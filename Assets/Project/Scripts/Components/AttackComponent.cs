@@ -26,11 +26,6 @@ namespace Components
 
 		public LaserWeapon LaserWeapon { get; private set; }
 
-		public void Tick()
-		{
-			LaserWeapon.Tick();
-		}
-
 		[Inject]
 		private void Construct(
 			DiContainer container,
@@ -46,6 +41,11 @@ namespace Components
 			_gameEvents = gameEvents;
 
 			_bulletPool = new BulletPoolFacade(loader, localConfig.BulletId, poolParent);
+		}
+
+		public void Tick()
+		{
+			LaserWeapon.Tick();
 		}
 
 		public void Initialize(

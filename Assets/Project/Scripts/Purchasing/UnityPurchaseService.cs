@@ -22,6 +22,13 @@ namespace Purchasing
 		private string _noAdsProductId;
 		private PurchasedData _purchasedData = new();
 
+		[Inject]
+		private void Construct(
+			GameConfiguration gameConfig)
+		{
+			_noAdsProductId = gameConfig.NoAdsProductId;
+		}
+
 		public void Initialize()
 		{
 			InitializeUnityServices();
@@ -168,13 +175,6 @@ namespace Purchasing
 			if (data == null) return;
 
 			_purchasedData = data;
-		}
-
-		[Inject]
-		private void Construct(
-			GameConfiguration gameConfig)
-		{
-			_noAdsProductId = gameConfig.NoAdsProductId;
 		}
 
 		private async void InitializeUnityServices()
