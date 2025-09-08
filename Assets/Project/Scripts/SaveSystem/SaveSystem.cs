@@ -30,8 +30,9 @@ namespace SaveLoad
 			var dataKey = _keysProvider.Provide<TData>();
 			var serializedData = await _serializer.SerializeAsync(data);
 
-			await _cloudDataStorage.WriteAsync(dataKey, serializedData);
-			await _localDataStorage.WriteAsync(dataKey, serializedData);
+			await UniTask.WhenAll(
+				_cloudDataStorage.WriteAsync(dataKey, serializedData), 
+				_localDataStorage.WriteAsync(dataKey, serializedData));	
 		}
 
 		public async UniTask<TData> LoadAsync<TData>() where TData : ISaveData
