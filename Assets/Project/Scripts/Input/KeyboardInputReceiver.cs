@@ -14,7 +14,8 @@ namespace Input
 		{
 			if (UnityEngine.Input.GetKey(KeyCode.A))
 				InputRotationValue?.Invoke(-1);
-			else if (UnityEngine.Input.GetKey(KeyCode.D)) InputRotationValue?.Invoke(1);
+			else if (UnityEngine.Input.GetKey(KeyCode.D)) 
+				InputRotationValue?.Invoke(1);
 
 			if (UnityEngine.Input.GetKey(KeyCode.W)) InputMoveValue?.Invoke();
 

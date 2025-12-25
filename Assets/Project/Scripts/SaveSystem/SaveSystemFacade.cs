@@ -2,12 +2,13 @@ using System;
 using Character;
 using Cysharp.Threading.Tasks;
 using Purchasing;
+using Systems;
 using UnityEngine;
 using Zenject;
 
 namespace SaveLoad
 {
-	public class SaveSystemFacade : IDisposable
+	public class SaveSystemFacade : IDisposable, IGameFinishListener
 	{
 		private IPurchaseService _purchaseService;
 		private ISaveSystem _saveSystem;
@@ -29,6 +30,11 @@ namespace SaveLoad
 			_spaceshipModel = spaceshipModel;
 
 			_purchaseService.OnPurchasedAction += SavePurchasedData;
+		}
+		
+		public void OnFinishGame()
+		{
+			SaveSpaceShipData().Forget();
 		}
 
 		public async UniTask SaveSpaceShipData()

@@ -49,7 +49,7 @@ namespace Installers
 
 			Container.Bind<AudioSource>().WithId(AudioSourceId.Music).FromInstance(_musicAudioSource).NonLazy();
 			Container.Bind<AudioSource>().WithId(AudioSourceId.Sfx).FromInstance(_sfxAudioSource).NonLazy();
-			Container.Bind<AudioMediator>().AsSingle().NonLazy();
+			Container.BindInterfacesAndSelfTo<AudioMediator>().AsSingle().NonLazy();
 			Container.Bind<IEnemySpawnPointProvider>().To<CameraBoundsSpawnPointProvider>().AsSingle();
 		}
 	}

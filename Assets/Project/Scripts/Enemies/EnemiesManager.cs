@@ -7,7 +7,6 @@ using Systems;
 using UnityEngine;
 using Utils;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace Enemies
 {
@@ -37,7 +36,6 @@ namespace Enemies
 			GameConfiguration config,
 			Transform poolParent,
 			MoveComponent moveComponent,
-			GameCycle gameCycle,
 			IAssetLoader<Enemy> loader,
 			IAssetsPreloader preloader,
 			IGameEvents gameEvents,
@@ -51,7 +49,6 @@ namespace Enemies
 			_loader = loader;
 			_preloader = preloader;
 			_gameEvents = gameEvents;
-			gameCycle.AddListener(this);
 		}
 
 		public void OnFinishGame()

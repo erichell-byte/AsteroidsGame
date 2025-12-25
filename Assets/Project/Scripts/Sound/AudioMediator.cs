@@ -21,8 +21,7 @@ namespace Sounds
 			[Inject(Id = AudioSourceId.Music)] AudioSource musicAudioSource,
 			[Inject(Id = AudioSourceId.Sfx)] AudioSource sfxAudioSource,
 			IGameEvents events,
-			GameConfiguration gameConfiguration,
-			GameCycle gameCycle)
+			GameConfiguration gameConfiguration)
 		{
 			_musicAudioSource = musicAudioSource;
 			_sfxAudioSource = sfxAudioSource;
@@ -34,8 +33,6 @@ namespace Sounds
 			events.OnEnemyKilled
 				.Subscribe(PlayEnemyKilledSound)
 				.AddTo(_disposables);
-
-			gameCycle.AddListener(this);
 		}
 
 		public void OnFinishGame()

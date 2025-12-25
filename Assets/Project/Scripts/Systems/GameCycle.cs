@@ -17,24 +17,19 @@ namespace Systems
 	public class GameCycle : IInitializable
 	{
 		private readonly List<IGameListener> _gameListeners = new();
-
-		private SaveSystemFacade _saveSystemFacade;
+		
 		private GameState _state;
-
-		[Inject]
-		private void Construct(SaveSystemFacade gameSaveService)
-		{
-			_saveSystemFacade = gameSaveService;
-		}
+		
 
 		public void Initialize()
 		{
 			_state = GameState.Off;
 		}
 
-		public void AddListener(IGameListener listener)
+		[Inject]
+		private void Construct(IGameListener[] gameListener)
 		{
-			_gameListeners.Add(listener);
+			_gameListeners.AddRange(gameListener);
 		}
 
 		public void StartGame()
@@ -54,8 +49,6 @@ namespace Systems
 
 		public void FinishGame()
 		{
-			_saveSystemFacade.SaveSpaceShipData().Forget();
-
 			if (_state == GameState.Off || _state == GameState.Finished)
 			{
 				Debug.Log("Game is already finished!");

@@ -26,7 +26,6 @@ namespace UI
 			SpaceshipController shipController,
 			GameUIView gameUIView,
 			GameOverView gameOverView,
-			GameCycle gameCycle,
 			IAdService adService,
 			IPurchaseService purchaseService,
 			ISceneLoader sceneLoader)
@@ -40,8 +39,6 @@ namespace UI
 			_gameOverViewModel = new GameOverViewModel(_adService, _purchaseService);
 			_gameViewModel = new GameUIViewModel(_spaceshipModel, _sceneLoader);
 			_gameUIView.Initialize(_gameViewModel);
-
-			gameCycle.AddListener(this);
 		}
 
 		public void OnFinishGame()

@@ -21,8 +21,7 @@ namespace Analytics
 		private void Construct(
 			IAnalyticsHandler analyticsHandler,
 			AttackComponent attackComponent,
-			EnemiesManager enemiesManager,
-			GameCycle gameCycle)
+			EnemiesManager enemiesManager)
 		{
 			_analyticsHandler = analyticsHandler;
 			_attackComponent = attackComponent;
@@ -31,8 +30,6 @@ namespace Analytics
 			_attackComponent.LaserWeapon.OnLaserShot += OnLaserShot;
 			_attackComponent.MainWeapon.OnShot += IncreaseMainShotCount;
 			_enemiesManager.OnEnemyDeath += OnEnemyDeath;
-
-			gameCycle.AddListener(this);
 		}
 
 		public void Dispose()

@@ -26,16 +26,14 @@ namespace Character
 			IConfigProvider configProvider,
 			MoveComponent moveComponent,
 			AttackComponent attackComponent,
-			GameCycle gameCycle,
 			SpaceshipModel spaceshipModel)
 		{
+			SpaceshipModel = spaceshipModel;
 			_remoteConfig = configProvider.GetRemoteConfig();
 			_moveComponent = moveComponent;
 			_attackComponent = attackComponent;
-			SpaceshipModel = spaceshipModel;
 			_inputReceiver = new KeyboardInputReceiver();
-
-			gameCycle.AddListener(this);
+			
 			moveComponent.SetInitialPositionAndRotation(spaceshipModel.Position.Value, spaceshipModel.Rotation.Value);
 		}
 

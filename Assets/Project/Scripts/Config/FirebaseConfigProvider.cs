@@ -35,12 +35,19 @@ namespace Config
 			var jsonString = remoteConfig.GetValue(_configKey).StringValue;
 			try
 			{
-				_parsedConfig = JsonConvert.DeserializeObject<RemoteConfig>(jsonString);
+				if (!string.IsNullOrWhiteSpace(jsonString))
+				{
+					// Keep the same instance so all injected references update.
+					JsonConvert.PopulateObject(jsonString, _parsedConfig);
+				}
+				else
+				{
+					Debug.LogWarning("Remote config is empty. Using default values.");
+				}
 			}
 			catch (Exception e)
 			{
 				Debug.LogError("Failed to parse remote config: " + e);
-				_parsedConfig = new RemoteConfig();
 			}
 		}
 	}

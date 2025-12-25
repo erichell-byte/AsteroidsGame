@@ -20,13 +20,9 @@ namespace Components
 		private SpaceshipModel _spaceshipModel;
 
 		[Inject]
-		private void Construct(
-			GameCycle gameCycle,
-			IConfigProvider configProvider)
+		private void Construct(IConfigProvider configProvider)
 		{
 			_remoteConfig = configProvider.GetRemoteConfig();
-
-			gameCycle.AddListener(this);
 		}
 
 		private void Awake()
